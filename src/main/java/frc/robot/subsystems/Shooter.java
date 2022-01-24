@@ -18,4 +18,8 @@ public class Shooter extends SubsystemBase {
     public void set(double speed) {
         shooter.set(ControlMode.PercentOutput, speed);
     }
+
+    public boolean atVelocity() {
+        return false;
+    }
 }
