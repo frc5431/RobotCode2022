@@ -3,38 +3,50 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.Shooter;
+
 public class Systems {
-    private WPI_TalonFX feeder;
-    private WPI_TalonFX shooter;
-    private WPI_TalonFX intake;
-    private WPI_TalonSRX pivot;
-    private WPI_TalonSRX climber;
+    private WPI_TalonSRX feeder_motor;
+    private WPI_TalonSRX shooter_motor;
+    private WPI_TalonFX intake_motor;
+    private WPI_TalonSRX pivot_motor;
+    // private WPI_TalonFX climber_motor;
+
+    private Feeder feeder;
+    private Shooter shooter;
+    private Intake intake;
+    private Pivot pivot;
+    private Climber climber;
 
     public Systems() {
-        feeder = new WPI_TalonFX(0);
-        shooter = new WPI_TalonFX(1);
-        intake = new WPI_TalonFX(2);
-        pivot = new WPI_TalonSRX(0);
-        climber = new WPI_TalonSRX(0);
+        feeder = new Feeder(feeder_motor);
+        shooter = new Shooter(shooter_motor);
+        intake = new Intake(intake_motor);
+        pivot = new Pivot(pivot_motor);
+        climber = new Climber();
     }
 
-    public WPI_TalonFX getFeeder() {
+    public Feeder getFeeder() {
         return feeder;
     }
 
-    public WPI_TalonFX getShooter() {
+    public Shooter getShooter() {
         return shooter;
     }
 
-    public WPI_TalonFX getIntake() {
+    public Intake getIntake() {
         return intake;
     }
 
-    public WPI_TalonSRX getPivot() {
+    public Pivot getPivot() {
         return pivot;
     }
 
-    public WPI_TalonSRX getClimber() {
+    public Climber getClimber() {
         return climber;
     }
 }
