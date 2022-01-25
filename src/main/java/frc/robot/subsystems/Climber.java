@@ -7,7 +7,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class Climber extends SubsystemBase {
-    
+    /**
+ * @author Aahana Shrivastava
+ */
     private WPI_TalonFX leftElevator1, leftElevator2, rightElevator1, rightElevator2;
 
     public Climber(WPI_TalonFX le1, WPI_TalonFX le2, WPI_TalonFX re1, WPI_TalonFX re2) {
