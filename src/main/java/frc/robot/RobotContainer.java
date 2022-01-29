@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.Button;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.subsystems.Drivebase;
 import frc.team5431.titan.core.joysticks.Xbox;
@@ -21,9 +21,9 @@ import frc.team5431.titan.core.joysticks.Xbox;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final Drivebase m_drivetrainSubsystem = new Drivebase();
+  private final Drivebase drivebase = new Drivebase();
 
-  private final Xbox m_controller = new Xbox(0);
+  private final Xbox driver = new Xbox(0);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -34,11 +34,11 @@ public class RobotContainer {
     // Left stick Y axis -> forward and backwards movement
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
-    m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
-            m_drivetrainSubsystem,
-            () -> modifyAxis(m_controller.getRawAxis(Xbox.Axis.LEFT_Y)) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> modifyAxis(m_controller.getRawAxis(Xbox.Axis.LEFT_X)) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> modifyAxis(m_controller.getRawAxis(Xbox.Axis.RIGHT_X)) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    drivebase.setDefaultCommand(new DefaultDriveCommand(
+            drivebase,
+            () -> modifyAxis(driver.getRawAxis(Xbox.Axis.LEFT_Y)) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> modifyAxis(driver.getRawAxis(Xbox.Axis.LEFT_X)) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> modifyAxis(driver.getRawAxis(Xbox.Axis.RIGHT_X)) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
     // Configure the button bindings
@@ -53,9 +53,9 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Back button zeros the gyroscope
-    new Button(m_controller::getTop)
+    new JoystickButton(driver, Xbox.Button.Y.ordinal() + 1)
             // No requirements because we don't need to interrupt anything
-            .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+            .whenPressed(drivebase::zeroGyroscope);
   }
 
   /**
