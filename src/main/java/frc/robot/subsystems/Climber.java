@@ -10,26 +10,18 @@ public class Climber extends SubsystemBase {
     /**
  * @author Aahana Shrivastava
  */
-    private WPI_TalonFX leftElevator1, leftElevator2, rightElevator1, rightElevator2;
+    private WPI_TalonFX leftElevator, rightElevator;
 
-    public Climber(WPI_TalonFX le1, WPI_TalonFX le2, WPI_TalonFX re1, WPI_TalonFX re2) {
-        leftElevator1 = le1;
-        leftElevator1.setInverted(true);
-        leftElevator1.setNeutralMode(NeutralMode.Brake);
+    public Climber(WPI_TalonFX left, WPI_TalonFX right) {
+        leftElevator = left;
+        leftElevator.setInverted(true);
+        leftElevator.setNeutralMode(NeutralMode.Brake);
 
-        leftElevator2 = le2;
-        leftElevator2.setInverted(true);
-        leftElevator2.setNeutralMode(NeutralMode.Brake);
+        rightElevator = right;
+        rightElevator.setInverted(true);
+        rightElevator.setNeutralMode(NeutralMode.Brake);
 
-        rightElevator1 = re1;
-        rightElevator1.setInverted(true);
-        rightElevator1.setNeutralMode(NeutralMode.Brake);
-
-        rightElevator2 = re2;  
-        rightElevator2.setInverted(true);
-        rightElevator2.setNeutralMode(NeutralMode.Brake);
-
-        
+    
         
   
     
