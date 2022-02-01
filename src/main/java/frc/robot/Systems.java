@@ -10,7 +10,8 @@ import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
 
 public class Systems {
-    private WPI_TalonSRX feeder_motor;
+    private WPI_TalonSRX feeder1;
+    private WPI_TalonSRX feeder2;
     private WPI_TalonSRX shooter_motor;
     private WPI_TalonFX intake_motor;
     private WPI_TalonSRX pivot_motor;
@@ -24,7 +25,7 @@ public class Systems {
     private Climber climber;
 
     public Systems() {
-        feeder = new Feeder(feeder_motor);
+        feeder = new Feeder(feeder1,feeder2);
         shooter = new Shooter(shooter_motor);
         intake = new Intake(intake_motor);
         pivot = new Pivot(pivot_motor);
