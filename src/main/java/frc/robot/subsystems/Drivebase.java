@@ -9,6 +9,7 @@ import com.kauailabs.navx.frc.AHRS;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team5431.titan.swerve.Mk4ModuleConfigurationExt;
 import frc.team5431.titan.swerve.Mk4SwerveModuleHelperExt;
@@ -195,6 +197,11 @@ public class Drivebase extends SubsystemBase {
         ((TalonFX) m_backRightModule.getDriveMotor()).config_kD(0, kD);
         ((TalonFX) m_backRightModule.getDriveMotor()).config_kF(0, kF);
 
+        /**
+         * Establish the PID controllers (possibly outdated)
+         * 
+         * in velocity m/s
+         */
         c_frontLeftDrive = new PIDController(0.5, 0, 0);
         c_frontRightDrive = new PIDController(0.5, 0, 0);
         c_backLeftDrive = new PIDController(0.5, 0, 0);
@@ -273,6 +280,24 @@ public class Drivebase extends SubsystemBase {
             blVoltage = states[2].speedMetersPerSecond;
             brVoltage = states[3].speedMetersPerSecond;
         }
+
+        flVoltage = MathUtil.clamp(flVoltage, 0, MAX_VELOCITY_METERS_PER_SECOND);
+        frVoltage = MathUtil.clamp(frVoltage, 0, MAX_VELOCITY_METERS_PER_SECOND);
+        blVoltage = MathUtil.clamp(blVoltage, 0, MAX_VELOCITY_METERS_PER_SECOND);
+        brVoltage = MathUtil.clamp(brVoltage, 0, MAX_VELOCITY_METERS_PER_SECOND);
+
+        // double DEADBAND = 0.03;
+        double DEADBAND = 0;
+
+        flVoltage = flVoltage < DEADBAND ? 0 : flVoltage;
+        frVoltage = frVoltage < DEADBAND ? 0 : frVoltage;
+        blVoltage = blVoltage < DEADBAND ? 0 : blVoltage;
+        brVoltage = brVoltage < DEADBAND ? 0 : brVoltage;
+
+        SmartDashboard.putNumber("Front Left Velocity", flVoltage);
+        SmartDashboard.putNumber("Front Right Velocity", frVoltage);
+        SmartDashboard.putNumber("Back Left Velocity", blVoltage);
+        SmartDashboard.putNumber("Back Right Velocity", brVoltage);
 
         flVoltage = flVoltage / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE;
         frVoltage = frVoltage / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE;
