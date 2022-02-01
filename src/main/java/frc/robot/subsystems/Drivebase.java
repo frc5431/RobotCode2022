@@ -8,6 +8,8 @@ import com.kauailabs.navx.frc.AHRS;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -38,6 +40,9 @@ public class Drivebase extends SubsystemBase {
    * The maximum velocity of the robot in meters per second.
    * <p>
    * This is a measure of how fast the robot should be able to drive in a straight line.
+   * 
+   * 
+   * MK4_L2 = 4.96823045476
    */
   public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
           SdsModuleConfigurations.MK4_L2.getDriveReduction() *
@@ -75,6 +80,11 @@ public class Drivebase extends SubsystemBase {
   private final SwerveModule m_frontRightModule;
   private final SwerveModule m_backLeftModule;
   private final SwerveModule m_backRightModule;
+
+  private final PIDController c_frontLeftDrive;
+  private final PIDController c_frontRightDrive;
+  private final PIDController c_backLeftDrive;
+  private final PIDController c_backRightDrive;
 
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
@@ -151,6 +161,11 @@ public class Drivebase extends SubsystemBase {
             BACK_RIGHT_MODULE_STEER_ENCODER,
             BACK_RIGHT_MODULE_STEER_OFFSET
     );
+
+    c_frontLeftDrive = new PIDController(0.5, 0, 0);
+    c_frontRightDrive = new PIDController(0.5, 0, 0);
+    c_backLeftDrive = new PIDController(0.5, 0, 0);
+    c_backRightDrive = new PIDController(0.5, 0, 0);
   }
 
   /**
@@ -187,10 +202,24 @@ public class Drivebase extends SubsystemBase {
   public void periodic() {
     SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
+    // SwerveModuleState.optimize(desiredState, currentAngle) maybe?
 
-    m_frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[0].angle.getRadians());
-    m_frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[1].angle.getRadians());
-    m_backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
-    m_backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians());
+    double flVoltage = c_frontLeftDrive.calculate(m_frontLeftModule.getDriveVelocity(), 
+                                                  states[0].speedMetersPerSecond) 
+                                  / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE;
+    double frVoltage = c_frontRightDrive.calculate(m_frontRightModule.getDriveVelocity(), 
+                                                  states[1].speedMetersPerSecond) 
+                                  / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE;
+    double blVoltage = c_backLeftDrive.calculate(m_backLeftModule.getDriveVelocity(), 
+                                                  states[2].speedMetersPerSecond) 
+                                  / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE;
+    double brVoltage = c_backRightDrive.calculate(m_backRightModule.getDriveVelocity(), 
+                                                  states[3].speedMetersPerSecond) 
+                                  / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE;
+
+    m_frontLeftModule.set(flVoltage, states[0].angle.getRadians());
+    m_frontRightModule.set(frVoltage, states[1].angle.getRadians());
+    m_backLeftModule.set(blVoltage, states[2].angle.getRadians());
+    m_backRightModule.set(brVoltage, states[3].angle.getRadians());
   }
 }
