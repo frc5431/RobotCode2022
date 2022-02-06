@@ -4,10 +4,16 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.subsystems.Drivebase;
@@ -64,8 +70,17 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return new InstantCommand();
+    PathPlannerTrajectory trajectory = PathPlanner.loadPath("TestSwerve", Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 2.0);
+
+    return new PPSwerveControllerCommand(
+        trajectory, 
+        () -> drivebase.m_odometry.getPoseMeters(), 
+        drivebase.m_kinematics, 
+        new PIDController(0.5, 0, 0.01), 
+        new PIDController(0.5, 0, 0.01), 
+        new ProfiledPIDController(0.5, 0, 0.01, new Constraints(Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 1)),
+        (states) -> drivebase.drive(drivebase.m_kinematics.toChassisSpeeds(states)), 
+        drivebase);
   }
 
   private static double deadband(double value, double deadband) {
