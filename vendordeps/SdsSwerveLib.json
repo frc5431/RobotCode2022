@@ -9,9 +9,9 @@
     "jsonUrl": "https://raw.githubusercontent.com/SwerveDriveSpecialties/swerve-lib/master/SdsSwerveLib.json",
     "javaDependencies": [
         {
-            "groupId": "com.github.SwerveDriveSpecialties",
+            "groupId": "com.github.democat3457",
             "artifactId": "swerve-lib",
-            "version": "1.0.0"
+            "version": "prod-SNAPSHOT"
         }
     ],
     "jniDependencies": [],
