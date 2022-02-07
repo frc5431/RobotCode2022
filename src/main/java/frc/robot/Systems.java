@@ -14,7 +14,7 @@ public class Systems {
     private WPI_TalonSRX feeder2;
     private WPI_TalonSRX shooter_motor;
     private WPI_TalonFX intake_motor;
-    private WPI_TalonSRX pivot_motor;
+    private WPI_TalonFX pivot_motor;
     private WPI_TalonFX left;
     private WPI_TalonFX right;
 

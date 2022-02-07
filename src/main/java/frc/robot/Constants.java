@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
+
+import frc.robot.util.MotionMagic;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -47,4 +52,21 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 3;
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 10;
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(53.789);
+
+    public static final NeutralMode PIVOT_NEUTRALMODE = null;
+    public static final TalonFXInvertType PIVOT_REVERSE = null;
+    public static final double PIVOT_UP_LIMIT = 0;
+    public static final double PIVOT_DOWN_LIMIT = 0;
+    public static final int DRIVEBASE_TIMEOUT_MS = 0;
+    public static final double PIVOT_DEFAULT_SPEED = 0;
+    public static final MotionMagic PIVOT_MOTION_MAGIC = null;
+    public static final double PIVOT_COSINE_MULT = 0;
+    public static final double PIVOT_AFFECT_GRAVITY = 0;
+    public static final double PIVOT_ERROR_RANGE = 0;
+
+
+
+
+
+
 }
