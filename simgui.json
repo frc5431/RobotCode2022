@@ -1,0 +1,17 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Drivebase": "Subsystem",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/navX-Sensor[1]": "Gyro"
+    },
+    "windows": {
+      "/LiveWindow/Drivebase": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  }
+}
