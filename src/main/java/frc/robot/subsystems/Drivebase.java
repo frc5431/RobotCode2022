@@ -175,27 +175,34 @@ public class Drivebase extends SubsystemBase {
                         BACK_RIGHT_MODULE_STEER_OFFSET
         );
 
-        double kP = 0.25;
-        double kI = 0.0;
-        double kD = 0.1;
-        double kF = 0.0;
+        // double kP = 0.0;
+        // double kI = 0.0;
+        // double kD = 0.0;
+        // double kF = 0.0;
 
-        ((TalonFX) m_frontLeftModule.getDriveMotor()).config_kP(0, kP);
-        ((TalonFX) m_frontLeftModule.getDriveMotor()).config_kI(0, kI);
-        ((TalonFX) m_frontLeftModule.getDriveMotor()).config_kD(0, kD);
-        ((TalonFX) m_frontLeftModule.getDriveMotor()).config_kF(0, kF);
-        ((TalonFX) m_frontRightModule.getDriveMotor()).config_kP(0, kP);
-        ((TalonFX) m_frontRightModule.getDriveMotor()).config_kI(0, kI);
-        ((TalonFX) m_frontRightModule.getDriveMotor()).config_kD(0, kD);
-        ((TalonFX) m_frontRightModule.getDriveMotor()).config_kF(0, kF);
-        ((TalonFX) m_backLeftModule.getDriveMotor()).config_kP(0, kP);
-        ((TalonFX) m_backLeftModule.getDriveMotor()).config_kI(0, kI);
-        ((TalonFX) m_backLeftModule.getDriveMotor()).config_kD(0, kD);
-        ((TalonFX) m_backLeftModule.getDriveMotor()).config_kF(0, kF);
-        ((TalonFX) m_backRightModule.getDriveMotor()).config_kP(0, kP);
-        ((TalonFX) m_backRightModule.getDriveMotor()).config_kI(0, kI);
-        ((TalonFX) m_backRightModule.getDriveMotor()).config_kD(0, kD);
-        ((TalonFX) m_backRightModule.getDriveMotor()).config_kF(0, kF);
+        // ((TalonFX) m_frontLeftModule.getDriveMotor()).config_kP(0, kP);
+        // ((TalonFX) m_frontLeftModule.getDriveMotor()).config_kI(0, kI);
+        // ((TalonFX) m_frontLeftModule.getDriveMotor()).config_kD(0, kD);
+        // ((TalonFX) m_frontLeftModule.getDriveMotor()).config_kF(0, kF);
+        // ((TalonFX) m_frontRightModule.getDriveMotor()).config_kP(0, kP);
+        // ((TalonFX) m_frontRightModule.getDriveMotor()).config_kI(0, kI);
+        // ((TalonFX) m_frontRightModule.getDriveMotor()).config_kD(0, kD);
+        // ((TalonFX) m_frontRightModule.getDriveMotor()).config_kF(0, kF);
+        // ((TalonFX) m_backLeftModule.getDriveMotor()).config_kP(0, kP);
+        // ((TalonFX) m_backLeftModule.getDriveMotor()).config_kI(0, kI);
+        // ((TalonFX) m_backLeftModule.getDriveMotor()).config_kD(0, kD);
+        // ((TalonFX) m_backLeftModule.getDriveMotor()).config_kF(0, kF);
+        // ((TalonFX) m_backRightModule.getDriveMotor()).config_kP(0, kP);
+        // ((TalonFX) m_backRightModule.getDriveMotor()).config_kI(0, kI);
+        // ((TalonFX) m_backRightModule.getDriveMotor()).config_kD(0, kD);
+        // ((TalonFX) m_backRightModule.getDriveMotor()).config_kF(0, kF);
+
+        double secondsFromNeutralToFull = 0.5;
+
+        ((TalonFX) m_frontLeftModule.getDriveMotor()).configOpenloopRamp(secondsFromNeutralToFull);
+        ((TalonFX) m_frontRightModule.getDriveMotor()).configOpenloopRamp(secondsFromNeutralToFull);
+        ((TalonFX) m_backLeftModule.getDriveMotor()).configOpenloopRamp(secondsFromNeutralToFull);
+        ((TalonFX) m_backRightModule.getDriveMotor()).configOpenloopRamp(secondsFromNeutralToFull);
 
         /**
          * Establish the PID controllers (possibly outdated)
@@ -236,7 +243,7 @@ public class Drivebase extends SubsystemBase {
 
     public void driveController(ChassisSpeeds chassisSpeeds) {
         m_chassisSpeeds = chassisSpeeds;
-        enableExternalPID = true;
+        enableExternalPID = false;
     }
 
     public void driveRaw(ChassisSpeeds chassisSpeeds) {
