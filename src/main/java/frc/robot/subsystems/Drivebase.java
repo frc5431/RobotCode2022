@@ -4,29 +4,31 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.*;
+
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team5431.titan.swerve.Mk4ModuleConfigurationExt;
 import frc.team5431.titan.swerve.Mk4SwerveModuleHelperExt;
-
-import static frc.robot.Constants.*;
 
 public class Drivebase extends SubsystemBase {
     /**
@@ -79,6 +81,8 @@ public class Drivebase extends SubsystemBase {
     // private final PigeonIMU m_pigeon = new PigeonIMU(DRIVETRAIN_PIGEON_ID);
     // NavX
     public final AHRS m_navx = new AHRS(I2C.Port.kMXP, (byte) 200); // NavX connected over MXP
+    // Analog Devices Gyro
+    // public final ADXRS450_Gyro m_adxr = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
 
     public final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, getGyroscopeRotation());
 
@@ -88,17 +92,12 @@ public class Drivebase extends SubsystemBase {
     private final SwerveModule m_backLeftModule;
     private final SwerveModule m_backRightModule;
 
-    private final PIDController c_frontLeftDrive;
-    private final PIDController c_frontRightDrive;
-    private final PIDController c_backLeftDrive;
-    private final PIDController c_backRightDrive;
-
-    private boolean enableExternalPID = true;
-
     private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
+    private ShuffleboardTab tab;
+
     public Drivebase() {
-        ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
+        tab = Shuffleboard.getTab("Drivetrain");
         Mk4ModuleConfigurationExt moduleConfig = Mk4ModuleConfigurationExt.getDefaultFalcon500();
 
         // There are 4 methods you can call to create your swerve modules.
@@ -123,7 +122,7 @@ public class Drivebase extends SubsystemBase {
         m_frontLeftModule = Mk4SwerveModuleHelperExt.createFalcon500(
                         // This parameter is optional, but will allow you to see the current state of the module on the dashboard.
                         tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-                                        .withSize(2, 4)
+                                        .withSize(2, 3)
                                         .withPosition(0, 0),
                         moduleConfig,
                         // This can either be STANDARD or FAST depending on your gear configuration
@@ -141,7 +140,7 @@ public class Drivebase extends SubsystemBase {
         // We will do the same for the other modules
         m_frontRightModule = Mk4SwerveModuleHelperExt.createFalcon500(
                         tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-                                        .withSize(2, 4)
+                                        .withSize(2, 3)
                                         .withPosition(2, 0),
                         moduleConfig,
                         Mk4SwerveModuleHelperExt.GearRatio.L2,
@@ -153,7 +152,7 @@ public class Drivebase extends SubsystemBase {
 
         m_backLeftModule = Mk4SwerveModuleHelperExt.createFalcon500(
                         tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-                                        .withSize(2, 4)
+                                        .withSize(2, 3)
                                         .withPosition(4, 0),
                         moduleConfig,
                         Mk4SwerveModuleHelperExt.GearRatio.L2,
@@ -165,7 +164,7 @@ public class Drivebase extends SubsystemBase {
 
         m_backRightModule = Mk4SwerveModuleHelperExt.createFalcon500(
                         tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-                                        .withSize(2, 4)
+                                        .withSize(2, 3)
                                         .withPosition(6, 0),
                         moduleConfig,
                         Mk4SwerveModuleHelperExt.GearRatio.L2,
@@ -175,28 +174,6 @@ public class Drivebase extends SubsystemBase {
                         BACK_RIGHT_MODULE_STEER_OFFSET
         );
 
-        // double kP = 0.0;
-        // double kI = 0.0;
-        // double kD = 0.0;
-        // double kF = 0.0;
-
-        // ((TalonFX) m_frontLeftModule.getDriveMotor()).config_kP(0, kP);
-        // ((TalonFX) m_frontLeftModule.getDriveMotor()).config_kI(0, kI);
-        // ((TalonFX) m_frontLeftModule.getDriveMotor()).config_kD(0, kD);
-        // ((TalonFX) m_frontLeftModule.getDriveMotor()).config_kF(0, kF);
-        // ((TalonFX) m_frontRightModule.getDriveMotor()).config_kP(0, kP);
-        // ((TalonFX) m_frontRightModule.getDriveMotor()).config_kI(0, kI);
-        // ((TalonFX) m_frontRightModule.getDriveMotor()).config_kD(0, kD);
-        // ((TalonFX) m_frontRightModule.getDriveMotor()).config_kF(0, kF);
-        // ((TalonFX) m_backLeftModule.getDriveMotor()).config_kP(0, kP);
-        // ((TalonFX) m_backLeftModule.getDriveMotor()).config_kI(0, kI);
-        // ((TalonFX) m_backLeftModule.getDriveMotor()).config_kD(0, kD);
-        // ((TalonFX) m_backLeftModule.getDriveMotor()).config_kF(0, kF);
-        // ((TalonFX) m_backRightModule.getDriveMotor()).config_kP(0, kP);
-        // ((TalonFX) m_backRightModule.getDriveMotor()).config_kI(0, kI);
-        // ((TalonFX) m_backRightModule.getDriveMotor()).config_kD(0, kD);
-        // ((TalonFX) m_backRightModule.getDriveMotor()).config_kF(0, kF);
-
         double secondsFromNeutralToFull = 0.5;
 
         ((TalonFX) m_frontLeftModule.getDriveMotor()).configOpenloopRamp(secondsFromNeutralToFull);
@@ -204,15 +181,12 @@ public class Drivebase extends SubsystemBase {
         ((TalonFX) m_backLeftModule.getDriveMotor()).configOpenloopRamp(secondsFromNeutralToFull);
         ((TalonFX) m_backRightModule.getDriveMotor()).configOpenloopRamp(secondsFromNeutralToFull);
 
-        /**
-         * Establish the PID controllers (possibly outdated)
-         * 
-         * in velocity m/s
-         */
-        c_frontLeftDrive = new PIDController(0.5, 0, 0);
-        c_frontRightDrive = new PIDController(0.5, 0, 0);
-        c_backLeftDrive = new PIDController(0.5, 0, 0);
-        c_backRightDrive = new PIDController(0.5, 0, 0);
+        ShuffleboardLayout chassisSpeedsLayout = tab.getLayout("ChassisSpeeds", BuiltInLayouts.kList)
+                .withSize(3, 4)
+                .withPosition(8, 0);
+        chassisSpeedsLayout.addNumber("vX", () -> m_chassisSpeeds.vxMetersPerSecond);
+        chassisSpeedsLayout.addNumber("vY", () -> m_chassisSpeeds.vyMetersPerSecond);
+        chassisSpeedsLayout.addNumber("oR", () -> m_chassisSpeeds.omegaRadiansPerSecond);
     }
 
     /**
@@ -225,6 +199,9 @@ public class Drivebase extends SubsystemBase {
 
         // NavX
         m_navx.zeroYaw();
+
+        // Analog Devices
+        // m_adxr.reset();
     }
 
     public Rotation2d getGyroscopeRotation() {
@@ -232,23 +209,24 @@ public class Drivebase extends SubsystemBase {
         // return Rotation2d.fromDegrees(m_pigeon.getFusedHeading());
 
         // NavX
-        if (m_navx.isMagnetometerCalibrated()) {
-            // We will only get valid fused headings if the magnetometer is calibrated
-            return Rotation2d.fromDegrees(m_navx.getFusedHeading());
-        }
+        // if (m_navx.isMagnetometerCalibrated()) {
+        //     // We will only get valid fused headings if the magnetometer is calibrated
+        //     return Rotation2d.fromDegrees(m_navx.getFusedHeading());
+        // }
 
         // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
         return Rotation2d.fromDegrees(360.0 - m_navx.getYaw());
+
+        // Analog Devices
+        // return m_adxr.getRotation2d();
     }
 
     public void driveController(ChassisSpeeds chassisSpeeds) {
-        m_chassisSpeeds = chassisSpeeds;
-        enableExternalPID = false;
+        driveRaw(chassisSpeeds);
     }
 
     public void driveRaw(ChassisSpeeds chassisSpeeds) {
         m_chassisSpeeds = chassisSpeeds;
-        enableExternalPID = false;
     }
 
     public static SwerveModuleState getModuleState(SwerveModule module) {
@@ -268,6 +246,11 @@ public class Drivebase extends SubsystemBase {
     public void periodic() {
         m_odometry.update(getGyroscopeRotation(), getStates());
 
+        // Hockey-lock by setting rotation to realllly low number
+        if (m_chassisSpeeds.omegaRadiansPerSecond == 0) {
+            m_chassisSpeeds.omegaRadiansPerSecond = 0.00001;
+        }
+
         SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
         // SwerveModuleState.optimize(desiredState, currentAngle) maybe?
@@ -277,34 +260,20 @@ public class Drivebase extends SubsystemBase {
         double blVoltage;
         double brVoltage;
 
-        flVoltage = c_frontLeftDrive.calculate(m_frontLeftModule.getDriveVelocity(), states[0].speedMetersPerSecond);
-        frVoltage = c_frontRightDrive.calculate(m_frontRightModule.getDriveVelocity(), states[1].speedMetersPerSecond);
-        blVoltage = c_backLeftDrive.calculate(m_backLeftModule.getDriveVelocity(), states[2].speedMetersPerSecond);
-        brVoltage = c_backRightDrive.calculate(m_backRightModule.getDriveVelocity(), states[3].speedMetersPerSecond);
-        if (!enableExternalPID) {
-            flVoltage = states[0].speedMetersPerSecond;
-            frVoltage = states[1].speedMetersPerSecond;
-            blVoltage = states[2].speedMetersPerSecond;
-            brVoltage = states[3].speedMetersPerSecond;
-        }
+        flVoltage = states[0].speedMetersPerSecond;
+        frVoltage = states[1].speedMetersPerSecond;
+        blVoltage = states[2].speedMetersPerSecond;
+        brVoltage = states[3].speedMetersPerSecond;
 
         flVoltage = MathUtil.clamp(flVoltage, 0, MAX_VELOCITY_METERS_PER_SECOND);
         frVoltage = MathUtil.clamp(frVoltage, 0, MAX_VELOCITY_METERS_PER_SECOND);
         blVoltage = MathUtil.clamp(blVoltage, 0, MAX_VELOCITY_METERS_PER_SECOND);
         brVoltage = MathUtil.clamp(brVoltage, 0, MAX_VELOCITY_METERS_PER_SECOND);
 
-        // double DEADBAND = 0.03;
-        double DEADBAND = 0;
-
-        flVoltage = flVoltage < DEADBAND ? 0 : flVoltage;
-        frVoltage = frVoltage < DEADBAND ? 0 : frVoltage;
-        blVoltage = blVoltage < DEADBAND ? 0 : blVoltage;
-        brVoltage = brVoltage < DEADBAND ? 0 : brVoltage;
-
-        SmartDashboard.putNumber("Front Left Velocity", flVoltage);
-        SmartDashboard.putNumber("Front Right Velocity", frVoltage);
-        SmartDashboard.putNumber("Back Left Velocity", blVoltage);
-        SmartDashboard.putNumber("Back Right Velocity", brVoltage);
+        // SmartDashboard.putNumber("Front Left Velocity", flVoltage);
+        // SmartDashboard.putNumber("Front Right Velocity", frVoltage);
+        // SmartDashboard.putNumber("Back Left Velocity", blVoltage);
+        // SmartDashboard.putNumber("Back Right Velocity", brVoltage);
 
         flVoltage = flVoltage / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE;
         frVoltage = frVoltage / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE;

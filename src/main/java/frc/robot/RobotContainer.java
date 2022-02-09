@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.subsystems.Drivebase;
 import frc.team5431.titan.core.joysticks.Xbox;
@@ -64,6 +65,20 @@ public class RobotContainer {
         new JoystickButton(driver, Xbox.Button.Y.ordinal() + 1)
                         // No requirements because we don't need to interrupt anything
                         .whenPressed(drivebase::zeroGyroscope);
+        
+        new POVButton(driver, 0)
+                .whileHeld(
+                    () -> drivebase.driveController(new ChassisSpeeds(-Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0, 0)), drivebase);
+        new POVButton(driver, 180)
+                .whileHeld(
+                    () -> drivebase.driveController(new ChassisSpeeds(Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0, 0)), drivebase);
+        new POVButton(driver, 270)
+                .whileHeld(
+                    () -> drivebase.driveController(new ChassisSpeeds(0, -Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase);
+        new POVButton(driver, 90)
+                .whileHeld(
+                    () -> drivebase.driveController(new ChassisSpeeds(0, Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase);
+        
     }
 
     /**
@@ -102,7 +117,7 @@ public class RobotContainer {
 
     private static double modifyAxis(double value) {
         // Deadband
-        value = deadband(value, 0.08);
+        value = deadband(value, 0.075);
 
         // Square the axis
         value = Math.copySign(value * value, value);
