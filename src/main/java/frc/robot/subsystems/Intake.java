@@ -5,16 +5,16 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Intake extends SubsystemBase {
-    private WPI_TalonFX intakeMotor1;
+    private WPI_TalonFX intakeMotor;
 
     public Intake(WPI_TalonFX motor) {
-        intakeMotor1 = motor;
-        intakeMotor1.setInverted(true);
-        intakeMotor1.setNeutralMode(NeutralMode.Brake);
+        intakeMotor = motor;
+        intakeMotor.setInverted(true);
+        intakeMotor.setNeutralMode(NeutralMode.Brake);
 
     }
 
     public void setSpeed(double speed) {
-        intakeMotor1.set(ControlMode.PercentOutput, speed);
+        intakeMotor.set(ControlMode.PercentOutput, speed);
     }
 }
