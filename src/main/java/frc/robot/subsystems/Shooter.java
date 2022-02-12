@@ -19,7 +19,8 @@ public class Shooter extends SubsystemBase {
 
     public void set(double speed) {
         shooter1.set(ControlMode.PercentOutput, speed);
-        shooter2.set(ControlMode.PercentOutput, speed);
+        shooter2
+        .set(ControlMode.PercentOutput, speed);
 
     }
 
