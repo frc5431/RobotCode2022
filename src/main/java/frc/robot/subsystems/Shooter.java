@@ -1,25 +1,30 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
 
-    private WPI_TalonSRX shooter1, shooter2;
+    private WPI_TalonFX shooter, _shooterFollow;
 
-    public Shooter(WPI_TalonSRX shooter1, WPI_TalonSRX shooter2) {
-        this.shooter1 = shooter1;
-        this.shooter1.setInverted(true);
-       
-        this.shooter2 = shooter2;
-        this.shooter2.setInverted(true);
+    public Shooter(WPI_TalonFX left, WPI_TalonFX right) {
+        shooter = left;
+		_shooterFollow = right;
+
+		_shooterFollow.follow(shooter);
+
+		// Set Inverted Mode
+		shooter.setInverted(Constants.SHOOTER_FLYWHEEL_REVERSE);
+		_shooterFollow.setInverted(InvertType.OpposeMaster); // Inverted via "!"
     }
 
     public void set(double speed) {
-        shooter1.set(ControlMode.PercentOutput, speed);
-        shooter2
+        shooter.set(ControlMode.PercentOutput, speed);
+        _shooterFollow
         .set(ControlMode.PercentOutput, speed);
 
     }
@@ -28,3 +33,4 @@ public class Shooter extends SubsystemBase {
         return false;
     }
 }
+//Remember that 1 shooter will go forward and 1 in reverse

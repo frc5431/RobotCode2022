@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 
@@ -63,6 +64,7 @@ public final class Constants {
     public static final double PIVOT_COSINE_MULT = 0;
     public static final double PIVOT_AFFECT_GRAVITY = 0;
     public static final double PIVOT_ERROR_RANGE = 0;
+    public static final InvertType SHOOTER_FLYWHEEL_REVERSE = null;
 
 
 
