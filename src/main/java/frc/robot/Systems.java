@@ -15,7 +15,6 @@ public class Systems {
     private WPI_TalonSRX shooter1;
     private WPI_TalonSRX shooter2;
     private WPI_TalonFX intake_motor1;
-    private WPI_TalonFX intake_motor2;
     private WPI_TalonFX pivot_motor;
     private WPI_TalonFX left;
     private WPI_TalonFX right;
@@ -29,7 +28,7 @@ public class Systems {
     public Systems() {
         feeder = new Feeder(feeder1,feeder2);
         shooter = new Shooter(shooter1, shooter2);
-        intake = new Intake(intake_motor1, intake_motor2);
+        intake = new Intake(intake_motor1);
         pivot = new Pivot(pivot_motor);
         climber = new Climber(left, right);
     }
