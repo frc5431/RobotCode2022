@@ -1,7 +1,6 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
@@ -10,8 +9,8 @@ import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
 
 public class Systems {
-    private WPI_TalonSRX feederBottom;
-    private WPI_TalonSRX feederTop;
+    private WPI_TalonFX feederBottom;
+    private WPI_TalonFX feederTop;
     private WPI_TalonFX shooterLeft;
     private WPI_TalonFX shooterRight;
     private WPI_TalonFX intake_motor;
