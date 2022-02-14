@@ -19,6 +19,13 @@ import frc.robot.util.MotionMagic;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+    public static final int ID_FEEDER_BOTTOM = -1;
+    public static final int ID_FEEDER_TOP = -1;
+    public static final int ID_SHOOTER_LEFT = -1;
+    public static final int ID_SHOOTER_RIGHT = -1;
+    public static final int ID_INTAKE = -1;
+
     /**
      * The left-to-right distance between the drivetrain wheels
      *
