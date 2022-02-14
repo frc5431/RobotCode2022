@@ -20,8 +20,8 @@ import frc.robot.util.MotionMagic;
  */
 public final class Constants {
 
-    public static final int ID_FEEDER_BOTTOM = -1;
-    public static final int ID_FEEDER_TOP = -1;
+    public static final int ID_FEEDER_BOTTOM = 13;
+    public static final int ID_FEEDER_TOP = 14;
     public static final int ID_SHOOTER_LEFT = -1;
     public static final int ID_SHOOTER_RIGHT = -1;
     public static final int ID_INTAKE = -1;
