@@ -24,7 +24,7 @@ public final class Constants {
     public static final int ID_FEEDER_TOP = 14;
     public static final int ID_SHOOTER_LEFT = -1;
     public static final int ID_SHOOTER_RIGHT = -1;
-    public static final int ID_INTAKE = -1;
+    public static final int ID_INTAKE = 15;
 
     /**
      * The left-to-right distance between the drivetrain wheels
