@@ -118,8 +118,7 @@ public class Drivebase extends SubsystemBase {
         // you MUST change it. If you do not, your code will crash on startup.
         m_frontLeftModule = Mk4SwerveModuleHelperExt.createFalcon500(
                         // This parameter is optional, but will allow you to see the current state of the module on the dashboard.
-                        tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-                                        .withSize(2, 3)
+                        getSMLayout(tab.getLayout("Front Left Module", BuiltInLayouts.kList))
                                         .withPosition(0, 0),
                         moduleConfig,
                         // This can either be STANDARD or FAST depending on your gear configuration
@@ -136,9 +135,8 @@ public class Drivebase extends SubsystemBase {
 
         // We will do the same for the other modules
         m_frontRightModule = Mk4SwerveModuleHelperExt.createFalcon500(
-                        tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-                                        .withSize(2, 3)
-                                        .withPosition(2, 0),
+                        getSMLayout(tab.getLayout("Front Right Module", BuiltInLayouts.kList))
+                                        .withPosition(3, 0),
                         moduleConfig,
                         Mk4SwerveModuleHelperExt.GearRatio.L2,
                         FRONT_RIGHT_MODULE_DRIVE_MOTOR,
@@ -148,9 +146,8 @@ public class Drivebase extends SubsystemBase {
         );
 
         m_backLeftModule = Mk4SwerveModuleHelperExt.createFalcon500(
-                        tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-                                        .withSize(2, 3)
-                                        .withPosition(4, 0),
+                        getSMLayout(tab.getLayout("Back Left Module", BuiltInLayouts.kList))
+                                        .withPosition(6, 0),
                         moduleConfig,
                         Mk4SwerveModuleHelperExt.GearRatio.L2,
                         BACK_LEFT_MODULE_DRIVE_MOTOR,
@@ -160,9 +157,8 @@ public class Drivebase extends SubsystemBase {
         );
 
         m_backRightModule = Mk4SwerveModuleHelperExt.createFalcon500(
-                        tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-                                        .withSize(2, 3)
-                                        .withPosition(6, 0),
+                        getSMLayout(tab.getLayout("Back Right Module", BuiltInLayouts.kList))
+                                        .withPosition(9, 0),
                         moduleConfig,
                         Mk4SwerveModuleHelperExt.GearRatio.L2,
                         BACK_RIGHT_MODULE_DRIVE_MOTOR,
@@ -180,10 +176,14 @@ public class Drivebase extends SubsystemBase {
 
         ShuffleboardLayout chassisSpeedsLayout = tab.getLayout("ChassisSpeeds", BuiltInLayouts.kList)
                 .withSize(3, 4)
-                .withPosition(8, 0);
+                .withPosition(12, 0);
         chassisSpeedsLayout.addNumber("vX", () -> m_chassisSpeeds.vxMetersPerSecond);
         chassisSpeedsLayout.addNumber("vY", () -> m_chassisSpeeds.vyMetersPerSecond);
         chassisSpeedsLayout.addNumber("oR", () -> m_chassisSpeeds.omegaRadiansPerSecond);
+    }
+
+    private ShuffleboardLayout getSMLayout(ShuffleboardLayout layout) {
+        return layout.withSize(3, 5);
     }
 
     /**
