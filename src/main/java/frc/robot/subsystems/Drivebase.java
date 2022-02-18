@@ -60,6 +60,8 @@ public class Drivebase extends SubsystemBase {
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
                     Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
+    public static final double RAMPING_FROM_0_TO_FULL = 1;
+
     public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
                     // Front left
                     new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
@@ -167,12 +169,10 @@ public class Drivebase extends SubsystemBase {
                         BACK_RIGHT_MODULE_STEER_OFFSET
         );
 
-        double secondsFromNeutralToFull = 0.5;
-
-        ((TalonFX) m_frontLeftModule.getDriveMotor()).configOpenloopRamp(secondsFromNeutralToFull);
-        ((TalonFX) m_frontRightModule.getDriveMotor()).configOpenloopRamp(secondsFromNeutralToFull);
-        ((TalonFX) m_backLeftModule.getDriveMotor()).configOpenloopRamp(secondsFromNeutralToFull);
-        ((TalonFX) m_backRightModule.getDriveMotor()).configOpenloopRamp(secondsFromNeutralToFull);
+        ((TalonFX) m_frontLeftModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
+        ((TalonFX) m_frontRightModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
+        ((TalonFX) m_backLeftModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
+        ((TalonFX) m_backRightModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
 
         ShuffleboardLayout chassisSpeedsLayout = tab.getLayout("ChassisSpeeds", BuiltInLayouts.kList)
                 .withSize(3, 4)
