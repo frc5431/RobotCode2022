@@ -60,7 +60,8 @@ public class Drivebase extends SubsystemBase {
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
                     Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
-    public static final double RAMPING_FROM_0_TO_FULL = 1;
+    // Seconds to ramp from neutral to full
+    public static final double RAMPING_FROM_0_TO_FULL = 0.5; // 1;
 
     public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
                     // Front left
