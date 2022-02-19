@@ -13,14 +13,22 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.subsystems.FeederBottomCommand;
+import frc.robot.commands.subsystems.FeederTopCommand;
+import frc.robot.commands.subsystems.IntakeCommand;
+import frc.robot.commands.subsystems.ShooterCommand;
 import frc.robot.subsystems.Drivebase;
+import frc.robot.subsystems.Shooter;
+import frc.team5431.titan.core.joysticks.LogitechExtreme3D;
 import frc.team5431.titan.core.joysticks.Xbox;
+import frc.team5431.titan.core.misc.Calc;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -31,8 +39,11 @@ import frc.team5431.titan.core.joysticks.Xbox;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final Drivebase drivebase = new Drivebase();
+    private final Systems systems = new Systems();
 
     private final Xbox driver = new Xbox(0);
+    private final Joystick buttonBoard = new Joystick(1);
+    private final LogitechExtreme3D operator = new LogitechExtreme3D(2);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -61,7 +72,7 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        // Back button zeros the gyroscope
+        // Y button zeros the gyroscope
         new JoystickButton(driver, Xbox.Button.Y.ordinal() + 1)
                         // No requirements because we don't need to interrupt anything
                         .whenPressed(drivebase::zeroGyroscope);
@@ -79,6 +90,39 @@ public class RobotContainer {
                 .whileHeld(
                     () -> drivebase.driveController(new ChassisSpeeds(0, -Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase);
         
+        new JoystickButton(buttonBoard, 7)
+                .whileHeld(new IntakeCommand(systems, false));
+        
+        new JoystickButton(buttonBoard, 3)
+                .whileHeld(new IntakeCommand(systems, true));
+        
+        new JoystickButton(buttonBoard, 5)
+                .whileHeld(new FeederBottomCommand(systems, false));
+        
+        new JoystickButton(buttonBoard, 2)
+                .whileHeld(new FeederBottomCommand(systems, true));
+        
+        new JoystickButton(buttonBoard, 16)
+                .whileHeld(new FeederTopCommand(systems, false));
+        
+        new JoystickButton(buttonBoard, 13)
+                .whileHeld(new FeederTopCommand(systems, true));
+
+        new JoystickButton(buttonBoard, 1)
+                .whileHeld(new ShooterCommand(systems, Shooter.Velocity.CLOSE));
+        
+        new JoystickButton(buttonBoard, 14)
+                .whileHeld(new ShooterCommand(systems, Shooter.Velocity.FAR));
+
+        new JoystickButton(operator, LogitechExtreme3D.Button.TRIGGER.ordinal() + 1)
+                .whileHeld(new ShooterCommand(systems, 
+                        () -> Calc.map(
+                                operator.getRawAxis(LogitechExtreme3D.Axis.SLIDER), 
+                                        1.0, -1.0, 
+                                        0, Shooter.MAX_VELOCITY)));
+        
+        new JoystickButton(operator, LogitechExtreme3D.Button.TWELVE.ordinal() + 1)
+                .whileHeld(() -> systems.getShooter().set(Shooter.MAX_VELOCITY), systems.getShooter());
     }
 
     /**

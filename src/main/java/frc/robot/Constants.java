@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -55,6 +58,5 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 11;
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(3.779); // 28.916
 
-    public static final boolean SHOOTER_FLYWHEEL_REVERSE = true;
-
+    public static final ShuffleboardTab tab_subsystems = Shuffleboard.getTab("Subsystems");
 }

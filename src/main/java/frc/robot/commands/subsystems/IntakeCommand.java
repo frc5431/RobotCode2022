@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.subsystems;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Systems;
@@ -11,7 +11,7 @@ public class IntakeCommand extends CommandBase {
     private final double speed;
 
     public IntakeCommand(Systems systems, boolean reverse) {
-        this(systems, 1.0, reverse);
+        this(systems, Intake.DEFAULT_SPEED, reverse);
     }
 
     public IntakeCommand(Systems systems, double speed) {
