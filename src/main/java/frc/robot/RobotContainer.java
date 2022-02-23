@@ -19,11 +19,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.subsystems.FeederBottomCommand;
-import frc.robot.commands.subsystems.FeederTopCommand;
-import frc.robot.commands.subsystems.IntakeCommand;
-import frc.robot.commands.subsystems.ShooterCommand;
+import frc.robot.commands.*;
+import frc.robot.commands.subsystems.*;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
 import frc.team5431.titan.core.joysticks.LogitechExtreme3D;
@@ -74,9 +71,10 @@ public class RobotContainer {
     private void configureButtonBindings() {
         // Y button zeros the gyroscope
         new JoystickButton(driver, Xbox.Button.Y.ordinal() + 1)
-                        // No requirements because we don't need to interrupt anything
-                        .whenPressed(drivebase::zeroGyroscope);
+                // No requirements because we don't need to interrupt anything
+                .whenPressed(drivebase::zeroGyroscope);
         
+        // D-Pad cardinal directions
         new POVButton(driver, 0)
                 .whileHeld(
                     () -> drivebase.driveController(new ChassisSpeeds(Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0, 0)), drivebase);
@@ -90,30 +88,31 @@ public class RobotContainer {
                 .whileHeld(
                     () -> drivebase.driveController(new ChassisSpeeds(0, -Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase);
         
+        // Intake (Manual)
         new JoystickButton(buttonBoard, 7)
                 .whileHeld(new IntakeCommand(systems, false));
         
+        // Intake Reverse (Manual)
         new JoystickButton(buttonBoard, 3)
                 .whileHeld(new IntakeCommand(systems, true));
         
+        // Feeder Bottom (Manual)
         new JoystickButton(buttonBoard, 5)
                 .whileHeld(new FeederBottomCommand(systems, false));
         
+        // Feeder Bottom Reverse (Manual)
         new JoystickButton(buttonBoard, 2)
                 .whileHeld(new FeederBottomCommand(systems, true));
         
+        // Feeder Top (Manual)
         new JoystickButton(buttonBoard, 16)
                 .whileHeld(new FeederTopCommand(systems, false));
         
+        // Feeder Top Reverse (Manual)
         new JoystickButton(buttonBoard, 13)
                 .whileHeld(new FeederTopCommand(systems, true));
 
-        new JoystickButton(buttonBoard, 1)
-                .whileHeld(new ShooterCommand(systems, Shooter.Velocity.CLOSE));
-        
-        new JoystickButton(buttonBoard, 14)
-                .whileHeld(new ShooterCommand(systems, Shooter.Velocity.FAR));
-
+        // Trigger/slider Shoot
         new JoystickButton(operator, LogitechExtreme3D.Button.TRIGGER.ordinal() + 1)
                 .whileHeld(new ShooterCommand(systems, 
                         () -> Calc.map(
@@ -121,8 +120,40 @@ public class RobotContainer {
                                         1.0, -1.0, 
                                         0, Shooter.MAX_VELOCITY)));
         
-        new JoystickButton(operator, LogitechExtreme3D.Button.TWELVE.ordinal() + 1)
-                .whileHeld(() -> systems.getShooter().set(Shooter.MAX_VELOCITY), systems.getShooter());
+        // Floor Intake
+        new JoystickButton(buttonBoard, 4)
+                .toggleWhenPressed(new FloorIntakeCommand(systems));
+        
+        // Shoot Close
+        new JoystickButton(buttonBoard, 1)
+                .whileHeld(new ShootCommand(systems, Shooter.Velocity.CLOSE));
+
+        // Shoot Far
+        new JoystickButton(buttonBoard, 14)
+                .whileHeld(new ShootCommand(systems, Shooter.Velocity.FAR));
+        
+        // Shoot Close (Manual)
+        new JoystickButton(operator, LogitechExtreme3D.Button.SEVEN.ordinal() + 1)
+                .whileHeld(new ShooterCommand(systems, Shooter.Velocity.CLOSE));
+
+        // Shoot Far (Manual)
+        new JoystickButton(operator, LogitechExtreme3D.Button.EIGHT.ordinal() + 1)
+                .whileHeld(new ShooterCommand(systems, Shooter.Velocity.FAR));
+        
+        // Feed Both Up
+        new POVButton(operator, 0)
+                .whileHeld(new FeedEverything(systems, false));
+        
+        // Feed Both Down
+        new POVButton(operator, 180)
+                .whileHeld(new FeedEverything(systems, true));
+        
+        // Stop All
+        new JoystickButton(buttonBoard, 12)
+                .whileHeld(new StopAllCommand(systems));
+
+        // new JoystickButton(operator, LogitechExtreme3D.Button.TWELVE.ordinal() + 1)
+        //         .whileHeld(() -> systems.getShooter().set(Shooter.MAX_VELOCITY), systems.getShooter());
     }
 
     /**
