@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,8 +22,8 @@ import frc.team5431.titan.core.misc.Calc;
  * @author Ryan Hirasaki
  */
 public class Pivot extends SubsystemBase {
-    public static final double PIVOT_DOWN_LIMIT = 0; // TODO
-    public static final double PIVOT_UP_LIMIT = 956;
+    public static final double PIVOT_DOWN_LIMIT = 86;
+    public static final double PIVOT_UP_LIMIT = 1744; // 35496
     private static final boolean PIVOT_REVERSE = false;
     private static final NeutralMode PIVOT_NEUTRALMODE = NeutralMode.Brake;
     private static final double PIVOT_DEFAULT_SPEED = 1.0;
@@ -58,19 +59,24 @@ public class Pivot extends SubsystemBase {
 
     public Pivot(WPI_TalonFX pivotMotor) {
         this.pivotMotor = pivotMotor;
+        this.pivotMotor.configFactoryDefault();
         this.pivotMotor.setInverted(PIVOT_REVERSE);
         setNeutralMode(PIVOT_NEUTRALMODE);
-        this.pivotMotor.configFactoryDefault();
         
         // reset encoder
         this.pivotMotor.setSelectedSensorPosition(0);
         this.pivotMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, PIVOT_TIMEOUT_MS);
+        this.pivotMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+        
+        // this.pivotMotor.configForwardSoftLimitEnable(true);
+        this.pivotMotor.configForwardSoftLimitThreshold(PIVOT_UP_LIMIT);
+        // this.pivotMotor.configReverseSoftLimitEnable(true);
+        this.pivotMotor.configReverseSoftLimitThreshold(PIVOT_DOWN_LIMIT);
 
         // flywheel.setSensorPhase(true);
 
         this.pivotMotor.configPeakOutputForward(PIVOT_DEFAULT_SPEED);
         this.pivotMotor.configPeakOutputReverse(-PIVOT_DEFAULT_SPEED);
-
 
         this.pivotMotor.config_kF(0, PIVOT_MOTION_MAGIC_kF, PIVOT_TIMEOUT_MS);
         this.pivotMotor.config_kP(0, PIVOT_MOTION_MAGIC_kP, PIVOT_TIMEOUT_MS);
@@ -161,6 +167,10 @@ public class Pivot extends SubsystemBase {
                                                                              // If the pivot is going from vertical to horizontal, the power applied will always be close to 0
     }
 
+    public void set(double speed) {
+        pivotMotor.set(speed);
+    }
+
     public void setNeutralMode(NeutralMode nm) {
         pivotMotor.setNeutralMode(nm);
         this.nm = nm;
@@ -179,11 +189,7 @@ public class Pivot extends SubsystemBase {
         return pidController;
     }
 
-	public void reset() {
-        pivotMotor.setSelectedSensorPosition(0);
-	}
-
-	public double error() {
+	public double getError() {
 		return pivotMotor.getClosedLoopError();
     }
     

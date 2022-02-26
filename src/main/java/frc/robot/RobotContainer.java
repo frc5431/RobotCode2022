@@ -105,12 +105,14 @@ public class RobotContainer {
                 .whileHeld(new FeederCommand(systems, true));
         
         // Pivot Up
-        // new JoystickButton(buttonBoard, 16)
-        //         .whileHeld(new FeederTopCommand(systems, false));
+        new JoystickButton(buttonBoard, 16)
+                .whileHeld(() -> systems.getPivot().set(0.1), systems.getPivot())
+                .whenReleased(() -> systems.getPivot().set(0), systems.getPivot());
         
         // Pivot Down
-        // new JoystickButton(buttonBoard, 13)
-        //         .whileHeld(new FeederTopCommand(systems, true));
+        new JoystickButton(buttonBoard, 13)
+                .whileHeld(() -> systems.getPivot().set(-0.1), systems.getPivot())
+                .whenReleased(() -> systems.getPivot().set(0), systems.getPivot());
 
         // Trigger/slider Shoot
         new JoystickButton(operator, LogitechExtreme3D.Button.TRIGGER.ordinal() + 1)
