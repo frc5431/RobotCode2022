@@ -36,13 +36,13 @@ public class FeederCommand extends CommandBase {
 	
 	@Override
 	public void execute() {
-        feeder.setTop(direction ? speed : -speed);
+        feeder.set(direction ? speed : -speed);
 	}
 
     @Override
     public void end(boolean interrupted) {
         Logger.l("Feeder Command Done");
-        feeder.setTop(0);
+        feeder.set(0);
     }
     
     @Override

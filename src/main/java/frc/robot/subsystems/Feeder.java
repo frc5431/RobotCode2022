@@ -10,7 +10,7 @@ public class Feeder extends SubsystemBase {
     public static final double DEFAULT_SPEED = 0.5;
     public static final NeutralMode NEUTRALMODE = NeutralMode.Brake;
     public static final boolean REVERSE_BOTTOM = true;
-    public static final boolean REVERSE_TOP = true;
+    public static final boolean REVERSE_TOP = false;
 
     private WPI_TalonFX feederBottom, feederTop;
 
