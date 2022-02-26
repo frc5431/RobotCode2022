@@ -22,6 +22,9 @@ public final class Constants {
     public static final int ID_SHOOTER_LEFT = 16;
     public static final int ID_SHOOTER_RIGHT = 17;
     public static final int ID_INTAKE = 15;
+    public static final int ID_PIVOT = 0; // TODO
+    public static final int ID_CLIMBER_EXTEND = 0; // TODO
+    public static final int ID_CLIMBER_HINGE = 0; // TODO
 
     /**
      * The left-to-right distance between the drivetrain wheels
