@@ -22,7 +22,7 @@ import frc.team5431.titan.core.misc.Calc;
  */
 public class Pivot extends SubsystemBase {
     public static final double PIVOT_DOWN_LIMIT = 0; // TODO
-    public static final double PIVOT_UP_LIMIT = 100; // TODO
+    public static final double PIVOT_UP_LIMIT = 956;
     private static final boolean PIVOT_REVERSE = false;
     private static final NeutralMode PIVOT_NEUTRALMODE = NeutralMode.Brake;
     private static final double PIVOT_DEFAULT_SPEED = 1.0;

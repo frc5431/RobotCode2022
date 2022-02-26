@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Intake extends SubsystemBase {
 
     public static final double DEFAULT_SPEED = 1.0;
-    public static final boolean REVERSE = true;
+    public static final boolean REVERSE = false;
     public static final NeutralMode NEUTRALMODE = NeutralMode.Coast;
     public static final double RAMPING_FROM_0_TO_FULL = 0.5;
 

@@ -96,21 +96,21 @@ public class RobotContainer {
         new JoystickButton(buttonBoard, 3)
                 .whileHeld(new IntakeCommand(systems, true));
         
-        // Feeder Bottom (Manual)
+        // Feeder (Manual)
         new JoystickButton(buttonBoard, 5)
-                .whileHeld(new FeederBottomCommand(systems, false));
+                .whileHeld(new FeederCommand(systems, false));
         
-        // Feeder Bottom Reverse (Manual)
+        // Feeder Reverse (Manual)
         new JoystickButton(buttonBoard, 2)
-                .whileHeld(new FeederBottomCommand(systems, true));
+                .whileHeld(new FeederCommand(systems, true));
         
-        // Feeder Top (Manual)
-        new JoystickButton(buttonBoard, 16)
-                .whileHeld(new FeederTopCommand(systems, false));
+        // Pivot Up
+        // new JoystickButton(buttonBoard, 16)
+        //         .whileHeld(new FeederTopCommand(systems, false));
         
-        // Feeder Top Reverse (Manual)
-        new JoystickButton(buttonBoard, 13)
-                .whileHeld(new FeederTopCommand(systems, true));
+        // Pivot Down
+        // new JoystickButton(buttonBoard, 13)
+        //         .whileHeld(new FeederTopCommand(systems, true));
 
         // Trigger/slider Shoot
         new JoystickButton(operator, LogitechExtreme3D.Button.TRIGGER.ordinal() + 1)
@@ -140,13 +140,13 @@ public class RobotContainer {
         new JoystickButton(operator, LogitechExtreme3D.Button.EIGHT.ordinal() + 1)
                 .whileHeld(new ShooterCommand(systems, Shooter.Velocity.FAR));
         
-        // Feed Both Up
+        // Feed Up
         new POVButton(operator, 0)
-                .whileHeld(new FeedEverything(systems, false));
+                .whileHeld(new FeederCommand(systems, false));
         
-        // Feed Both Down
+        // Feed Down
         new POVButton(operator, 180)
-                .whileHeld(new FeedEverything(systems, true));
+                .whileHeld(new FeederCommand(systems, true));
         
         // Stop All
         new JoystickButton(buttonBoard, 12)

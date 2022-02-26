@@ -8,25 +8,25 @@ import frc.team5431.titan.core.misc.Logger;
 /**
  * @author Ryan Hirasaki
  */
-public class FeederTopCommand extends CommandBase {
+public class FeederCommand extends CommandBase {
     private final Feeder feeder;
     private final boolean direction;
 	private final double speed;
 
-    public FeederTopCommand(Systems systems, boolean reverse) {
+    public FeederCommand(Systems systems, boolean reverse) {
         this(systems, Feeder.DEFAULT_SPEED, reverse);
     }
 
-    public FeederTopCommand(Systems systems, double speed) {
+    public FeederCommand(Systems systems, double speed) {
         this(systems, speed, false);
     }
 
-    public FeederTopCommand(Systems systems, double speed, boolean reverse) {
+    public FeederCommand(Systems systems, double speed, boolean reverse) {
         this.feeder = systems.getFeeder();
         this.direction = reverse;
 		this.speed = speed;
 
-        addRequirements(feeder.getTop());
+        addRequirements(feeder);
     }
 
     @Override
