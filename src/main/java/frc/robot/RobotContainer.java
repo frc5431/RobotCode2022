@@ -123,7 +123,7 @@ public class RobotContainer {
                 .whileHeld(new ShootCommand(systems, Shooter.Velocity.CLOSE));
 
         // Shoot 
-        new JoystickButton(buttonBoard, 6)
+        new JoystickButton(buttonBoard, 7)
                 .whileHeld(new ShootCommand(systems, Shooter.Velocity.FAR));
         
         // // Shoot Close (Manual)

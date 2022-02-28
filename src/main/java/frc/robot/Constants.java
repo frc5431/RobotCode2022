@@ -26,6 +26,8 @@ public final class Constants {
     public static final int ID_CLIMBER_EXTEND = 14;
     public static final int ID_CLIMBER_HINGE = 13;
 
+    public static final int ID_ANGLER = 0;
+
     /**
      * The left-to-right distance between the drivetrain wheels
      *
