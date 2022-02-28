@@ -8,8 +8,8 @@ import frc.robot.commands.subsystems.IntakeCommand;
 public class FloorIntakeCommand extends ParallelCommandGroup {
     public FloorIntakeCommand(Systems systems) {
         addCommands(
-            new IntakeCommand(systems, false),
-            new FeederCommand(systems, false)
+            new IntakeCommand(systems, true),
+            new FeederCommand(systems, true)
         );
     }
 }
