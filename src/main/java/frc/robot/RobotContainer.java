@@ -96,21 +96,13 @@ public class RobotContainer {
         new JoystickButton(buttonBoard, 3)
                 .whileHeld(new IntakeCommand(systems, true));
         
-        // // Feeder Bottom (Manual)
-        // new JoystickButton(buttonBoard, 5)
-        //         .whileHeld(new FeederBottomCommand(systems, false));
-        
-        // // Feeder Bottom Reverse (Manual)
-        // new JoystickButton(buttonBoard, 2)
-        //         .whileHeld(new FeederBottomCommand(systems, true));
-        
         // Pivot Up
-        new JoystickButton(buttonBoard, 16)
+        new JoystickButton(buttonBoard, 5)
                 .whileHeld(() -> systems.getPivot().set(0.1), systems.getPivot())
                 .whenReleased(() -> systems.getPivot().set(0), systems.getPivot());
         
         // Pivot Down
-        new JoystickButton(buttonBoard, 13)
+        new JoystickButton(buttonBoard, 2)
                 .whileHeld(() -> systems.getPivot().set(-0.1), systems.getPivot())
                 .whenReleased(() -> systems.getPivot().set(0), systems.getPivot());
 
@@ -125,26 +117,22 @@ public class RobotContainer {
         // Floor Intake
         new JoystickButton(buttonBoard, 4)
                 .toggleWhenPressed(new FloorIntakeCommand(systems));
-
-        // ShooterFeederIntake 
-          new JoystickButton(buttonBoard,8 )
-          .toggleWhenPressed(new FloorIntakeCommand(systems));
         
-        // Shoot Close
+        // Reject
         new JoystickButton(buttonBoard, 1)
                 .whileHeld(new ShootCommand(systems, Shooter.Velocity.CLOSE));
 
         // Shoot Far
-        new JoystickButton(buttonBoard, 14)
+        new JoystickButton(buttonBoard, 6)
                 .whileHeld(new ShootCommand(systems, Shooter.Velocity.FAR));
         
-        // Shoot Close (Manual)
-        new JoystickButton(operator, LogitechExtreme3D.Button.SEVEN.ordinal() + 1)
-                .whileHeld(new ShooterCommand(systems, Shooter.Velocity.CLOSE));
+        // // Shoot Close (Manual)
+        // new JoystickButton(operator, LogitechExtreme3D.Button.SEVEN.ordinal() + 1)
+        //         .whileHeld(new ShooterCommand(systems, Shooter.Velocity.CLOSE));
 
-        // Shoot Far (Manual)
-        new JoystickButton(operator, LogitechExtreme3D.Button.EIGHT.ordinal() + 1)
-                .whileHeld(new ShooterCommand(systems, Shooter.Velocity.FAR));
+        // // Shoot Far (Manual)
+        // new JoystickButton(operator, LogitechExtreme3D.Button.EIGHT.ordinal() + 1)
+        //         .whileHeld(new ShooterCommand(systems, Shooter.Velocity.FAR));
         
         // Feed Both Up
         new POVButton(operator, 0)
