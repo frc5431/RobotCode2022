@@ -125,6 +125,10 @@ public class RobotContainer {
         // Floor Intake
         new JoystickButton(buttonBoard, 4)
                 .toggleWhenPressed(new FloorIntakeCommand(systems));
+
+        // ShooterFeederIntake 
+          new JoystickButton(buttonBoard,8 )
+          .toggleWhenPressed(new FloorIntakeCommand(systems));
         
         // Shoot Close
         new JoystickButton(buttonBoard, 1)

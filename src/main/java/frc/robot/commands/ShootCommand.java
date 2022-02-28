@@ -20,4 +20,7 @@ public class ShootCommand extends ParallelCommandGroup {
             )
         );
     }
+
+    public ShootCommand(Systems systems, boolean b) {
+    }
 }
