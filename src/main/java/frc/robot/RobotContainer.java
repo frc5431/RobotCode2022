@@ -97,12 +97,12 @@ public class RobotContainer {
                 .whileHeld(new IntakeCommand(systems, true));
         
         // Pivot Up
-        new JoystickButton(buttonBoard, 9)
+        new JoystickButton(buttonBoard, 5)
                 .whileHeld(() -> systems.getPivot().set(0.1), systems.getPivot())
                 .whenReleased(() -> systems.getPivot().set(0), systems.getPivot());
         
         // Pivot Down
-        new JoystickButton(buttonBoard, 3)
+        new JoystickButton(buttonBoard, 2)
                 .whileHeld(() -> systems.getPivot().set(-0.1), systems.getPivot())
                 .whenReleased(() -> systems.getPivot().set(0), systems.getPivot());
 
