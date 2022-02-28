@@ -10,7 +10,7 @@ import frc.robot.commands.subsystems.ShooterCommand;
 import frc.robot.subsystems.Shooter;
 
 public class ShootCommand extends ParallelCommandGroup {
-    public static final double SHOOTER_WAIT_TILL_SPEED = 1;
+    public static final double SHOOTER_WAIT_TILL_SPEED = 0.5;
 
     public ShootCommand(Systems systems, Shooter.Velocity velocity) {
         addCommands(
