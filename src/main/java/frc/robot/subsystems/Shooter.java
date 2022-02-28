@@ -18,8 +18,8 @@ import frc.robot.commands.subsystems.ShooterCommand;
 
 public class Shooter extends SubsystemBase {
 
-    public static final double VELOCITY_CLOSE = 10000;
-    public static final double VELOCITY_FAR = 20000;
+    public static final double VELOCITY_REJECT = 10000;
+    public static final double VELOCITY_NORMAL = 20000;
     public static final double VELOCITY_BUFFER = 300;
 
     public static final double MAX_VELOCITY = 21800;
@@ -39,7 +39,7 @@ public class Shooter extends SubsystemBase {
     public static NetworkTableEntry entryKF = null;
 
     public static enum Velocity {
-        OFF(0), CLOSE(VELOCITY_CLOSE), FAR(VELOCITY_FAR);
+        OFF(0), REJECT(VELOCITY_REJECT), NORMAL(VELOCITY_NORMAL);
 
         private double velocity;
 

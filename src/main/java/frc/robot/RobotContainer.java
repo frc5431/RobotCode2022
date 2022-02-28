@@ -120,11 +120,11 @@ public class RobotContainer {
         
         // Reject
         new JoystickButton(buttonBoard, 1)
-                .whileHeld(new ShootCommand(systems, Shooter.Velocity.CLOSE));
+                .whileHeld(new ShootCommand(systems, Shooter.Velocity.REJECT));
 
         // Shoot 
         new JoystickButton(buttonBoard, 7)
-                .whileHeld(new ShootCommand(systems, Shooter.Velocity.FAR));
+                .whileHeld(new ShootCommand(systems, Shooter.Velocity.NORMAL));
         
         // // Shoot Close (Manual)
         // new JoystickButton(operator, LogitechExtreme3D.Button.SEVEN.ordinal() + 1)
