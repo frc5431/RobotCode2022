@@ -19,3 +19,4 @@ public class Angler extends SubsystemBase {
         anglerServo.set(value);
     }
 }
+//angler wired in pwm 0
