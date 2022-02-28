@@ -96,13 +96,13 @@ public class RobotContainer {
         new JoystickButton(buttonBoard, 3)
                 .whileHeld(new IntakeCommand(systems, true));
         
-        // Feeder (Manual)
-        new JoystickButton(buttonBoard, 5)
-                .whileHeld(new FeederCommand(systems, false));
+        // // Feeder Bottom (Manual)
+        // new JoystickButton(buttonBoard, 5)
+        //         .whileHeld(new FeederBottomCommand(systems, false));
         
-        // Feeder Reverse (Manual)
-        new JoystickButton(buttonBoard, 2)
-                .whileHeld(new FeederCommand(systems, true));
+        // // Feeder Bottom Reverse (Manual)
+        // new JoystickButton(buttonBoard, 2)
+        //         .whileHeld(new FeederBottomCommand(systems, true));
         
         // Pivot Up
         new JoystickButton(buttonBoard, 16)
@@ -146,13 +146,13 @@ public class RobotContainer {
         new JoystickButton(operator, LogitechExtreme3D.Button.EIGHT.ordinal() + 1)
                 .whileHeld(new ShooterCommand(systems, Shooter.Velocity.FAR));
         
-        // Feed Up
+        // Feed Both Up
         new POVButton(operator, 0)
-                .whileHeld(new FeederCommand(systems, false));
+                .whileHeld(new FeedEverything(systems, false));
         
-        // Feed Down
+        // Feed Both Down
         new POVButton(operator, 180)
-                .whileHeld(new FeederCommand(systems, true));
+                .whileHeld(new FeedEverything(systems, true));
         
         // Stop All
         new JoystickButton(buttonBoard, 12)

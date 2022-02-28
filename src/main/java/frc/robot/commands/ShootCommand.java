@@ -4,7 +4,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Systems;
-import frc.robot.commands.subsystems.FeederCommand;
+import frc.robot.commands.subsystems.FeederBottomCommand;
+import frc.robot.commands.subsystems.FeederTopCommand;
 import frc.robot.commands.subsystems.ShooterCommand;
 import frc.robot.subsystems.Shooter;
 
@@ -16,7 +17,10 @@ public class ShootCommand extends ParallelCommandGroup {
             new ShooterCommand(systems, velocity),
             new SequentialCommandGroup(
                 new WaitCommand(SHOOTER_WAIT_TILL_SPEED), 
-                new FeederCommand(systems, false)
+                new ParallelCommandGroup(
+                    new FeederBottomCommand(systems, false),
+                    new FeederTopCommand(systems, false)
+                )
             )
         );
     }
