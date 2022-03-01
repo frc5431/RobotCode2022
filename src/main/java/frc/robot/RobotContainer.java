@@ -186,9 +186,9 @@ public class RobotContainer {
                 trajectory, 
                 () -> drivebase.m_odometry.getPoseMeters(), 
                 drivebase.m_kinematics, 
-                new PIDController(0.5, 0, 0.01), 
-                new PIDController(0.5, 0, 0.01), 
-                new ProfiledPIDController(0.5, 0, 0.01, new Constraints(Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 1)),
+                new PIDController(0.2, 0, 0), 
+                new PIDController(0.2, 0, 0), 
+                new ProfiledPIDController(1, 0, 0, new Constraints(Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 3.14)),
                 (states) -> drivebase.driveRaw(drivebase.m_kinematics.toChassisSpeeds(states)), 
                 drivebase)
             .andThen(new InstantCommand(
