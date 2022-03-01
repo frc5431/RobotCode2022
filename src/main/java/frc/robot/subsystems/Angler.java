@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Systems;
 import edu.wpi.first.wpilibj.Servo;
 
 public class Angler extends SubsystemBase {
@@ -13,6 +14,9 @@ public class Angler extends SubsystemBase {
     
     public Angler(Servo servo) {
         anglerServo = servo;
+    }
+
+    public Angler(Systems systems, boolean b) {
     }
 
     public void set(double value) {
