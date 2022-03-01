@@ -25,7 +25,7 @@ public class Shooter extends SubsystemBase {
     public static final double MAX_VELOCITY = 21800;
 
     public static final NeutralMode NEUTRALMODE = NeutralMode.Coast;
-    public static final boolean REVERSE = false;
+    public static final boolean REVERSE = true;
     public static final double RAMPING_FROM_0_TO_FULL = 0.3;
 
     private static final double DEFAULT_KP = 0;

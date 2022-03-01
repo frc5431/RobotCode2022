@@ -142,9 +142,29 @@ public class RobotContainer {
         new POVButton(operator, 180)
                 .whileHeld(new FeedEverything(systems, true));
         
-        // Angler
-           //   new POVButton(operator, 180)
-           //   .whileHeld(new FeedEverything(systems, true));
+        // Angler towards 90
+        new JoystickButton(operator, LogitechExtreme3D.Button.FIVE.ordinal() + 1)
+                .whenPressed(new AnglerCommand(systems, true));
+
+        // Angler towards 0
+        new JoystickButton(operator, LogitechExtreme3D.Button.SIX.ordinal() + 1)
+                .whenPressed(new AnglerCommand(systems, false));
+
+        // Climber Extend (Manual)
+        new JoystickButton(buttonBoard, 16)
+                .whileHeld(new ClimberExtendCommand(systems, false));
+
+        // Climber Extend Reverse (Manual)
+        new JoystickButton(buttonBoard, 13)
+                .whileHeld(new ClimberExtendCommand(systems, true));
+
+        // Climber Hinge (Manual)
+        new JoystickButton(buttonBoard, 14)
+                .whileHeld(new ClimberHingeCommand(systems, false));
+
+        // Climber Hinge Reverse (Manual)
+        new JoystickButton(buttonBoard, 8)
+                .whileHeld(new ClimberHingeCommand(systems, true));
 
         // Stop All
         new JoystickButton(buttonBoard, 12)

@@ -34,7 +34,7 @@ public class Systems {
         climberExtend = new WPI_TalonFX(Constants.ID_CLIMBER_EXTEND);
         climberHinge = new WPI_TalonFX(Constants.ID_CLIMBER_HINGE);
 
-        anglerServo = new Servo(Constants.ID_ANGLER);
+        anglerServo = new Servo(Constants.SLOT_ANGLER);
 
         feeder = new Feeder(feederBottom,feederTop);
         shooter = new Shooter(shooterLeft, shooterRight);

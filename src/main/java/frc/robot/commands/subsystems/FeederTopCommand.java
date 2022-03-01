@@ -41,7 +41,7 @@ public class FeederTopCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        Logger.l("Feeder Command Done");
+        Logger.l("Feeder Top Command Done");
         feeder.setTop(0);
     }
     
