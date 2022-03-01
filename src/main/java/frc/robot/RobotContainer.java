@@ -111,7 +111,7 @@ public class RobotContainer {
                 .whileHeld(new ShooterCommand(systems, 
                         () -> Calc.map(
                                 operator.getRawAxis(LogitechExtreme3D.Axis.SLIDER), 
-                                        1.0, -1.0, 
+                                        -1.0, 1.0, 
                                         0, Shooter.MAX_VELOCITY)));
         
         // Floor Intake
