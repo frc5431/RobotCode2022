@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 /**
  * @author Aahana Shrivastava
@@ -62,12 +63,16 @@ public class Climber extends SubsystemBase {
     public class ClimberExtend extends ClimberBase {
         public ClimberExtend(WPI_TalonFX motor) {
             super(motor);
+
+            Constants.tab_subsystems.addNumber("Climber Extend Position", () -> motor.getSelectedSensorPosition());
         }
     }
 
     public class ClimberHinge extends ClimberBase {
         public ClimberHinge(WPI_TalonFX motor) {
             super(motor);
+
+            Constants.tab_subsystems.addNumber("Climber Hinge Position", () -> motor.getSelectedSensorPosition());
         }
     }
 }

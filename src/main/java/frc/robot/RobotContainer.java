@@ -8,6 +8,8 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import org.photonvision.PhotonCamera;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -37,6 +39,7 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final Drivebase drivebase = new Drivebase();
     private final Systems systems = new Systems();
+    private final PhotonCamera camera = new PhotonCamera("gloworm");
 
     private final Xbox driver = new Xbox(0);
     private final Joystick buttonBoard = new Joystick(1);
@@ -111,7 +114,7 @@ public class RobotContainer {
                 .whileHeld(new ShooterCommand(systems, 
                         () -> Calc.map(
                                 operator.getRawAxis(LogitechExtreme3D.Axis.SLIDER), 
-                                        -1.0, 1.0, 
+                                        1.0, -1.0, 
                                         0, Shooter.MAX_VELOCITY)));
         
         // Floor Intake
