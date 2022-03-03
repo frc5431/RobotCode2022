@@ -14,7 +14,7 @@ public class FeederBottomCommand extends CommandBase {
 	private final double speed;
 
     public FeederBottomCommand(Systems systems, boolean reverse) {
-        this(systems, Feeder.DEFAULT_SPEED, reverse);
+        this(systems, Feeder.DEFAULT_SPEED_BOTTOM, reverse);
     }
 
     public FeederBottomCommand(Systems systems, double speed) {

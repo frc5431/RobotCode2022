@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Feeder extends SubsystemBase {
 
-    public static final double DEFAULT_SPEED = 0.75;
+    public static final double DEFAULT_SPEED_BOTTOM = 0.6;
+    public static final double DEFAULT_SPEED_TOP = 0.8;
     public static final NeutralMode NEUTRALMODE = NeutralMode.Brake;
     public static final boolean REVERSE_BOTTOM = true;
     public static final boolean REVERSE_TOP = false;

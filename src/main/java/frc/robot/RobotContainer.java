@@ -20,6 +20,9 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.*;
@@ -129,7 +132,7 @@ public class RobotContainer {
                 .whileHeld(new ShootCommand(systems, Shooter.Velocity.REJECT));
 
         // Shoot 
-        new JoystickButton(buttonBoard, 7)
+        new JoystickButton(buttonBoard, 6)
                 .whileHeld(new ShootCommand(systems, Shooter.Velocity.NORMAL));
         
         // // Shoot Close (Manual)
@@ -172,6 +175,14 @@ public class RobotContainer {
         new JoystickButton(buttonBoard, 8)
                 .whileHeld(new ClimberHingeCommand(systems, true));
 
+        // Pivot Calibration
+        new JoystickButton(operator, LogitechExtreme3D.Button.TEN.ordinal() + 1)
+                .whenPressed(() -> systems.getPivot().calibrateMode(true), systems.getPivot())
+                .whenReleased(() -> {
+                    systems.getPivot().calibrateMode(false);
+                    systems.getPivot().reset();
+                }, systems.getPivot());
+
         // Stop All
         new JoystickButton(buttonBoard, 12)
                 .whileHeld(new StopAllCommand(systems));
@@ -186,20 +197,31 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("TestSwerve", Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 2.0);
 
-        return new PPSwerveControllerCommand(
-                trajectory, 
-                () -> drivebase.m_odometry.getPoseMeters(), 
-                drivebase.m_kinematics, 
-                new PIDController(0.2, 0, 0), 
-                new PIDController(0.2, 0, 0), 
-                new ProfiledPIDController(1, 0, 0, new Constraints(Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 3.14)),
-                (states) -> drivebase.driveRaw(drivebase.m_kinematics.toChassisSpeeds(states)), 
-                drivebase)
-            .andThen(new InstantCommand(
-                    () -> drivebase.driveRaw(new ChassisSpeeds())
-                    , drivebase));
+        return new SequentialCommandGroup(
+            new WaitCommand(5)
+                .deadlineWith(new ShootCommand(systems, Shooter.Velocity.NORMAL))
+            
+        );
+
+
+        // PathPlannerTrajectory trajectory = PathPlanner.loadPath("TestSwerve", Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 2.0);
+
+        // return new ParallelCommandGroup(
+        //     new PPSwerveControllerCommand(
+        //             trajectory, 
+        //             () -> drivebase.m_odometry.getPoseMeters(), 
+        //             drivebase.m_kinematics, 
+        //             new PIDController(0.2, 0, 0), 
+        //             new PIDController(0.2, 0, 0), 
+        //             new ProfiledPIDController(1, 0, 0, new Constraints(Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 3.14)),
+        //             (states) -> drivebase.driveRaw(drivebase.m_kinematics.toChassisSpeeds(states)), 
+        //             drivebase)
+        //         .andThen(new InstantCommand(
+        //                 () -> drivebase.stop()
+        //                 , drivebase))
+                
+        //     );
     }
 
     private static double deadband(double value, double deadband) {

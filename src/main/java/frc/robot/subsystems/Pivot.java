@@ -13,6 +13,7 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.team5431.titan.core.misc.Calc;
 
 /**
@@ -22,16 +23,16 @@ import frc.team5431.titan.core.misc.Calc;
  * @author Ryan Hirasaki
  */
 public class Pivot extends SubsystemBase {
-    public static final double PIVOT_DOWN_LIMIT = 86;
-    public static final double PIVOT_UP_LIMIT = 1744; // 35496
-    private static final boolean PIVOT_REVERSE = false;
-    private static final NeutralMode PIVOT_NEUTRALMODE = NeutralMode.Brake;
-    private static final double PIVOT_DEFAULT_SPEED = 1.0;
+    public static final double PIVOT_DOWN_LIMIT = -56171;
+    public static final double PIVOT_UP_LIMIT = 0; // 35496
+    public static final boolean PIVOT_REVERSE = false;
+    public static final NeutralMode PIVOT_NEUTRALMODE = NeutralMode.Brake;
+    public static final double DEFAULT_SPEED = 1.0;
     private static final int PIVOT_TIMEOUT_MS = 0;
     private static final double PIVOT_MOTION_MAGIC_kP = 0;
     private static final double PIVOT_MOTION_MAGIC_kI = 0;
     private static final double PIVOT_MOTION_MAGIC_kD = 0;
-    private static final double PIVOT_MOTION_MAGIC_kF = 0;
+    private static final double PIVOT_MOTION_MAGIC_kF = 1;
     private static final double PIVOT_COSINE_MULT = 0;
     private static final double PIVOT_AFFECT_GRAVITY = 0;
     private static final double PIVOT_ERROR_RANGE = 0;
@@ -68,20 +69,31 @@ public class Pivot extends SubsystemBase {
         this.pivotMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, PIVOT_TIMEOUT_MS);
         this.pivotMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
         
-        // this.pivotMotor.configForwardSoftLimitEnable(true);
+        this.pivotMotor.configForwardSoftLimitEnable(true);
         this.pivotMotor.configForwardSoftLimitThreshold(PIVOT_UP_LIMIT);
-        // this.pivotMotor.configReverseSoftLimitEnable(true);
+        this.pivotMotor.configReverseSoftLimitEnable(true);
         this.pivotMotor.configReverseSoftLimitThreshold(PIVOT_DOWN_LIMIT);
 
         // flywheel.setSensorPhase(true);
 
-        this.pivotMotor.configPeakOutputForward(PIVOT_DEFAULT_SPEED);
-        this.pivotMotor.configPeakOutputReverse(-PIVOT_DEFAULT_SPEED);
+        this.pivotMotor.configPeakOutputForward(DEFAULT_SPEED);
+        this.pivotMotor.configPeakOutputReverse(-DEFAULT_SPEED);
 
         this.pivotMotor.config_kF(0, PIVOT_MOTION_MAGIC_kF, PIVOT_TIMEOUT_MS);
         this.pivotMotor.config_kP(0, PIVOT_MOTION_MAGIC_kP, PIVOT_TIMEOUT_MS);
         this.pivotMotor.config_kI(0, PIVOT_MOTION_MAGIC_kI, PIVOT_TIMEOUT_MS);
         this.pivotMotor.config_kD(0, PIVOT_MOTION_MAGIC_kD, PIVOT_TIMEOUT_MS);
+
+        Constants.tab_subsystems.addNumber("Pivot Position", this.pivotMotor::getSelectedSensorPosition);
+    }
+
+    public void calibrateMode(boolean value) {
+        this.pivotMotor.configForwardSoftLimitEnable(!value);
+        this.pivotMotor.configReverseSoftLimitEnable(!value);
+    }
+
+    public void reset() {
+        this.pivotMotor.setSelectedSensorPosition(0);
     }
 
     // return the angle of the arm based on the current encoder value

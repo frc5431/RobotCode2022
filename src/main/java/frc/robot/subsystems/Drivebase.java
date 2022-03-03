@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.team5431.titan.swerve.Mk4ModuleConfigurationExt;
 import frc.team5431.titan.swerve.Mk4SwerveModuleHelperExt;
 
@@ -181,6 +182,8 @@ public class Drivebase extends SubsystemBase {
         chassisSpeedsLayout.addNumber("vX", () -> m_chassisSpeeds.vxMetersPerSecond);
         chassisSpeedsLayout.addNumber("vY", () -> m_chassisSpeeds.vyMetersPerSecond);
         chassisSpeedsLayout.addNumber("oR", () -> m_chassisSpeeds.omegaRadiansPerSecond);
+
+        // Constants.tab_subsystems.add("Field", defaultValue)
     }
 
     private ShuffleboardLayout getSMLayout(ShuffleboardLayout layout) {
@@ -225,6 +228,10 @@ public class Drivebase extends SubsystemBase {
 
     public void driveRaw(ChassisSpeeds chassisSpeeds) {
         m_chassisSpeeds = chassisSpeeds;
+    }
+
+    public void stop() {
+        driveRaw(new ChassisSpeeds());
     }
 
     public static SwerveModuleState getModuleState(SwerveModule module) {
