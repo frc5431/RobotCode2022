@@ -200,8 +200,8 @@ public class RobotContainer {
         return new SequentialCommandGroup(
             new WaitCommand(5)
                 .deadlineWith(new ShootCommand(systems, Shooter.Velocity.NORMAL)),
-            new WaitCommand(2.5)
-                .deadlineWith(new DriveCommand(drivebase, 1.0, 0.0, false))
+            new WaitCommand(1.5)
+                .deadlineWith(new DriveCommand(drivebase, 0.3, 0.0, false))
         );
 
 
