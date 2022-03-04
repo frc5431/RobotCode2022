@@ -33,7 +33,6 @@ import frc.robot.Constants;
 import frc.team5431.titan.core.misc.Logger;
 import frc.team5431.titan.swerve.Mk4ModuleConfigurationExt;
 import frc.team5431.titan.swerve.Mk4SwerveModuleHelperExt;
-import io.github.oblarg.oblog.annotations.Log;
 
 public class Drivebase extends SubsystemBase {
     /**
@@ -197,6 +196,8 @@ public class Drivebase extends SubsystemBase {
         Constants.tab_subsystems.add("Field", field2d)
                 .withWidget(BuiltInWidgets.kField)
                 .withSize(8, 5);
+
+        Constants.tab_subsystems.addNumber("Gyro Rotation", () -> this.getGyroscopeRotation().getDegrees());
     }
 
     private ShuffleboardLayout getSMLayout(ShuffleboardLayout layout) {
@@ -218,7 +219,7 @@ public class Drivebase extends SubsystemBase {
         // m_adxr.reset();
     }
 
-    @Log(name = "Gyroscope Rot", tabName = "Subsystems")
+    // @Log(name = "Gyroscope Rot", tabName = "Subsystems")
     public Rotation2d getGyroscopeRotation() {
         // Pigeon
         // return Rotation2d.fromDegrees(m_pigeon.getFusedHeading());
@@ -333,4 +334,6 @@ public class Drivebase extends SubsystemBase {
         m_backLeftModule.set(blVoltage, states[2].angle.getRadians());
         m_backRightModule.set(brVoltage, states[3].angle.getRadians());
     }
+
+
 }
