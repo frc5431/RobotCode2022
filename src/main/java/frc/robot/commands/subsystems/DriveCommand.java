@@ -18,6 +18,8 @@ public class DriveCommand extends CommandBase {
         
         this.fieldRelative = Triple.of(x, y, theta);
         this.robotRelative = null;
+
+        addRequirements(drivebase);
     }
 
     public DriveCommand(Drivebase drivebase, double drive, double turn, boolean curve) {
@@ -25,6 +27,8 @@ public class DriveCommand extends CommandBase {
 
         this.fieldRelative = null;
         this.robotRelative = Triple.of(drive, turn, curve);
+
+        addRequirements(drivebase);
     }
 
     @Override
