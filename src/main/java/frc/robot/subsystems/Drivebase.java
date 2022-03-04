@@ -23,13 +23,17 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.team5431.titan.core.misc.Logger;
 import frc.team5431.titan.swerve.Mk4ModuleConfigurationExt;
 import frc.team5431.titan.swerve.Mk4SwerveModuleHelperExt;
+import io.github.oblarg.oblog.annotations.Log;
 
 public class Drivebase extends SubsystemBase {
     /**
@@ -100,6 +104,7 @@ public class Drivebase extends SubsystemBase {
     private Triple<Double, Double, Boolean> relativeDriving = null;
 
     private ShuffleboardTab tab;
+    public final Field2d field2d;
 
     public Drivebase() {
         tab = Shuffleboard.getTab("Drivetrain");
@@ -180,14 +185,18 @@ public class Drivebase extends SubsystemBase {
         ((TalonFX) m_backLeftModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
         ((TalonFX) m_backRightModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
 
-        ShuffleboardLayout chassisSpeedsLayout = tab.getLayout("ChassisSpeeds", BuiltInLayouts.kList)
+        ShuffleboardLayout chassisSpeedsLayout = Constants.tab_subsystems.getLayout("ChassisSpeeds", BuiltInLayouts.kList)
                 .withSize(3, 4)
                 .withPosition(12, 0);
         chassisSpeedsLayout.addNumber("vX", () -> m_chassisSpeeds.vxMetersPerSecond);
         chassisSpeedsLayout.addNumber("vY", () -> m_chassisSpeeds.vyMetersPerSecond);
         chassisSpeedsLayout.addNumber("oR", () -> m_chassisSpeeds.omegaRadiansPerSecond);
 
-        // Constants.tab_subsystems.add("Field", defaultValue)
+        field2d = new Field2d();
+
+        Constants.tab_subsystems.add("Field", field2d)
+                .withWidget(BuiltInWidgets.kField)
+                .withSize(8, 5);
     }
 
     private ShuffleboardLayout getSMLayout(ShuffleboardLayout layout) {
@@ -209,6 +218,7 @@ public class Drivebase extends SubsystemBase {
         // m_adxr.reset();
     }
 
+    @Log(name = "Gyroscope Rot", tabName = "Subsystems")
     public Rotation2d getGyroscopeRotation() {
         // Pigeon
         // return Rotation2d.fromDegrees(m_pigeon.getFusedHeading());
@@ -263,6 +273,7 @@ public class Drivebase extends SubsystemBase {
     @Override
     public void periodic() {
         m_odometry.update(getGyroscopeRotation(), getStates());
+        field2d.setRobotPose(m_odometry.getPoseMeters());
 
         // Hockey-lock by setting rotation to realllly low number
         if (m_chassisSpeeds.omegaRadiansPerSecond == 0) {
