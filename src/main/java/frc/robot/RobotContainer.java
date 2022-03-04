@@ -182,6 +182,22 @@ public class RobotContainer {
                     systems.getPivot().reset();
                 }, systems.getPivot());
 
+        // Climber Extend Calibration
+        new JoystickButton(operator, LogitechExtreme3D.Button.SEVEN.ordinal() + 1)
+                .whenPressed(() -> systems.getClimber().getExtend().calibrateMode(true), systems.getClimber().getExtend())
+                .whenReleased(() -> {
+                    systems.getClimber().getExtend().calibrateMode(false);
+                    systems.getClimber().getExtend().reset();
+                }, systems.getClimber().getExtend());
+
+        // Climber Hinge Calibration
+        new JoystickButton(operator, LogitechExtreme3D.Button.EIGHT.ordinal() + 1)
+                .whenPressed(() -> systems.getClimber().getHinge().calibrateMode(true), systems.getClimber().getHinge())
+                .whenReleased(() -> {
+                    systems.getClimber().getHinge().calibrateMode(false);
+                    systems.getClimber().getHinge().reset();
+                }, systems.getClimber().getHinge());
+
         // Stop All
         new JoystickButton(buttonBoard, 12)
                 .whileHeld(new StopAllCommand(systems));
