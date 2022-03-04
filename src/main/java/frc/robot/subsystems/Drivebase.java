@@ -209,6 +209,8 @@ public class Drivebase extends SubsystemBase {
      * 'forwards' direction.
      */
     public void zeroGyroscope() {
+        Logger.l("Zeroing gyro!");
+
         // Pigeon
         // m_pigeon.setFusedHeading(0.0);
 
