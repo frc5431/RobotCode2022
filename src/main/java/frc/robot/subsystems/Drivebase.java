@@ -11,6 +11,8 @@ import com.kauailabs.navx.frc.AHRS;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
+import org.apache.commons.lang3.tuple.Triple;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -19,12 +21,13 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.team5431.titan.swerve.Mk4ModuleConfigurationExt;
 import frc.team5431.titan.swerve.Mk4SwerveModuleHelperExt;
 
@@ -94,6 +97,7 @@ public class Drivebase extends SubsystemBase {
     private final SwerveModule m_backRightModule;
 
     private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+    private Triple<Double, Double, Boolean> relativeDriving = null;
 
     private ShuffleboardTab tab;
 
@@ -228,10 +232,19 @@ public class Drivebase extends SubsystemBase {
 
     public void driveRaw(ChassisSpeeds chassisSpeeds) {
         m_chassisSpeeds = chassisSpeeds;
+        relativeDriving = null;
     }
 
     public void stop() {
         driveRaw(new ChassisSpeeds());
+    }
+
+    public void driveRelative(double drive, double turn) {
+        driveRelative(drive, turn, false);
+    }
+
+    public void driveRelative(double drive, double turn, boolean curve) {
+        relativeDriving = Triple.of(drive, turn, curve);
     }
 
     public static SwerveModuleState getModuleState(SwerveModule module) {
@@ -257,6 +270,23 @@ public class Drivebase extends SubsystemBase {
         }
 
         SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
+
+        if (relativeDriving != null) {
+            WheelSpeeds diffSpeeds;
+            if (relativeDriving.getRight()) {
+                diffSpeeds = DifferentialDrive.curvatureDriveIK(relativeDriving.getLeft(), relativeDriving.getMiddle(), false);
+            } else {
+                diffSpeeds = DifferentialDrive.arcadeDriveIK(relativeDriving.getLeft(), relativeDriving.getMiddle(), false);
+            }
+
+            states = new SwerveModuleState[] {
+                new SwerveModuleState(diffSpeeds.left, getGyroscopeRotation()), // FL
+                new SwerveModuleState(diffSpeeds.right, getGyroscopeRotation()), // FR
+                new SwerveModuleState(diffSpeeds.left, getGyroscopeRotation()), // BL
+                new SwerveModuleState(diffSpeeds.right, getGyroscopeRotation())  // BR
+            };
+        }
+
         SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
         // SwerveModuleState.optimize(desiredState, currentAngle) maybe?
 

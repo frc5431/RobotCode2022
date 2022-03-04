@@ -35,7 +35,7 @@ public class PivotCommand extends CommandBase {
     public void initialize() {
         Logger.l("Running Pivot Command!");
         //pivot.setPivotLocation(position);
-        pivot.set(direction ? speed : -speed);
+        pivot.set(direction ? -speed : speed);
     }
 
     @Override

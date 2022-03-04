@@ -27,7 +27,7 @@ public class Pivot extends SubsystemBase {
     public static final double PIVOT_UP_LIMIT = 0; // 35496
     public static final boolean PIVOT_REVERSE = false;
     public static final NeutralMode PIVOT_NEUTRALMODE = NeutralMode.Brake;
-    public static final double DEFAULT_SPEED = 1.0;
+    public static final double DEFAULT_SPEED = 0.5;
     private static final int PIVOT_TIMEOUT_MS = 0;
     private static final double PIVOT_MOTION_MAGIC_kP = 0;
     private static final double PIVOT_MOTION_MAGIC_kI = 0;

@@ -4,29 +4,30 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.common.hardware.VisionLEDMode;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.commands.*;
-import frc.robot.commands.subsystems.*;
+import frc.robot.commands.FeedEverything;
+import frc.robot.commands.FloorIntakeCommand;
+import frc.robot.commands.ShootCommand;
+import frc.robot.commands.StopAllCommand;
+import frc.robot.commands.subsystems.AnglerCommand;
+import frc.robot.commands.subsystems.ClimberExtendCommand;
+import frc.robot.commands.subsystems.ClimberHingeCommand;
+import frc.robot.commands.subsystems.DefaultDriveCommand;
+import frc.robot.commands.subsystems.DriveCommand;
+import frc.robot.commands.subsystems.IntakeCommand;
+import frc.robot.commands.subsystems.PivotCommand;
+import frc.robot.commands.subsystems.ShooterCommand;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
 import frc.team5431.titan.core.joysticks.LogitechExtreme3D;
@@ -107,13 +108,11 @@ public class RobotContainer {
         
         // Pivot Up
         new JoystickButton(buttonBoard, 5)
-                .whileHeld(() -> systems.getPivot().set(0.1), systems.getPivot())
-                .whenReleased(() -> systems.getPivot().set(0), systems.getPivot());
+                .whileHeld(new PivotCommand(systems, false));
         
         // Pivot Down
         new JoystickButton(buttonBoard, 2)
-                .whileHeld(() -> systems.getPivot().set(-0.1), systems.getPivot())
-                .whenReleased(() -> systems.getPivot().set(0), systems.getPivot());
+                .whileHeld(new PivotCommand(systems, true));
 
         // Trigger/slider Shoot
         new JoystickButton(operator, LogitechExtreme3D.Button.TRIGGER.ordinal() + 1)
@@ -200,8 +199,9 @@ public class RobotContainer {
 
         return new SequentialCommandGroup(
             new WaitCommand(5)
-                .deadlineWith(new ShootCommand(systems, Shooter.Velocity.NORMAL))
-            
+                .deadlineWith(new ShootCommand(systems, Shooter.Velocity.NORMAL)),
+            new WaitCommand(2.5)
+                .deadlineWith(new DriveCommand(drivebase, 1.0, 0.0, false))
         );
 
 
