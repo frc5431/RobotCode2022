@@ -13,7 +13,6 @@ import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import org.apache.commons.lang3.tuple.Triple;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -28,6 +27,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.team5431.titan.core.misc.Logger;
 import frc.team5431.titan.swerve.Mk4ModuleConfigurationExt;
 import frc.team5431.titan.swerve.Mk4SwerveModuleHelperExt;
 
@@ -279,11 +279,13 @@ public class Drivebase extends SubsystemBase {
                 diffSpeeds = DifferentialDrive.arcadeDriveIK(relativeDriving.getLeft(), relativeDriving.getMiddle(), false);
             }
 
+            Logger.l("Relative driving! Left: %s - Right: %s", diffSpeeds.left, diffSpeeds.right);
+
             states = new SwerveModuleState[] {
-                new SwerveModuleState(diffSpeeds.left, getGyroscopeRotation()), // FL
-                new SwerveModuleState(diffSpeeds.right, getGyroscopeRotation()), // FR
-                new SwerveModuleState(diffSpeeds.left, getGyroscopeRotation()), // BL
-                new SwerveModuleState(diffSpeeds.right, getGyroscopeRotation())  // BR
+                new SwerveModuleState(MAX_VELOCITY_METERS_PER_SECOND * diffSpeeds.left, getGyroscopeRotation()), // FL
+                new SwerveModuleState(MAX_VELOCITY_METERS_PER_SECOND * diffSpeeds.right, getGyroscopeRotation()), // FR
+                new SwerveModuleState(MAX_VELOCITY_METERS_PER_SECOND * diffSpeeds.left, getGyroscopeRotation()), // BL
+                new SwerveModuleState(MAX_VELOCITY_METERS_PER_SECOND * diffSpeeds.right, getGyroscopeRotation())  // BR
             };
         }
 
@@ -300,10 +302,10 @@ public class Drivebase extends SubsystemBase {
         blVoltage = states[2].speedMetersPerSecond;
         brVoltage = states[3].speedMetersPerSecond;
 
-        flVoltage = MathUtil.clamp(flVoltage, 0, MAX_VELOCITY_METERS_PER_SECOND);
-        frVoltage = MathUtil.clamp(frVoltage, 0, MAX_VELOCITY_METERS_PER_SECOND);
-        blVoltage = MathUtil.clamp(blVoltage, 0, MAX_VELOCITY_METERS_PER_SECOND);
-        brVoltage = MathUtil.clamp(brVoltage, 0, MAX_VELOCITY_METERS_PER_SECOND);
+        // flVoltage = MathUtil.clamp(flVoltage, 0, MAX_VELOCITY_METERS_PER_SECOND);
+        // frVoltage = MathUtil.clamp(frVoltage, 0, MAX_VELOCITY_METERS_PER_SECOND);
+        // blVoltage = MathUtil.clamp(blVoltage, 0, MAX_VELOCITY_METERS_PER_SECOND);
+        // brVoltage = MathUtil.clamp(brVoltage, 0, MAX_VELOCITY_METERS_PER_SECOND);
 
         // SmartDashboard.putNumber("Front Left Velocity", flVoltage);
         // SmartDashboard.putNumber("Front Right Velocity", frVoltage);
