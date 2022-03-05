@@ -17,6 +17,8 @@ public class Systems {
 
     private Servo anglerServo;
 
+    private Drivebase drivebase;
+
     private Feeder feeder;
     private Shooter shooter;
     private Intake intake;
@@ -36,12 +38,18 @@ public class Systems {
 
         anglerServo = new Servo(Constants.SLOT_ANGLER);
 
+        drivebase = new Drivebase();
+
         feeder = new Feeder(feederBottom,feederTop);
         shooter = new Shooter(shooterLeft, shooterRight);
         intake = new Intake(intakeMotor);
         pivot = new Pivot(pivotMotor);
         climber = new Climber(climberExtend, climberHinge);
         angler = new Angler(anglerServo);
+    }
+
+    public Drivebase getDrivebase() {
+        return drivebase;
     }
 
     public Feeder getFeeder() {

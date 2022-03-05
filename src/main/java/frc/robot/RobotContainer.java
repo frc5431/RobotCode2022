@@ -11,11 +11,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.AutonCommand;
 import frc.robot.commands.FeedEverything;
 import frc.robot.commands.FloorIntakeCommand;
 import frc.robot.commands.ShootCommand;
@@ -24,7 +24,6 @@ import frc.robot.commands.subsystems.AnglerCommand;
 import frc.robot.commands.subsystems.ClimberExtendCommand;
 import frc.robot.commands.subsystems.ClimberHingeCommand;
 import frc.robot.commands.subsystems.DefaultDriveCommand;
-import frc.robot.commands.subsystems.DriveCommand;
 import frc.robot.commands.subsystems.IntakeCommand;
 import frc.robot.commands.subsystems.PivotCommand;
 import frc.robot.commands.subsystems.ShooterCommand;
@@ -42,13 +41,15 @@ import frc.team5431.titan.core.misc.Calc;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private final Drivebase drivebase = new Drivebase();
     private final Systems systems = new Systems();
+    private final Drivebase drivebase = systems.getDrivebase();
     private final PhotonCamera camera = new PhotonCamera("gloworm");
 
     private final Xbox driver = new Xbox(0);
     private final Joystick buttonBoard = new Joystick(1);
     private final LogitechExtreme3D operator = new LogitechExtreme3D(2);
+
+    private final SendableChooser<AutonCommand.State> autonChooser;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -70,6 +71,12 @@ public class RobotContainer {
         configureButtonBindings();
 
         camera.setLED(VisionLEDMode.kOff);
+
+        autonChooser = new SendableChooser<>();
+        autonChooser.setDefaultOption("Shoot and Drive", AutonCommand.State.SHOOT_DRIVE);
+        autonChooser.addOption("Shoot", AutonCommand.State.SHOOT);
+        autonChooser.addOption("Nothing", AutonCommand.State.NOTHING);
+        Constants.tab_subsystems.add("Auton State", autonChooser);
     }
 
     /**
@@ -213,12 +220,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
 
-        return new SequentialCommandGroup(
-            new WaitCommand(5)
-                .deadlineWith(new ShootCommand(systems, Shooter.Velocity.NORMAL)),
-            new WaitCommand(1.5)
-                .deadlineWith(new DriveCommand(drivebase, 0.3, 0.0, false))
-        );
+        return new AutonCommand(systems, autonChooser.getSelected());
 
 
         // PathPlannerTrajectory trajectory = PathPlanner.loadPath("TestSwerve", Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 2.0);

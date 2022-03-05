@@ -4,6 +4,7 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Systems;
 import frc.robot.subsystems.Drivebase;
 import frc.team5431.titan.core.misc.Logger;
 
@@ -13,8 +14,8 @@ public class DriveCommand extends CommandBase {
     private final Triple<Double, Double, Double> fieldRelative;
     private final Triple<Double, Double, Boolean> robotRelative;
 
-    public DriveCommand(Drivebase drivebase, double x, double y, double theta) {
-        this.drivebase = drivebase;
+    public DriveCommand(Systems systems, double x, double y, double theta) {
+        this.drivebase = systems.getDrivebase();
         
         this.fieldRelative = Triple.of(x, y, theta);
         this.robotRelative = null;
@@ -22,8 +23,8 @@ public class DriveCommand extends CommandBase {
         addRequirements(drivebase);
     }
 
-    public DriveCommand(Drivebase drivebase, double drive, double turn, boolean curve) {
-        this.drivebase = drivebase;
+    public DriveCommand(Systems systems, double drive, double turn, boolean curve) {
+        this.drivebase = systems.getDrivebase();
 
         this.fieldRelative = null;
         this.robotRelative = Triple.of(drive, turn, curve);
