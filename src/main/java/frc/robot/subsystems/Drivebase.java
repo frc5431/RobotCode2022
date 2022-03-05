@@ -199,7 +199,7 @@ public class Drivebase extends SubsystemBase {
 
         Constants.tab_subsystems.addNumber("Gyro Rotation", () -> this.getGyroscopeRotation().getDegrees());
 
-        Constants.tab_subsystems.addString("Relative Driving?", () -> this.relativeDriving.toString());
+        Constants.tab_subsystems.addString("Relative Driving?", () -> this.relativeDriving == null ? "null" : this.relativeDriving.toString());
     }
 
     private ShuffleboardLayout getSMLayout(ShuffleboardLayout layout) {

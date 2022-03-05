@@ -51,12 +51,12 @@ public final class Constants {
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 8;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 7;
     public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 12;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(136.406); // -4.570
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(140.977); // -4.570
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 4;
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 3;
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 10;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(326.514); // 141.680
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(215.684); // 141.680
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 6;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 5;

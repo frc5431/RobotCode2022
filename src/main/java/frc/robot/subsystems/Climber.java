@@ -24,7 +24,7 @@ public class Climber extends SubsystemBase {
     public static final double EXTEND_DOWN_LIMIT = 0;
     public static final double EXTEND_UP_LIMIT = -384000;
     public static final double HINGE_CLOSED_LIMIT = -80000;
-    public static final double HINGE_OPEN_LIMIT = 825000;
+    public static final double HINGE_OPEN_LIMIT = 1580000;
 
     private ClimberBase climberExtend, climberHinge;
 

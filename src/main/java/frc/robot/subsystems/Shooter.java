@@ -14,7 +14,7 @@ import frc.robot.commands.subsystems.ShooterCommand;
 public class Shooter extends SubsystemBase {
 
     public static final double VELOCITY_REJECT = 9500;
-    public static final double VELOCITY_NORMAL = 12000; // 13000
+    public static final double VELOCITY_NORMAL = 13000; // 13000
     public static final double VELOCITY_BUFFER = 300;
 
     public static final double MAX_VELOCITY = 21800;
