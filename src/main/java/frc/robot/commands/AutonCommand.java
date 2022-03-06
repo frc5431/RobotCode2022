@@ -21,7 +21,7 @@ public class AutonCommand extends SequentialCommandGroup {
             case NOTHING:
                 addCommands(
                     new WaitCommand(PIVOT_TIME)
-                        .deadlineWith(new PivotCommand(systems, false))
+                        .deadlineWith(new PivotCommand(systems, true))
                 );
                 break;
             case SHOOT:
@@ -29,7 +29,7 @@ public class AutonCommand extends SequentialCommandGroup {
                     new WaitCommand(SHOOT_TIME)
                         .deadlineWith(new ShootCommand(systems, Shooter.Velocity.NORMAL)),
                     new WaitCommand(PIVOT_TIME)
-                        .deadlineWith(new PivotCommand(systems, false))
+                        .deadlineWith(new PivotCommand(systems, true))
                 );
                 break;
             case SHOOT_DRIVE:
@@ -39,7 +39,7 @@ public class AutonCommand extends SequentialCommandGroup {
                     new WaitCommand(DRIVE_TIME)
                         .deadlineWith(new DriveCommand(systems, 0.3, 0.0, false)),
                     new WaitCommand(PIVOT_TIME)
-                        .deadlineWith(new PivotCommand(systems, false))
+                        .deadlineWith(new PivotCommand(systems, true))
                 );
                 break;
             default:
