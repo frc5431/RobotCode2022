@@ -9,7 +9,7 @@ import frc.robot.subsystems.Shooter;
 
 public class AutonCommand extends SequentialCommandGroup {
     private static final double SHOOT_TIME = 5;
-    private static final double DRIVE_TIME = 1.5;
+    private static final double DRIVE_TIME = 1.75;
     private static final double PIVOT_TIME = 2;
 
     public static enum State {
