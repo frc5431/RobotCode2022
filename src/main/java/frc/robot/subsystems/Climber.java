@@ -23,8 +23,8 @@ public class Climber extends SubsystemBase {
     public static final boolean REVERSE_HINGE = false;
     public static final double EXTEND_DOWN_LIMIT = 0;
     public static final double EXTEND_UP_LIMIT = -384000;
-    public static final double HINGE_CLOSED_LIMIT = -80000;
-    public static final double HINGE_OPEN_LIMIT = 1580000;
+    public static final double HINGE_CLOSED_LIMIT = 0;
+    public static final double HINGE_OPEN_LIMIT = 300000;
 
     private ClimberBase climberExtend, climberHinge;
 
@@ -37,7 +37,7 @@ public class Climber extends SubsystemBase {
         motorExtend.configForwardSoftLimitEnable(true);
         motorHinge.configForwardSoftLimitEnable(true);
         motorExtend.configReverseSoftLimitEnable(true);
-        motorHinge.configReverseSoftLimitEnable(false); // TODO
+        motorHinge.configReverseSoftLimitEnable(true);
 
         motorExtend.configForwardSoftLimitThreshold(max(EXTEND_DOWN_LIMIT, EXTEND_UP_LIMIT));
         motorHinge.configForwardSoftLimitThreshold(max(HINGE_CLOSED_LIMIT, HINGE_OPEN_LIMIT));
