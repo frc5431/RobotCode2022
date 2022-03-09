@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import org.photonvision.common.hardware.VisionLEDMode;
+
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
@@ -63,6 +66,12 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 5;
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 11;
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(31.025); // 28.916
+
+    public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(20); // TODO
+    public static final double TARGET_HEIGHT_METERS = Units.feetToMeters(8) + Units.inchesToMeters(8);
+    public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(20); // TODO
+
+    public static final VisionLEDMode DEFAULT_LED_MODE = VisionLEDMode.kOff;
 
     public static final ShuffleboardTab tab_subsystems = Shuffleboard.getTab("Subsystems");
 }

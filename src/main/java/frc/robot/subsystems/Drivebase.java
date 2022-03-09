@@ -8,6 +8,8 @@ import static frc.robot.Constants.*;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.kauailabs.navx.frc.AHRS;
+import com.swervedrivespecialties.swervelib.Mk4ModuleConfiguration;
+import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
@@ -31,8 +33,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.team5431.titan.core.misc.Logger;
-import frc.team5431.titan.swerve.Mk4ModuleConfigurationExt;
-import frc.team5431.titan.swerve.Mk4SwerveModuleHelperExt;
 
 public class Drivebase extends SubsystemBase {
     /**
@@ -107,7 +107,7 @@ public class Drivebase extends SubsystemBase {
 
     public Drivebase() {
         tab = Shuffleboard.getTab("Drivetrain");
-        Mk4ModuleConfigurationExt moduleConfig = Mk4ModuleConfigurationExt.getDefaultFalcon500();
+        Mk4ModuleConfiguration moduleConfig = Mk4ModuleConfiguration.getDefaultSteerFalcon500();
         moduleConfig.setDriveCurrentLimit(40.0);
         moduleConfig.setSteerCurrentLimit(30.0);
 
@@ -126,17 +126,17 @@ public class Drivebase extends SubsystemBase {
         // Mk3SwerveModuleHelper.createNeoFalcon500(...)
         //   Your module has a NEO and a Falcon 500 on it. The NEO is for driving and the Falcon 500 is for steering.
         //
-        // Similar helpers also exist for Mk4 modules using the Mk4SwerveModuleHelperExt class.
+        // Similar helpers also exist for Mk4 modules using the Mk4SwerveModuleHelper class.
 
         // By default we will use Falcon 500s in standard configuration. But if you use a different configuration or motors
         // you MUST change it. If you do not, your code will crash on startup.
-        m_frontLeftModule = Mk4SwerveModuleHelperExt.createFalcon500(
+        m_frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
                         // This parameter is optional, but will allow you to see the current state of the module on the dashboard.
                         getSMLayout(tab.getLayout("Front Left Module", BuiltInLayouts.kList))
                                         .withPosition(0, 0),
                         moduleConfig,
                         // This can either be STANDARD or FAST depending on your gear configuration
-                        Mk4SwerveModuleHelperExt.GearRatio.L2,
+                        Mk4SwerveModuleHelper.GearRatio.L2,
                         // This is the ID of the drive motor
                         FRONT_LEFT_MODULE_DRIVE_MOTOR,
                         // This is the ID of the steer motor
@@ -148,33 +148,33 @@ public class Drivebase extends SubsystemBase {
         );
 
         // We will do the same for the other modules
-        m_frontRightModule = Mk4SwerveModuleHelperExt.createFalcon500(
+        m_frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
                         getSMLayout(tab.getLayout("Front Right Module", BuiltInLayouts.kList))
                                         .withPosition(3, 0),
                         moduleConfig,
-                        Mk4SwerveModuleHelperExt.GearRatio.L2,
+                        Mk4SwerveModuleHelper.GearRatio.L2,
                         FRONT_RIGHT_MODULE_DRIVE_MOTOR,
                         FRONT_RIGHT_MODULE_STEER_MOTOR,
                         FRONT_RIGHT_MODULE_STEER_ENCODER,
                         FRONT_RIGHT_MODULE_STEER_OFFSET
         );
 
-        m_backLeftModule = Mk4SwerveModuleHelperExt.createFalcon500(
+        m_backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
                         getSMLayout(tab.getLayout("Back Left Module", BuiltInLayouts.kList))
                                         .withPosition(6, 0),
                         moduleConfig,
-                        Mk4SwerveModuleHelperExt.GearRatio.L2,
+                        Mk4SwerveModuleHelper.GearRatio.L2,
                         BACK_LEFT_MODULE_DRIVE_MOTOR,
                         BACK_LEFT_MODULE_STEER_MOTOR,
                         BACK_LEFT_MODULE_STEER_ENCODER,
                         BACK_LEFT_MODULE_STEER_OFFSET
         );
 
-        m_backRightModule = Mk4SwerveModuleHelperExt.createFalcon500(
+        m_backRightModule = Mk4SwerveModuleHelper.createFalcon500(
                         getSMLayout(tab.getLayout("Back Right Module", BuiltInLayouts.kList))
                                         .withPosition(9, 0),
                         moduleConfig,
-                        Mk4SwerveModuleHelperExt.GearRatio.L2,
+                        Mk4SwerveModuleHelper.GearRatio.L2,
                         BACK_RIGHT_MODULE_DRIVE_MOTOR,
                         BACK_RIGHT_MODULE_STEER_MOTOR,
                         BACK_RIGHT_MODULE_STEER_ENCODER,

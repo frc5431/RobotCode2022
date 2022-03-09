@@ -5,7 +5,6 @@
 package frc.robot;
 
 import org.photonvision.PhotonCamera;
-import org.photonvision.common.hardware.VisionLEDMode;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -15,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.AimCommand;
 import frc.robot.commands.AutonCommand;
 import frc.robot.commands.FeedEverything;
 import frc.robot.commands.FloorIntakeCommand;
@@ -70,7 +70,7 @@ public class RobotContainer {
         // Configure the button bindings
         configureButtonBindings();
 
-        camera.setLED(VisionLEDMode.kOff);
+        camera.setLED(Constants.DEFAULT_LED_MODE);
 
         autonChooser = new SendableChooser<>();
         autonChooser.setDefaultOption("Shoot and Drive", AutonCommand.State.SHOOT_DRIVE);
@@ -205,6 +205,10 @@ public class RobotContainer {
                     systems.getClimber().getHinge().calibrateMode(false);
                     systems.getClimber().getHinge().reset();
                 }, systems.getClimber().getHinge());
+        
+        // Aim/Vision
+        new JoystickButton(buttonBoard, 0) // TODO: button number
+                .whenHeld(new AimCommand(systems));
 
         // Stop All
         new JoystickButton(buttonBoard, 12)
