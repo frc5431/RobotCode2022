@@ -2,6 +2,8 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import org.photonvision.PhotonCamera;
+
 import edu.wpi.first.wpilibj.Servo;
 import frc.robot.subsystems.*;
 
@@ -26,6 +28,8 @@ public class Systems {
     private Climber climber;
     private Angler angler;
 
+    private PhotonCamera camera;
+
     public Systems() {
         feederBottom = new WPI_TalonFX(Constants.ID_FEEDER_BOTTOM);
         feederTop = new WPI_TalonFX(Constants.ID_FEEDER_TOP);
@@ -46,6 +50,8 @@ public class Systems {
         pivot = new Pivot(pivotMotor);
         climber = new Climber(climberExtend, climberHinge);
         angler = new Angler(anglerServo);
+
+        camera = new PhotonCamera(Constants.CAMERA_NAME);
     }
 
     public Drivebase getDrivebase() {
@@ -74,5 +80,9 @@ public class Systems {
 
     public Angler getAngler() {
         return angler;
+    }
+
+    public PhotonCamera getCamera() {
+        return camera;
     }
 }

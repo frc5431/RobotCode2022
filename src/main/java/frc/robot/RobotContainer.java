@@ -43,7 +43,7 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final Systems systems = new Systems();
     private final Drivebase drivebase = systems.getDrivebase();
-    private final PhotonCamera camera = new PhotonCamera("gloworm");
+    private final PhotonCamera camera = systems.getCamera();
 
     private final Xbox driver = new Xbox(0);
     private final Joystick buttonBoard = new Joystick(1);
