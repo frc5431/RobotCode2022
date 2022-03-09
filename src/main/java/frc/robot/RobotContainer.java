@@ -76,6 +76,7 @@ public class RobotContainer {
         autonChooser.setDefaultOption("Shoot and Drive", AutonCommand.State.SHOOT_DRIVE);
         autonChooser.addOption("Shoot", AutonCommand.State.SHOOT);
         autonChooser.addOption("Nothing", AutonCommand.State.NOTHING);
+        autonChooser.addOption("Path (In Prog)", AutonCommand.State.PATH);
         Constants.tab_subsystems.add("Auton State", autonChooser);
     }
 
@@ -219,27 +220,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-
         return new AutonCommand(systems, autonChooser.getSelected());
-
-
-        // PathPlannerTrajectory trajectory = PathPlanner.loadPath("TestSwerve", Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 2.0);
-
-        // return new ParallelCommandGroup(
-        //     new PPSwerveControllerCommand(
-        //             trajectory, 
-        //             () -> drivebase.m_odometry.getPoseMeters(), 
-        //             drivebase.m_kinematics, 
-        //             new PIDController(0.2, 0, 0), 
-        //             new PIDController(0.2, 0, 0), 
-        //             new ProfiledPIDController(1, 0, 0, new Constraints(Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 3.14)),
-        //             (states) -> drivebase.driveRaw(drivebase.m_kinematics.toChassisSpeeds(states)), 
-        //             drivebase)
-        //         .andThen(new InstantCommand(
-        //                 () -> drivebase.stop()
-        //                 , drivebase))
-                
-        //     );
     }
 
     private static double deadband(double value, double deadband) {
