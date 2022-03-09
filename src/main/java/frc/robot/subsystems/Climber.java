@@ -19,8 +19,8 @@ public class Climber extends SubsystemBase {
     public static final double DEFAULT_SPEED_HINGE = 1;
     public static final NeutralMode NEUTRAL_MODE_EXTEND = NeutralMode.Brake;
     public static final NeutralMode NEUTRAL_MODE_HINGE = NeutralMode.Brake;
-    public static final boolean REVERSE_EXTEND = false;
-    public static final boolean REVERSE_HINGE = false;
+    public static final boolean REVERSE_EXTEND = true;
+    public static final boolean REVERSE_HINGE = true;
     public static final double EXTEND_DOWN_LIMIT = 0;
     public static final double EXTEND_UP_LIMIT = -384000;
     public static final double HINGE_CLOSED_LIMIT = 0;

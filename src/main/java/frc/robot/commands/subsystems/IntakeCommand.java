@@ -7,7 +7,7 @@ import frc.team5431.titan.core.misc.Logger;
 
 public class IntakeCommand extends CommandBase {
     private final Intake intake;
-    private final boolean direction;
+    private final boolean reverse;
     private final double speed;
 
     public IntakeCommand(Systems systems, boolean reverse) {
@@ -20,7 +20,7 @@ public class IntakeCommand extends CommandBase {
 
     public IntakeCommand(Systems systems, double speed, boolean reverse) {
         this.intake = systems.getIntake();
-        this.direction = reverse;
+        this.reverse = reverse;
         this.speed = speed;
 
         addRequirements(intake);
@@ -28,7 +28,7 @@ public class IntakeCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        intake.setSpeed(direction ? speed : -speed);
+        intake.setSpeed(reverse ? -speed : speed);
 	}
 
     @Override

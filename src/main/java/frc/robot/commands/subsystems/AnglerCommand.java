@@ -7,7 +7,7 @@ import frc.team5431.titan.core.misc.Logger;
 
 public class AnglerCommand extends InstantCommand {
     private final Angler angler;
-    private final boolean direction;
+    private final boolean reverse;
     private final double deltaPos;
 
     public AnglerCommand(Systems systems, boolean reverse) {
@@ -20,7 +20,7 @@ public class AnglerCommand extends InstantCommand {
 
     public AnglerCommand(Systems systems, double deltaPos, boolean reverse) {
         this.angler = systems.getAngler();
-        this.direction = reverse;
+        this.reverse = reverse;
         this.deltaPos = deltaPos;
 
         addRequirements(angler);
@@ -28,7 +28,7 @@ public class AnglerCommand extends InstantCommand {
 
     @Override
     public void initialize() {
-        angler.change(direction ? deltaPos : -deltaPos);
+        angler.change(reverse ? -deltaPos : deltaPos);
 	}
 
     @Override
