@@ -227,6 +227,10 @@ public class RobotContainer {
         return new AutonCommand(systems, autonChooser.getSelected());
     }
 
+    public Systems getSystems() {
+        return systems;
+    }
+
     private static double deadband(double value, double deadband) {
         if (Math.abs(value) > deadband) {
             if (value > 0.0) {

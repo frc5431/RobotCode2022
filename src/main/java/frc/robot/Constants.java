@@ -45,6 +45,8 @@ public final class Constants {
      */
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.565;
 
+    public static final double ROBOT_MASS_KG = Units.lbsToKilograms(110);
+
     // public static final int DRIVETRAIN_PIGEON_ID = 0;
 
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 2;

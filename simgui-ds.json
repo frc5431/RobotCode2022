@@ -88,5 +88,19 @@
       "buttonCount": 0,
       "povCount": 0
     }
+  ],
+  "robotJoysticks": [
+    {
+      "guid": "Keyboard0",
+      "name": "Xbox"
+    },
+    {
+      "guid": "Keyboard1",
+      "name": "Button Board"
+    },
+    {
+      "guid": "Keyboard2",
+      "name": "Operator"
+    }
   ]
 }

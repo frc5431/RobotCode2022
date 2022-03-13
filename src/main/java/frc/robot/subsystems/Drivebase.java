@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.*;
 
+import java.util.List;
+
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.kauailabs.navx.frc.AHRS;
 import com.swervedrivespecialties.swervelib.Mk4ModuleConfiguration;
@@ -341,5 +343,7 @@ public class Drivebase extends SubsystemBase {
         m_backRightModule.set(brVoltage, states[3].angle.getRadians());
     }
 
-
+    public List<SwerveModule> getSwerveModules() {
+        return List.of(m_frontLeftModule, m_frontRightModule, m_backLeftModule, m_backRightModule);
+    }
 }
