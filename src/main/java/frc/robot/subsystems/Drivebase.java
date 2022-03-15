@@ -17,6 +17,7 @@ import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import org.apache.commons.lang3.tuple.Triple;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -209,6 +210,10 @@ public class Drivebase extends SubsystemBase {
 
     private ShuffleboardLayout getSMLayout(ShuffleboardLayout layout) {
         return layout.withSize(3, 5);
+    }
+
+    public void resetOdometry(Pose2d pose) {
+        m_odometry.resetPosition(pose, getGyroscopeRotation());
     }
 
     /**

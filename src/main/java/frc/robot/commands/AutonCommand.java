@@ -1,9 +1,11 @@
 package frc.robot.commands;
 
 import com.pathplanner.lib.*;
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.*;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -20,11 +22,25 @@ public class AutonCommand extends SequentialCommandGroup {
     private static final double DRIVE_TIME = 1.75;
     private static final double PIVOT_TIME = 2;
 
+    public static final String[] PATHS = new String[] {
+        "1 Start To First Ball",
+        "2 First to Second",
+        "3 Third and Fourth Ball",
+        "4 Fourth To Shoot"
+    };
+
     public static enum State {
         NOTHING, SHOOT, SHOOT_DRIVE, PATH
     }
 
     public AutonCommand(Systems systems, State state) {
+        addCommands(new InstantCommand(() -> {
+            // reset odometry
+            PathPlannerTrajectory trajectory = PathPlanner.loadPath(PATHS[0], Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 2.0);
+            PathPlannerState initialState = trajectory.getInitialState();
+            systems.getDrivebase().resetOdometry(new Pose2d(initialState.poseMeters.getTranslation(), initialState.holonomicRotation));
+        }, systems.getDrivebase()));
+
         switch (state) {
             case NOTHING:
                 addCommands(
