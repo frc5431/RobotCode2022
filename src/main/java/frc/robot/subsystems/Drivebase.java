@@ -9,7 +9,7 @@ import static frc.robot.Constants.*;
 import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.kauailabs.navx.frc.AHRS;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.swervedrivespecialties.swervelib.Mk4ModuleConfiguration;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
@@ -23,7 +23,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -89,9 +88,11 @@ public class Drivebase extends SubsystemBase {
     // Pigeon
     // private final PigeonIMU m_pigeon = new PigeonIMU(DRIVETRAIN_PIGEON_ID);
     // NavX
-    public final AHRS m_navx = new AHRS(I2C.Port.kMXP, (byte) 200); // NavX connected over MXP
+    // public final AHRS m_navx = new AHRS(I2C.Port.kMXP, (byte) 200); // NavX connected over MXP
     // Analog Devices Gyro
     // public final ADXRS450_Gyro m_adxr = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
+    // Pigeon 2.0
+    public final WPI_Pigeon2 m_pigeon2 = new WPI_Pigeon2(Constants.ID_PIGEON2);
 
     public final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, getGyroscopeRotation());
 
@@ -221,10 +222,13 @@ public class Drivebase extends SubsystemBase {
         // m_pigeon.setFusedHeading(0.0);
 
         // NavX
-        m_navx.zeroYaw();
+        // m_navx.zeroYaw();
 
         // Analog Devices
         // m_adxr.reset();
+
+        // Pigeon 2.0
+        m_pigeon2.reset();
     }
 
     // @Log(name = "Gyroscope Rot", tabName = "Subsystems")
@@ -239,10 +243,13 @@ public class Drivebase extends SubsystemBase {
         // }
 
         // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
-        return Rotation2d.fromDegrees(360.0 - m_navx.getYaw());
+        // return Rotation2d.fromDegrees(360.0 - m_navx.getYaw());
 
         // Analog Devices
         // return m_adxr.getRotation2d();
+
+        // Pigeon 2.0
+        return m_pigeon2.getRotation2d();
     }
 
     public void driveController(ChassisSpeeds chassisSpeeds) {
