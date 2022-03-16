@@ -159,7 +159,7 @@ public class Drivebase extends SubsystemBase {
                 .withGearRatio(Mk4SwerveModuleBuilder.GearRatio.L2)
                 .withDriveMotor(MotorType.FALCON, FRONT_LEFT_MODULE_DRIVE_MOTOR, CANBUS_DRIVETRAIN)
                 .withSteerMotor(MotorType.FALCON, FRONT_LEFT_MODULE_STEER_MOTOR, CANBUS_DRIVETRAIN)
-                .withSteerEncoderPort(FRONT_LEFT_MODULE_STEER_ENCODER)
+                .withSteerEncoderPort(FRONT_LEFT_MODULE_STEER_ENCODER, CANBUS_DRIVETRAIN)
                 .withSteerOffset(FRONT_LEFT_MODULE_STEER_OFFSET)
                 .build();
 
