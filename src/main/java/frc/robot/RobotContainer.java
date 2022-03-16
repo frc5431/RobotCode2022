@@ -9,7 +9,6 @@ import org.photonvision.PhotonCamera;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,7 +45,7 @@ public class RobotContainer {
     private final Drivebase drivebase = systems.getDrivebase();
     private final PhotonCamera camera = systems.getCamera();
 
-    private final PowerDistribution pdh = new PowerDistribution();
+//     private final PowerDistribution pdh = new PowerDistribution();
 
     private final Xbox driver = new Xbox(0);
     private final Joystick buttonBoard = new Joystick(1);
@@ -75,10 +74,10 @@ public class RobotContainer {
 
         camera.setLED(Constants.DEFAULT_LED_MODE);
 
-        Constants.tab_subsystems.addNumber("PD Volts", pdh::getVoltage);
-        Constants.tab_subsystems.addNumber("PD Temp", pdh::getTemperature);
-        Constants.tab_subsystems.addNumber("PD Current", pdh::getTotalCurrent);
-        Constants.tab_subsystems.addNumber("PD Joules", pdh::getTotalEnergy);
+        // Constants.tab_subsystems.addNumber("PD Volts", pdh::getVoltage);
+        // Constants.tab_subsystems.addNumber("PD Temp", pdh::getTemperature);
+        // Constants.tab_subsystems.addNumber("PD Current", pdh::getTotalCurrent);
+        // Constants.tab_subsystems.addNumber("PD Joules", pdh::getTotalEnergy);
 
         autonChooser = new SendableChooser<>();
         autonChooser.setDefaultOption("Shoot and Drive", AutonCommand.State.SHOOT_DRIVE);
@@ -215,7 +214,7 @@ public class RobotContainer {
                 }, systems.getClimber().getHinge());
         
         // Aim/Vision
-        new JoystickButton(buttonBoard, 0) // TODO: button number
+        new JoystickButton(buttonBoard, 11)
                 .whenHeld(new AimCommand(systems));
 
         // Stop All

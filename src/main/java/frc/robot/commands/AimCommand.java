@@ -35,6 +35,8 @@ public class AimCommand extends CommandBase {
         );
         this.turnPID.setGoal(0);
 
+        // Constants.tab_subsystems.add("Turn PID", this.turnPID);
+
         addRequirements(drivebase);
     }
 
@@ -57,7 +59,7 @@ public class AimCommand extends CommandBase {
             ));
             
             drivebase.driveRaw(new ChassisSpeeds(0, 0, 
-                    turnPID.calculate(
+                    4*turnPID.calculate(
                         Units.degreesToRadians(result.getBestTarget().getYaw())
                     )
             ));
