@@ -30,8 +30,8 @@ public final class Constants {
     public static final int ID_CLIMBER_HINGE = 13;
     public static final int ID_PIGEON2 = 21;
 
-    public static final String CANBUS_DRIVETRAIN = "omnivore";
-    public static final String CANBUS_SUBSYSTEM = "omnivore";
+    public static final String CANBUS_DRIVETRAIN = "";
+    public static final String CANBUS_SUBSYSTEM = "";
 
     public static final int SLOT_ANGLER = 0;
     public static final String CAMERA_NAME = "gloworm";
@@ -75,9 +75,9 @@ public final class Constants {
 
     public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(23.4);
     public static final double TARGET_HEIGHT_METERS = Units.feetToMeters(8) + Units.inchesToMeters(8);
-    public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(34);
+    public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(24.3); // 34
 
-    public static final VisionLEDMode DEFAULT_LED_MODE = VisionLEDMode.kOff;
+    public static final VisionLEDMode DEFAULT_LED_MODE = VisionLEDMode.kOn;
 
     public static final ShuffleboardTab tab_subsystems = Shuffleboard.getTab("Subsystems");
 }

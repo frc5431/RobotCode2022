@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -15,10 +17,18 @@ public class ShootCommand extends ParallelCommandGroup {
     public static final double FEEDER_BOTTOM_DELAY = 0.25;
 
     public ShootCommand(Systems systems, Shooter.Velocity velocity) {
+        this(systems, velocity.getVelocity());
+    }
+
+    public ShootCommand(Systems systems, double velocity) {
+        this(systems, () -> velocity);
+    }
+
+    public ShootCommand(Systems systems, DoubleSupplier supplier) {
         addCommands(
             new SequentialCommandGroup(
                 new WaitCommand(FEEDER_PUSH_DOWN_DELAY),
-                new ShooterCommand(systems, velocity)
+                new ShooterCommand(systems, supplier)
             ),
             new SequentialCommandGroup(
                 new WaitCommand(FEEDER_PUSH_DOWN_DELAY)
@@ -33,8 +43,5 @@ public class ShootCommand extends ParallelCommandGroup {
                 )
             )
         );
-    }
-
-    public ShootCommand(Systems systems, boolean b) {
     }
 }

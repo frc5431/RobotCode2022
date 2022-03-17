@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Systems;
 import frc.robot.commands.subsystems.DriveCommand;
+import frc.robot.commands.subsystems.IntakeCommand;
 import frc.robot.commands.subsystems.PivotCommand;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
@@ -20,7 +21,7 @@ import frc.robot.subsystems.Shooter;
 public class AutonCommand extends SequentialCommandGroup {
     private static final double SHOOT_TIME = 5;
     private static final double DRIVE_TIME = 1.75;
-    private static final double PIVOT_TIME = 2;
+    private static final double PIVOT_TIME = 1.25;
 
     public static final String[] PATHS = new String[] {
         "1 Start To First Ball",
@@ -71,6 +72,8 @@ public class AutonCommand extends SequentialCommandGroup {
                 Drivebase drivebase = systems.getDrivebase();
 
                 addCommands(
+                    new WaitCommand(PIVOT_TIME)
+                        .deadlineWith(new PivotCommand(systems, true)),
                     new ParallelCommandGroup(
                         new PPSwerveControllerCommand(
                                 trajectory, 
@@ -78,15 +81,16 @@ public class AutonCommand extends SequentialCommandGroup {
                                 drivebase.m_kinematics, 
                                 new PIDController(0.2, 0, 0), 
                                 new PIDController(0.2, 0, 0), 
-                                new ProfiledPIDController(0.2, 0, 0, new Constraints(Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 3.14)),
+                                new ProfiledPIDController(1.5, 0, 0, new Constraints(Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 3.14)),
                                 (states) -> drivebase.driveRaw(drivebase.m_kinematics.toChassisSpeeds(states)), 
                                 drivebase)
                             .andThen(new InstantCommand(
                                     () -> drivebase.stop()
                                     , drivebase))
+                            .deadlineWith(new IntakeCommand(systems, false))
                     ),
-                    new WaitCommand(PIVOT_TIME)
-                        .deadlineWith(new PivotCommand(systems, true))
+                    new WaitCommand(5)
+                        .deadlineWith(new AimAndShootCommand(systems))
                 );
                 break;
         }

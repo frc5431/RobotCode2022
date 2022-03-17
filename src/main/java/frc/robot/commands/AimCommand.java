@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonUtils;
 import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonPipelineResult;
 
@@ -13,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Systems;
 import frc.robot.subsystems.Drivebase;
+import frc.robot.util.CameraCalc;
 import frc.team5431.titan.core.misc.Logger;
 
 public class AimCommand extends CommandBase {
@@ -27,7 +27,7 @@ public class AimCommand extends CommandBase {
         this.turnPID = new ProfiledPIDController(
                 1, 
                 0, 
-                0, 
+                0.01, 
                 new Constraints(
                         Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
                         1.0
@@ -35,7 +35,7 @@ public class AimCommand extends CommandBase {
         );
         this.turnPID.setGoal(0);
 
-        // Constants.tab_subsystems.add("Turn PID", this.turnPID);
+        // Constants.tab_subsystems.addNumber("Turn PID", () -> this.turnPID.getPositionError());
 
         addRequirements(drivebase);
     }
@@ -51,12 +51,7 @@ public class AimCommand extends CommandBase {
         PhotonPipelineResult result = camera.getLatestResult();
 
         if (result.hasTargets()) {
-            Logger.l("Meters to target: " + PhotonUtils.calculateDistanceToTargetMeters(
-                    Constants.CAMERA_HEIGHT_METERS, 
-                    Constants.TARGET_HEIGHT_METERS, 
-                    Constants.CAMERA_PITCH_RADIANS, 
-                    Units.degreesToRadians(result.getBestTarget().getPitch())
-            ));
+            Logger.l("Meters to target: " + CameraCalc.getDistanceMeters(camera));
             
             drivebase.driveRaw(new ChassisSpeeds(0, 0, 
                     4*turnPID.calculate(

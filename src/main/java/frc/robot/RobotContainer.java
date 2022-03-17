@@ -14,21 +14,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.commands.AimCommand;
-import frc.robot.commands.AutonCommand;
-import frc.robot.commands.FeedEverything;
-import frc.robot.commands.FloorIntakeCommand;
-import frc.robot.commands.ShootCommand;
-import frc.robot.commands.StopAllCommand;
-import frc.robot.commands.subsystems.AnglerCommand;
-import frc.robot.commands.subsystems.ClimberExtendCommand;
-import frc.robot.commands.subsystems.ClimberHingeCommand;
-import frc.robot.commands.subsystems.DefaultDriveCommand;
-import frc.robot.commands.subsystems.IntakeCommand;
-import frc.robot.commands.subsystems.PivotCommand;
-import frc.robot.commands.subsystems.ShooterCommand;
+import frc.robot.commands.*;
+import frc.robot.commands.subsystems.*;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
+import frc.robot.util.CameraCalc;
 import frc.team5431.titan.core.joysticks.LogitechExtreme3D;
 import frc.team5431.titan.core.joysticks.Xbox;
 import frc.team5431.titan.core.misc.Calc;
@@ -68,6 +58,11 @@ public class RobotContainer {
                         () -> modifyAxis(-driver.getRawAxis(Xbox.Axis.LEFT_X)) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
                         () -> modifyAxis(-driver.getRawAxis(Xbox.Axis.RIGHT_X)) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         ));
+
+        systems.getAngler().setDefaultCommand(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, () -> CameraCalc.calculateAngler(camera) ) {
+                @Override
+                public boolean isFinished() { return false; }
+        });
 
         // Configure the button bindings
         configureButtonBindings();
@@ -147,7 +142,7 @@ public class RobotContainer {
 
         // Shoot 
         new JoystickButton(buttonBoard, 6)
-                .whileHeld(new ShootCommand(systems, Shooter.Velocity.NORMAL));
+                .whileHeld(new ShootPlusCommand(systems));
         
         // // Shoot Close (Manual)
         // new JoystickButton(operator, LogitechExtreme3D.Button.SEVEN.ordinal() + 1)
