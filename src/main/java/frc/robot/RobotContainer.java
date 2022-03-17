@@ -69,6 +69,8 @@ public class RobotContainer {
 
         camera.setLED(Constants.DEFAULT_LED_MODE);
 
+        Constants.tab_subsystems.addNumber("Distance (m)", () -> CameraCalc.getDistanceMeters(camera));
+
         // Constants.tab_subsystems.addNumber("PD Volts", pdh::getVoltage);
         // Constants.tab_subsystems.addNumber("PD Temp", pdh::getTemperature);
         // Constants.tab_subsystems.addNumber("PD Current", pdh::getTotalCurrent);
@@ -142,7 +144,7 @@ public class RobotContainer {
 
         // Shoot 
         new JoystickButton(buttonBoard, 6)
-                .whileHeld(new ShootPlusCommand(systems));
+                .whenHeld(new ShootPlusCommand(systems));
         
         // // Shoot Close (Manual)
         // new JoystickButton(operator, LogitechExtreme3D.Button.SEVEN.ordinal() + 1)

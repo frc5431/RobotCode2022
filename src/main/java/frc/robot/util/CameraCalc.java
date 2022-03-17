@@ -9,9 +9,14 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.subsystems.Shooter;
 import frc.team5431.titan.core.misc.Calc;
+import frc.team5431.titan.core.misc.Logger;
 
 public class CameraCalc {
     private static double cachedDistance = -1;
+
+    static {
+        Constants.tab_subsystems.addNumber("Cached Distance", () -> cachedDistance);
+    }
 
     public static double getDistanceMeters(PhotonCamera camera) {
         PhotonPipelineResult result = camera.getLatestResult();
@@ -41,9 +46,11 @@ public class CameraCalc {
 
     public static double calculateRPM(PhotonCamera camera) {
         double distance = getDistanceMeters(camera);
-
-        if (distance < 0)
+    
+        if (distance < 0){
+            Logger.e("%s",distance);
             return Shooter.VELOCITY_NORMAL;
+        }
         
         return MathUtil.clamp(Calc.map(distance, 2.15, 7.5, 11240, 17750), 10700, 19000);
     }
