@@ -11,19 +11,23 @@ import frc.robot.subsystems.Shooter;
 import frc.team5431.titan.core.misc.Calc;
 
 public class CameraCalc {
+    private static double cachedDistance = -1;
+
     public static double getDistanceMeters(PhotonCamera camera) {
         PhotonPipelineResult result = camera.getLatestResult();
 
         if (result.hasTargets()) {
-            return PhotonUtils.calculateDistanceToTargetMeters(
+            double calculated = PhotonUtils.calculateDistanceToTargetMeters(
                     Constants.CAMERA_HEIGHT_METERS, 
                     Constants.TARGET_HEIGHT_METERS, 
                     Constants.CAMERA_PITCH_RADIANS, 
                     Units.degreesToRadians(result.getBestTarget().getPitch())
             );
+            cachedDistance = calculated;
+            return calculated;
         }
 
-        return -1;
+        return cachedDistance;
     }
 
     public static double calculateAngler(PhotonCamera camera) {
