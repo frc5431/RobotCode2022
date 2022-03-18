@@ -29,9 +29,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -107,11 +105,11 @@ public class Drivebase extends SubsystemBase {
     private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private Triple<Double, Double, Boolean> relativeDriving = null;
 
-    private ShuffleboardTab tab;
+    // private ShuffleboardTab tab;
     public final Field2d field2d;
 
     public Drivebase() {
-        tab = Shuffleboard.getTab("Drivetrain");
+        // tab = Shuffleboard.getTab("Drivetrain");
         Mk4ModuleConfiguration moduleConfig = Mk4ModuleConfiguration.getDefaultSteerFalcon500();
         moduleConfig.setDriveCurrentLimit(40.0);
         moduleConfig.setSteerCurrentLimit(30.0);
@@ -153,8 +151,8 @@ public class Drivebase extends SubsystemBase {
         // );
 
         m_frontLeftModule = new Mk4SwerveModuleBuilder(moduleConfig)
-                .withLayout(getSMLayout(tab.getLayout("Front Left Module", BuiltInLayouts.kList))
-                        .withPosition(0, 0))
+                // .withLayout(getSMLayout(tab.getLayout("Front Left Module", BuiltInLayouts.kList))
+                //         .withPosition(0, 0))
                 .withGearRatio(Mk4SwerveModuleBuilder.GearRatio.L2)
                 .withDriveMotor(MotorType.FALCON, FRONT_LEFT_MODULE_DRIVE_MOTOR, CANBUS_DRIVETRAIN)
                 .withSteerMotor(MotorType.FALCON, FRONT_LEFT_MODULE_STEER_MOTOR, CANBUS_DRIVETRAIN)
@@ -164,8 +162,8 @@ public class Drivebase extends SubsystemBase {
 
         // We will do the same for the other modules
         m_frontRightModule = new Mk4SwerveModuleBuilder(moduleConfig)
-                .withLayout(getSMLayout(tab.getLayout("Front Right Module", BuiltInLayouts.kList))
-                        .withPosition(3, 0))
+                // .withLayout(getSMLayout(tab.getLayout("Front Right Module", BuiltInLayouts.kList))
+                //         .withPosition(3, 0))
                 .withGearRatio(Mk4SwerveModuleBuilder.GearRatio.L2)
                 .withDriveMotor(MotorType.FALCON, FRONT_RIGHT_MODULE_DRIVE_MOTOR, CANBUS_DRIVETRAIN)
                 .withSteerMotor(MotorType.FALCON, FRONT_RIGHT_MODULE_STEER_MOTOR, CANBUS_DRIVETRAIN)
@@ -174,8 +172,8 @@ public class Drivebase extends SubsystemBase {
                 .build();
 
         m_backLeftModule = new Mk4SwerveModuleBuilder(moduleConfig)
-                .withLayout(getSMLayout(tab.getLayout("Back Left Module", BuiltInLayouts.kList))
-                        .withPosition(6, 0))
+                // .withLayout(getSMLayout(tab.getLayout("Back Left Module", BuiltInLayouts.kList))
+                //         .withPosition(6, 0))
                 .withGearRatio(Mk4SwerveModuleBuilder.GearRatio.L2)
                 .withDriveMotor(MotorType.FALCON, BACK_LEFT_MODULE_DRIVE_MOTOR, CANBUS_DRIVETRAIN)
                 .withSteerMotor(MotorType.FALCON, BACK_LEFT_MODULE_STEER_MOTOR, CANBUS_DRIVETRAIN)
@@ -184,8 +182,8 @@ public class Drivebase extends SubsystemBase {
                 .build();
 
         m_backRightModule = new Mk4SwerveModuleBuilder(moduleConfig)
-                .withLayout(getSMLayout(tab.getLayout("Back Right Module", BuiltInLayouts.kList))
-                        .withPosition(9, 0))
+                // .withLayout(getSMLayout(tab.getLayout("Back Right Module", BuiltInLayouts.kList))
+                //         .withPosition(9, 0))
                 .withGearRatio(Mk4SwerveModuleBuilder.GearRatio.L2)
                 .withDriveMotor(MotorType.FALCON, BACK_RIGHT_MODULE_DRIVE_MOTOR, CANBUS_DRIVETRAIN)
                 .withSteerMotor(MotorType.FALCON, BACK_RIGHT_MODULE_STEER_MOTOR, CANBUS_DRIVETRAIN)
@@ -213,12 +211,12 @@ public class Drivebase extends SubsystemBase {
 
         Constants.tab_subsystems.addNumber("Gyro Rotation", () -> this.getGyroscopeRotation().getDegrees());
 
-        Constants.tab_subsystems.addString("Relative Driving?", () -> this.relativeDriving == null ? "null" : this.relativeDriving.toString());
+        // Constants.tab_subsystems.addString("Relative Driving?", () -> this.relativeDriving == null ? "null" : this.relativeDriving.toString());
     }
 
-    private ShuffleboardLayout getSMLayout(ShuffleboardLayout layout) {
-        return layout.withSize(3, 5);
-    }
+    // private ShuffleboardLayout getSMLayout(ShuffleboardLayout layout) {
+    //     return layout.withSize(3, 5);
+    // }
 
     public void resetOdometry(Pose2d pose) {
         m_odometry.resetPosition(pose, getGyroscopeRotation());

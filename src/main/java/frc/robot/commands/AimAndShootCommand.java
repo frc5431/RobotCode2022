@@ -9,8 +9,9 @@ import frc.robot.commands.subsystems.AnglerCommand;
 import frc.robot.util.CameraCalc;
 
 public class AimAndShootCommand extends ParallelCommandGroup {
-    public static final double AIM_DELAY = 1.0; // delay after start to aim
-    public static final double SHOOT_DELAY = 1.0; // delay after aim to shoot
+    public static final double AIM_LENGTH = 0.75;
+    public static final double AIM_DELAY = 0.65; // delay after start to aim
+    public static final double SHOOT_DELAY = 0.1; // delay after aim to shoot
 
     /*
      * 7.5m  - 17750 - 0.65
@@ -23,7 +24,8 @@ public class AimAndShootCommand extends ParallelCommandGroup {
         this.camera = systems.getCamera();
 
         addCommands(
-            new AimCommand(systems),
+            new WaitCommand(AIM_LENGTH)
+                .deadlineWith(new AimCommand(systems)),
             new WaitCommand(AIM_DELAY)
                 .andThen(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, () -> CameraCalc.calculateAngler(camera) )),
             new WaitCommand(AIM_DELAY + SHOOT_DELAY)

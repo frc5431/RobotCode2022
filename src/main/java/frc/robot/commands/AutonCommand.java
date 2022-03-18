@@ -2,11 +2,8 @@ package frc.robot.commands;
 
 import com.pathplanner.lib.*;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
-import edu.wpi.first.math.controller.*;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -21,7 +18,7 @@ import frc.robot.subsystems.Shooter;
 public class AutonCommand extends SequentialCommandGroup {
     private static final double SHOOT_TIME = 5;
     private static final double DRIVE_TIME = 1.75;
-    private static final double PIVOT_TIME = 1.25;
+    private static final double PIVOT_TIME = 0.65;
 
     public static final String[] PATHS = new String[] {
         "1 Start To First Ball",
@@ -37,7 +34,7 @@ public class AutonCommand extends SequentialCommandGroup {
     public AutonCommand(Systems systems, State state) {
         addCommands(new InstantCommand(() -> {
             // reset odometry
-            PathPlannerTrajectory trajectory = PathPlanner.loadPath(PATHS[0], Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 2.0);
+            PathPlannerTrajectory trajectory = PathPlanner.loadPath(PATHS[0], Drivebase.MAX_VELOCITY_METERS_PER_SECOND/4, 1.0);
             PathPlannerState initialState = trajectory.getInitialState();
             systems.getDrivebase().resetOdometry(new Pose2d(initialState.poseMeters.getTranslation(), initialState.holonomicRotation));
         }, systems.getDrivebase()));
@@ -68,31 +65,36 @@ public class AutonCommand extends SequentialCommandGroup {
                 );
                 break;
             case PATH:
-                PathPlannerTrajectory trajectory = PathPlanner.loadPath("1 Start To First Ball", Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 2.0);
-                Drivebase drivebase = systems.getDrivebase();
-
                 addCommands(
-                    new WaitCommand(PIVOT_TIME)
-                        .deadlineWith(new PivotCommand(systems, true)),
-                    new ParallelCommandGroup(
-                        new PPSwerveControllerCommand(
-                                trajectory, 
-                                () -> drivebase.m_odometry.getPoseMeters(), 
-                                drivebase.m_kinematics, 
-                                new PIDController(0.2, 0, 0), 
-                                new PIDController(0.2, 0, 0), 
-                                new ProfiledPIDController(1.5, 0, 0, new Constraints(Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 3.14)),
-                                (states) -> drivebase.driveRaw(drivebase.m_kinematics.toChassisSpeeds(states)), 
-                                drivebase)
-                            .andThen(new InstantCommand(
-                                    () -> drivebase.stop()
-                                    , drivebase))
-                            .deadlineWith(new IntakeCommand(systems, false))
-                    ),
-                    new WaitCommand(5)
-                        .deadlineWith(new AimAndShootCommand(systems))
+                    new PathCommand(systems, "New Path")
                 );
                 break;
+                // addCommands(
+                //     new WaitCommand(PIVOT_TIME)
+                //         .deadlineWith(new PivotCommand(systems, true)),
+                //     new ParallelCommandGroup(
+                //         new PathCommand(systems, PATHS[0])
+                //             .deadlineWith(new IntakeCommand(systems, false))
+                //     ),
+                //     new WaitCommand(3)
+                //         .deadlineWith(new AimAndShootCommand(systems)),
+                //     new ParallelCommandGroup(
+                //         new PathCommand(systems, PATHS[1])
+                //             .deadlineWith(new IntakeCommand(systems, false))
+                //     ),
+                //     new WaitCommand(2.5)
+                //         .deadlineWith(new AimAndShootCommand(systems)),
+                //     new ParallelCommandGroup(
+                //         new PathCommand(systems, PATHS[2])
+                //             .deadlineWith(new IntakeCommand(systems, false))
+                //     ),
+                //     new WaitCommand(2)
+                //         .deadlineWith(new FloorIntakeCommand(systems)),
+                //     new PathCommand(systems, PATHS[3]),
+                //     new WaitCommand(3)
+                //         .deadlineWith(new AimAndShootCommand(systems))
+                // );
+                // break;
         }
     }
 }

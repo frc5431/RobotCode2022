@@ -9,7 +9,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.subsystems.ShooterCommand;
 
 public class Shooter extends SubsystemBase {
 
@@ -141,12 +140,12 @@ public class Shooter extends SubsystemBase {
 
         shooter.set(ControlMode.Velocity, 0);
 
-        Constants.tab_subsystems.addNumber("Shooter Supplier", () -> ShooterCommand.getSupplierToTab().getAsDouble());
+        // Constants.tab_subsystems.addNumber("Shooter Supplier", () -> ShooterCommand.getSupplierToTab().getAsDouble());
 
-        Constants.tab_subsystems.addBoolean("Shooter At Velocity", this::atVelocity);
+        // Constants.tab_subsystems.addBoolean("Shooter At Velocity", this::atVelocity);
         Constants.tab_subsystems.addNumber("Shooter Target", shooter::getClosedLoopTarget);
         Constants.tab_subsystems.addNumber("Shooter Velocity", shooter::getSelectedSensorVelocity);
-        Constants.tab_subsystems.addNumber("Shooter get()", shooter::get);
+        // Constants.tab_subsystems.addNumber("Shooter get()", shooter::get);
     }
 
     // public void updateP(EntryNotification notif) {

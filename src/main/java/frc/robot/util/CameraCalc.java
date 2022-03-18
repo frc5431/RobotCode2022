@@ -46,9 +46,10 @@ public class CameraCalc {
 
     public static double calculateRPM(PhotonCamera camera) {
         double distance = getDistanceMeters(camera);
+
+        Logger.l("Distance: %s", distance);
     
-        if (distance < 0){
-            Logger.e("%s",distance);
+        if (distance < 0) {
             return Shooter.VELOCITY_NORMAL;
         }
         

@@ -23,7 +23,7 @@ public class ShootPlusCommand extends ParallelCommandGroup {
         addCommands(
             // new AnglerCommand(systems, AnglerCommand.COMMAND.SET, CameraCalc.calculateAngler(camera)),
             new WaitCommand(SHOOT_DELAY)
-                .andThen(new ShootCommand(systems, CameraCalc.calculateRPM(camera)))
+                .andThen(new ShootCommand(systems, () -> CameraCalc.calculateRPM(camera)))
         );
     }
 }
