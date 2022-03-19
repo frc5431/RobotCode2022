@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -260,5 +262,15 @@ public class RobotContainer {
         value = Math.copySign(value * value, value);
 
         return value;
+    }
+
+    public void disabledInit()  {
+        drivebase.setNeutralModeDrive(NeutralMode.Coast);
+        drivebase.setNeutralModeSteer(NeutralMode.Coast);
+    }
+
+    public void enabledInit() {
+        drivebase.setNeutralModeDrive(NeutralMode.Brake);
+        drivebase.setNeutralModeSteer(NeutralMode.Brake);
     }
 }

@@ -34,7 +34,7 @@ public class AutonCommand extends SequentialCommandGroup {
     public AutonCommand(Systems systems, State state) {
         addCommands(new InstantCommand(() -> {
             // reset odometry
-            PathPlannerTrajectory trajectory = PathPlanner.loadPath(PATHS[0], Drivebase.MAX_VELOCITY_METERS_PER_SECOND/4, 1.0);
+            PathPlannerTrajectory trajectory = PathPlanner.loadPath("New Path", Drivebase.MAX_VELOCITY_METERS_PER_SECOND/4, 1.0);
             PathPlannerState initialState = trajectory.getInitialState();
             systems.getDrivebase().resetOdometry(new Pose2d(initialState.poseMeters.getTranslation(), initialState.holonomicRotation));
         }, systems.getDrivebase()));

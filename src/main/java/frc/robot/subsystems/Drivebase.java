@@ -8,7 +8,8 @@ import static frc.robot.Constants.*;
 
 import java.util.List;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.swervedrivespecialties.swervelib.Mk4ModuleConfiguration;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleBuilder;
@@ -191,10 +192,10 @@ public class Drivebase extends SubsystemBase {
                 .withSteerOffset(BACK_RIGHT_MODULE_STEER_OFFSET)
                 .build();
 
-        ((TalonFX) m_frontLeftModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
-        ((TalonFX) m_frontRightModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
-        ((TalonFX) m_backLeftModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
-        ((TalonFX) m_backRightModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
+        ((WPI_TalonFX) m_frontLeftModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
+        ((WPI_TalonFX) m_frontRightModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
+        ((WPI_TalonFX) m_backLeftModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
+        ((WPI_TalonFX) m_backRightModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
 
         ShuffleboardLayout chassisSpeedsLayout = Constants.tab_subsystems.getLayout("ChassisSpeeds", BuiltInLayouts.kList)
                 .withSize(3, 4)
@@ -359,6 +360,18 @@ public class Drivebase extends SubsystemBase {
         m_frontRightModule.set(frVoltage, states[1].angle.getRadians());
         m_backLeftModule.set(blVoltage, states[2].angle.getRadians());
         m_backRightModule.set(brVoltage, states[3].angle.getRadians());
+    }
+
+    public void setNeutralModeDrive(NeutralMode nm) {
+        getSwerveModules().forEach((module) -> {
+            ((WPI_TalonFX) module.getDriveMotor()).setNeutralMode(nm);
+        });
+    }
+
+    public void setNeutralModeSteer(NeutralMode nm) {
+        getSwerveModules().forEach((module) -> {
+            ((WPI_TalonFX) module.getSteerMotor()).setNeutralMode(nm);
+        });
     }
 
     public List<SwerveModule> getSwerveModules() {

@@ -59,17 +59,10 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
     }
 
-    /** This function is called once each time the robot enters Disabled mode. */
-    @Override
-    public void disabledInit() {}
-
-    @Override
-    public void disabledPeriodic() {}
-
     /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
     @Override
     public void autonomousInit() {
-        DriverStation.silenceJoystickConnectionWarning(false);
+        enabledInit();
 
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -85,7 +78,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        DriverStation.silenceJoystickConnectionWarning(false);
+        enabledInit();
 
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
@@ -102,7 +95,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-        DriverStation.silenceJoystickConnectionWarning(false);
+        enabledInit();
 
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
@@ -114,11 +107,29 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationInit() {
+        enabledInit();
+
         m_simulation.simulationInit();
     }
 
     @Override
     public void simulationPeriodic() {
         m_simulation.simulationPeriodic();
+    }
+
+    /** This function is called once each time the robot enters Disabled mode. */
+    @Override
+    public void disabledInit() {
+        m_robotContainer.disabledInit();
+    }
+
+    @Override
+    public void disabledPeriodic() {}
+
+    public void enabledInit() {
+        if (isReal())
+            DriverStation.silenceJoystickConnectionWarning(false);
+
+        m_robotContainer.enabledInit();
     }
 }
