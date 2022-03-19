@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Systems;
@@ -20,6 +21,8 @@ public class AimCommand extends CommandBase {
     private final PhotonCamera camera;
 
     private final ProfiledPIDController turnPID;
+    private final Timer timer;
+    private static final double MIN_DURATION = 0.5;
 
     public AimCommand(Systems systems) {
         this.drivebase = systems.getDrivebase();
@@ -30,12 +33,21 @@ public class AimCommand extends CommandBase {
                 0.01, 
                 new Constraints(
                         Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
-                        1.0
+                        Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
                 )
         );
         this.turnPID.setGoal(0);
 
-        // Constants.tab_subsystems.addNumber("Turn PID", () -> this.turnPID.getPositionError());
+        this.timer = new Timer();
+
+        Constants.tab_subsystems.addBoolean("Turn PID At", () -> this.turnPID.atGoal());
+        Constants.tab_subsystems.addNumber("Turn PID Error", () -> {
+            try {
+                return this.turnPID.getPositionError();
+            } catch (Exception e) {
+                return 0;
+            }
+        });
 
         addRequirements(drivebase);
     }
@@ -44,6 +56,8 @@ public class AimCommand extends CommandBase {
     public void initialize() {
         camera.setDriverMode(false);
         camera.setLED(VisionLEDMode.kOn);
+        timer.reset();
+        timer.start();
     }
 
     @Override
@@ -52,12 +66,19 @@ public class AimCommand extends CommandBase {
 
         if (result.hasTargets()) {
             Logger.l("Meters to target: " + CameraCalc.getDistanceMeters(camera));
+
+            double calculatedValue = 4*turnPID.calculate(Units.degreesToRadians(result.getBestTarget().getYaw()));
             
             drivebase.driveRaw(new ChassisSpeeds(0, 0, 
-                    4*turnPID.calculate(
-                        Units.degreesToRadians(result.getBestTarget().getYaw())
+                    Math.copySign(
+                        Math.max(
+                            Math.abs(calculatedValue),
+                            Drivebase.MIN_ANGULAR_VELOCITY
+                        ), 
+                        calculatedValue
                     )
-            ));
+                )
+            );
         }
     }
 
@@ -65,5 +86,11 @@ public class AimCommand extends CommandBase {
     public void end(boolean interrupted) {
         camera.setDriverMode(true);
         camera.setLED(Constants.DEFAULT_LED_MODE);
+        timer.stop();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return timer.hasElapsed(MIN_DURATION) && turnPID.atGoal();
     }
 }

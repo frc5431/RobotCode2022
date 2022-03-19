@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.common.hardware.VisionLEDMode;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -150,9 +151,10 @@ public class RobotContainer {
         new JoystickButton(buttonController, Xbox.Button.A)
                 .toggleWhenPressed(new FloorIntakeCommand(systems));
         
-        // Reject // TODO
+        // Reject
         // new JoystickButton(buttonBoard, 1)
-        //         .whileHeld(new ShootCommand(systems, Shooter.Velocity.REJECT));
+        new JoystickButton(buttonController, Xbox.Button.BACK)
+                .whileHeld(new ShootCommand(systems, Shooter.Velocity.REJECT));
 
         // Shoot 
         // new JoystickButton(buttonBoard, 6)
@@ -217,9 +219,26 @@ public class RobotContainer {
                     systems.getClimber().getHinge().reset();
                 }, systems.getClimber().getHinge());
         
+        // Calibrate All
+        new JoystickButton(buttonController, Xbox.Button.START)
+                .whenPressed(() -> {
+                    systems.getPivot().calibrateMode(true);
+                    systems.getClimber().getExtend().calibrateMode(true);
+                    systems.getClimber().getHinge().calibrateMode(true);
+                }, systems.getPivot(), systems.getClimber().getExtend(), systems.getClimber().getHinge())
+                .whenReleased(() -> {
+                    systems.getPivot().calibrateMode(false);
+                    systems.getPivot().reset();
+                    systems.getClimber().getExtend().calibrateMode(false);
+                    systems.getClimber().getExtend().reset();
+                    systems.getClimber().getHinge().calibrateMode(false);
+                    systems.getClimber().getHinge().reset();
+                }, systems.getPivot(), systems.getClimber().getExtend(), systems.getClimber().getHinge());
+        
         // Aim/Vision
         // new JoystickButton(buttonBoard, 11)
-        //         .whenHeld(new AimCommand(systems));
+        new JoystickButton(buttonController, Xbox.Button.Y)
+                .whenHeld(new AimCommand(systems));
 
         // Stop All
         // new JoystickButton(buttonBoard, 12)
@@ -267,10 +286,12 @@ public class RobotContainer {
     public void disabledInit()  {
         drivebase.setNeutralModeDrive(NeutralMode.Coast);
         drivebase.setNeutralModeSteer(NeutralMode.Coast);
+        camera.setLED(VisionLEDMode.kOff);
     }
 
     public void enabledInit() {
         drivebase.setNeutralModeDrive(NeutralMode.Brake);
         drivebase.setNeutralModeSteer(NeutralMode.Brake);
+        camera.setLED(Constants.DEFAULT_LED_MODE);
     }
 }

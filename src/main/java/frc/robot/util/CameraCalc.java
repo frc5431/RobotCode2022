@@ -41,7 +41,7 @@ public class CameraCalc {
         if (distance < 0)
             return -1;
 
-        return MathUtil.clamp(Calc.map(distance, 2.15, 7.5, 0.45, 0.65), 0.45, 0.65);
+        return MathUtil.clamp(Calc.map(distance, 2.15, 7.5, 0.45, 0.6), 0.45, 0.6); // prev max: 0.65
     }
 
     public static double calculateRPM(PhotonCamera camera) {
@@ -53,6 +53,6 @@ public class CameraCalc {
             return Shooter.VELOCITY_NORMAL;
         }
         
-        return MathUtil.clamp(Calc.map(distance, 2.15, 7.5, 11240, 17750), 10700, 19000);
+        return MathUtil.clamp(Calc.map(distance, 2.15, 7.45, 11240, Shooter.MAX_VELOCITY), 10700, Shooter.MAX_VELOCITY); // prev max: 17750
     }
 }

@@ -3,7 +3,6 @@ package frc.robot.commands;
 import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Systems;
 import frc.robot.util.CameraCalc;
 
@@ -22,8 +21,10 @@ public class ShootPlusCommand extends ParallelCommandGroup {
 
         addCommands(
             // new AnglerCommand(systems, AnglerCommand.COMMAND.SET, CameraCalc.calculateAngler(camera)),
-            new WaitCommand(SHOOT_DELAY)
-                .andThen(new ShootCommand(systems, () -> CameraCalc.calculateRPM(camera)))
+            // new WaitCommand(SHOOT_DELAY)
+            //     .andThen(
+                    new ShootCommand(systems, () -> CameraCalc.calculateRPM(camera))
+                    // )
         );
     }
 }
