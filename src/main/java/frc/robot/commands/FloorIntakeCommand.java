@@ -9,8 +9,8 @@ import frc.robot.commands.subsystems.IntakeCommand;
 public class FloorIntakeCommand extends ParallelCommandGroup {
     public FloorIntakeCommand(Systems systems) {
         addCommands(
-            new ProxyScheduleCommand(new IntakeCommand(systems, false)),
-            new FeederBottomCommand(systems, false)
+            new IntakeCommand(systems, false),
+            new ProxyScheduleCommand(new FeederBottomCommand(systems, false))
         );
     }
 }
