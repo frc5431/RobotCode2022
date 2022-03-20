@@ -28,7 +28,7 @@ public class AutonCommand extends SequentialCommandGroup {
     };
 
     public static enum State {
-        ONE_BALL, TWO_BALL, PATH
+        ONE_BALL, TWO_BALL, THREE_BALL, FIVE_BALL, SIX_BALL, TEST_PATH
     }
 
     public AutonCommand(Systems systems, State state) {
@@ -45,45 +45,52 @@ public class AutonCommand extends SequentialCommandGroup {
                 break;
             case TWO_BALL:
                 addCommands(
-                    new WaitCommand(SHOOT_TIME)
-                        .deadlineWith(new ShootCommand(systems, Shooter.Velocity.NORMAL)),
-                    new WaitCommand(DRIVE_TIME)
-                        .deadlineWith(new DriveCommand(systems, 0.3, 0.0, false)),
-                    new WaitCommand(PIVOT_TIME)
-                        .deadlineWith(new PivotCommand(systems, true))
+                    new ParallelCommandGroup(
+                        new SequentialCommandGroup(
+                            new WaitCommand(SHOOT_TIME)
+                                .deadlineWith(new ShootCommand(systems, Shooter.Velocity.NORMAL)),
+                            new WaitCommand(DRIVE_TIME)
+                            .deadlineWith(new DriveCommand(systems, 0.3, 0.0, false))
+                        ),
+                        new WaitCommand(PIVOT_TIME)
+                            .deadlineWith(new PivotCommand(systems, true))
+                    )
                 );
                 break;
-            case PATH:
+            case FIVE_BALL:
+                addCommands(
+                    new WaitCommand(PIVOT_TIME)
+                        .deadlineWith(new PivotCommand(systems, true)),
+                    new ParallelCommandGroup(
+                        new PathCommand(systems, PATHS[0])
+                            .deadlineWith(new IntakeCommand(systems, false))
+                    ),
+                    new WaitCommand(3)
+                        .deadlineWith(new AimAndShootCommand(systems)),
+                    new ParallelCommandGroup(
+                        new PathCommand(systems, PATHS[1])
+                            .deadlineWith(new IntakeCommand(systems, false))
+                    ),
+                    new WaitCommand(2.5)
+                        .deadlineWith(new AimAndShootCommand(systems)),
+                    new ParallelCommandGroup(
+                        new PathCommand(systems, PATHS[2])
+                            .deadlineWith(new IntakeCommand(systems, false))
+                    ),
+                    new WaitCommand(2)
+                        .deadlineWith(new FloorIntakeCommand(systems)),
+                    new PathCommand(systems, PATHS[3]),
+                    new WaitCommand(3)
+                        .deadlineWith(new AimAndShootCommand(systems))
+                );
+                break;
+            case TEST_PATH:
                 addCommands(
                     new PathCommand(systems, "New Path")
                 );
                 break;
-                // addCommands(
-                //     new WaitCommand(PIVOT_TIME)
-                //         .deadlineWith(new PivotCommand(systems, true)),
-                //     new ParallelCommandGroup(
-                //         new PathCommand(systems, PATHS[0])
-                //             .deadlineWith(new IntakeCommand(systems, false))
-                //     ),
-                //     new WaitCommand(3)
-                //         .deadlineWith(new AimAndShootCommand(systems)),
-                //     new ParallelCommandGroup(
-                //         new PathCommand(systems, PATHS[1])
-                //             .deadlineWith(new IntakeCommand(systems, false))
-                //     ),
-                //     new WaitCommand(2.5)
-                //         .deadlineWith(new AimAndShootCommand(systems)),
-                //     new ParallelCommandGroup(
-                //         new PathCommand(systems, PATHS[2])
-                //             .deadlineWith(new IntakeCommand(systems, false))
-                //     ),
-                //     new WaitCommand(2)
-                //         .deadlineWith(new FloorIntakeCommand(systems)),
-                //     new PathCommand(systems, PATHS[3]),
-                //     new WaitCommand(3)
-                //         .deadlineWith(new AimAndShootCommand(systems))
-                // );
-                // break;
+            default:
+                break;
         }
     }
 

@@ -48,11 +48,11 @@ public class CameraCalc {
         double distance = getDistanceMeters(camera);
 
         Logger.l("Distance: %s", distance);
-    
+
         if (distance < 0) {
             return Shooter.VELOCITY_NORMAL;
         }
-        
+
         return MathUtil.clamp(Calc.map(distance, 2.15, 7.45, 12800, 19000), 12000, 20000); // prev max: 17750
     }
 }
