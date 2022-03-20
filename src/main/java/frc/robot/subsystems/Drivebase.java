@@ -244,6 +244,10 @@ public class Drivebase extends SubsystemBase {
         m_pigeon2.reset();
     }
 
+    public void resetGyroAt(double yaw) {
+        m_pigeon2.setYaw(yaw);
+    }
+
     // @Log(name = "Gyroscope Rot", tabName = "Subsystems")
     public Rotation2d getGyroscopeRotation() {
         // Pigeon

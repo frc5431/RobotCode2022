@@ -48,6 +48,7 @@ public class AimCommand extends CommandBase {
                 return 0;
             }
         });
+        Constants.tab_subsystems.addBoolean("IS Vision Done?", this::isFinished);
 
         addRequirements(drivebase);
     }

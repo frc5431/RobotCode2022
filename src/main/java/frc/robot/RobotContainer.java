@@ -85,9 +85,8 @@ public class RobotContainer {
         // Constants.tab_subsystems.addNumber("PD Joules", pdh::getTotalEnergy);
 
         autonChooser = new SendableChooser<>();
-        autonChooser.setDefaultOption("Shoot and Drive", AutonCommand.State.SHOOT_DRIVE);
-        autonChooser.addOption("Shoot", AutonCommand.State.SHOOT);
-        autonChooser.addOption("Nothing", AutonCommand.State.NOTHING);
+        autonChooser.setDefaultOption("Two Ball (taxi)", AutonCommand.State.TWO_BALL);
+        autonChooser.addOption("One Ball (no taxi)", AutonCommand.State.ONE_BALL);
         autonChooser.addOption("Path (WIP)", AutonCommand.State.PATH);
         Constants.tab_subsystems.add("Auton State", autonChooser);
     }

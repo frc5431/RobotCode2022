@@ -4,6 +4,7 @@ import com.pathplanner.lib.*;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -27,25 +28,14 @@ public class AutonCommand extends SequentialCommandGroup {
     };
 
     public static enum State {
-        NOTHING, SHOOT, SHOOT_DRIVE, PATH
+        ONE_BALL, TWO_BALL, PATH
     }
 
     public AutonCommand(Systems systems, State state) {
-        addCommands(new InstantCommand(() -> {
-            // reset odometry
-            PathPlannerTrajectory trajectory = PathPlanner.loadPath("New Path", Drivebase.MAX_VELOCITY_METERS_PER_SECOND/4, 1.0);
-            PathPlannerState initialState = trajectory.getInitialState();
-            systems.getDrivebase().resetOdometry(new Pose2d(initialState.poseMeters.getTranslation(), initialState.holonomicRotation));
-        }, systems.getDrivebase()));
+        addCommands(commandResetAuton(systems, "New Path"));
 
         switch (state) {
-            case NOTHING:
-                addCommands(
-                    new WaitCommand(PIVOT_TIME)
-                        .deadlineWith(new PivotCommand(systems, true))
-                );
-                break;
-            case SHOOT:
+            case ONE_BALL:
                 addCommands(
                     new WaitCommand(SHOOT_TIME)
                         .deadlineWith(new ShootCommand(systems, Shooter.Velocity.NORMAL)),
@@ -53,7 +43,7 @@ public class AutonCommand extends SequentialCommandGroup {
                         .deadlineWith(new PivotCommand(systems, true))
                 );
                 break;
-            case SHOOT_DRIVE:
+            case TWO_BALL:
                 addCommands(
                     new WaitCommand(SHOOT_TIME)
                         .deadlineWith(new ShootCommand(systems, Shooter.Velocity.NORMAL)),
@@ -95,5 +85,15 @@ public class AutonCommand extends SequentialCommandGroup {
                 // );
                 // break;
         }
+    }
+
+    public CommandBase commandResetAuton(Systems systems, String path) {
+        return new InstantCommand(() -> {
+            // reset odometry
+            PathPlannerTrajectory trajectory = PathPlanner.loadPath(path, Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 1.0);
+            PathPlannerState initialState = trajectory.getInitialState();
+            systems.getDrivebase().resetGyroAt(initialState.holonomicRotation.getDegrees());
+            systems.getDrivebase().resetOdometry(new Pose2d(initialState.poseMeters.getTranslation(), initialState.holonomicRotation));
+        }, systems.getDrivebase());
     }
 }
