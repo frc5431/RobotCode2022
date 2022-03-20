@@ -53,6 +53,6 @@ public class CameraCalc {
             return Shooter.VELOCITY_NORMAL;
         }
         
-        return MathUtil.clamp(Calc.map(distance, 2.15, 7.45, 11240, Shooter.MAX_VELOCITY), 10700, Shooter.MAX_VELOCITY); // prev max: 17750
+        return MathUtil.clamp(Calc.map(distance, 2.15, 7.45, 12800, 19000), 12000, 20000); // prev max: 17750
     }
 }

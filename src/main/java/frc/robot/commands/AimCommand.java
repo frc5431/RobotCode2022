@@ -22,7 +22,7 @@ public class AimCommand extends CommandBase {
 
     private final ProfiledPIDController turnPID;
     private final Timer timer;
-    private static final double MIN_DURATION = 0.5;
+    private static final double MIN_DURATION = 0.25;
 
     public AimCommand(Systems systems) {
         this.drivebase = systems.getDrivebase();
