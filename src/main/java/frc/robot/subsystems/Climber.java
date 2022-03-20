@@ -22,7 +22,7 @@ public class Climber extends SubsystemBase {
     public static final boolean REVERSE_EXTEND = true;
     public static final boolean REVERSE_HINGE = true;
     public static final double EXTEND_DOWN_LIMIT = 0;
-    public static final double EXTEND_UP_LIMIT = 327500; // 384000
+    public static final double EXTEND_UP_LIMIT = 384000; // 384000
     public static final double HINGE_CLOSED_LIMIT = 0;
     public static final double HINGE_OPEN_LIMIT = -275000;
 

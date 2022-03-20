@@ -16,6 +16,9 @@ import frc.robot.subsystems.Drivebase;
 public class PathCommand extends SequentialCommandGroup {
     public static double DRIVEBASE_SPEED_MULT = 0.9;
 
+    // Forward irl multiplier = 1.18
+    // Strafe irl multiplier = 1.07
+
     public PathCommand(Systems systems, String path) {
         PathPlannerTrajectory trajectory = PathPlanner.loadPath(path, Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 2.0);
         Drivebase drivebase = systems.getDrivebase();

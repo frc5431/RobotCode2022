@@ -245,7 +245,7 @@ public class Drivebase extends SubsystemBase {
     }
 
     public void resetGyroAt(double yaw) {
-        m_pigeon2.setYaw(yaw);
+        m_pigeon2.setYaw(-yaw);
     }
 
     // @Log(name = "Gyroscope Rot", tabName = "Subsystems")
