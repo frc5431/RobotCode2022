@@ -278,6 +278,17 @@ public class Drivebase extends SubsystemBase {
         relativeDriving = null;
     }
 
+    public void driveRawTranslate(double x, double y) {
+        m_chassisSpeeds.vxMetersPerSecond = x;
+        m_chassisSpeeds.vyMetersPerSecond = y;
+        relativeDriving = null;
+    }
+
+    public void driveRawRotate(double rad) {
+        m_chassisSpeeds.omegaRadiansPerSecond = rad;
+        relativeDriving = null;
+    }
+
     public void stop() {
         driveRaw(new ChassisSpeeds());
     }
