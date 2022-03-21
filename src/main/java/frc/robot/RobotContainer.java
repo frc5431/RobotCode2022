@@ -176,6 +176,14 @@ public class RobotContainer {
         new JoystickButton(operator, LogitechExtreme3D.Button.SIX)
                 .whenPressed(new AnglerCommand(systems, false));
 
+        // Shoot from Hub (manual)
+        new JoystickButton(operator, LogitechExtreme3D.Button.THREE)
+                .whenHeld(new AngleAndShootCommand(systems, AngleAndShootCommand.Position.HUB));
+
+        // Shoot from Safe Zone (manual)
+        new JoystickButton(operator, LogitechExtreme3D.Button.FOUR)
+                .whenHeld(new AngleAndShootCommand(systems, AngleAndShootCommand.Position.SAFEZONE));
+
         // Climber Extend (Manual) (moved to default)
         // new JoystickButton(buttonBoard, 16)
         //         .whileHeld(new ClimberExtendCommand(systems, false));

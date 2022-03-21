@@ -37,6 +37,7 @@ public class AimCommand extends CommandBase {
                 )
         );
         this.turnPID.setGoal(0);
+        this.turnPID.setTolerance(0.05, 0.2);
 
         this.timer = new Timer();
 
@@ -48,7 +49,7 @@ public class AimCommand extends CommandBase {
                 return 0;
             }
         });
-        Constants.tab_subsystems.addBoolean("IS Vision Done?", this::isFinished);
+        Constants.tab_subsystems.addBoolean("Is Vision Done?", this::isFinished);
 
         addRequirements(drivebase);
     }
