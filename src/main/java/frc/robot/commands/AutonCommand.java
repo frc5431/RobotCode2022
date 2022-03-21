@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Systems;
 import frc.robot.commands.subsystems.DriveCommand;
+import frc.robot.commands.subsystems.FeederBottomCommand;
 import frc.robot.commands.subsystems.IntakeCommand;
 import frc.robot.commands.subsystems.PivotCommand;
 import frc.robot.subsystems.Drivebase;
@@ -32,8 +33,6 @@ public class AutonCommand extends SequentialCommandGroup {
     }
 
     public AutonCommand(Systems systems, State state) {
-        addCommands(commandResetAuton(systems, "New Path"));
-
         switch (state) {
             case ONE_BALL:
                 addCommands(
@@ -59,6 +58,7 @@ public class AutonCommand extends SequentialCommandGroup {
                 break;
             case FIVE_BALL:
                 addCommands(
+                    commandResetAuton(systems, PATHS[0]),
                     new WaitCommand(PIVOT_TIME)
                         .deadlineWith(new PivotCommand(systems, true)),
                     new ParallelCommandGroup(
@@ -66,26 +66,30 @@ public class AutonCommand extends SequentialCommandGroup {
                             .deadlineWith(new IntakeCommand(systems, false))
                     ),
                     new WaitCommand(3)
-                        .deadlineWith(new AimAndShootCommand(systems)),
+                        .deadlineWith(new ShootPlusCommand(systems)),
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[1])
                             .deadlineWith(new IntakeCommand(systems, false))
                     ),
                     new WaitCommand(2.5)
-                        .deadlineWith(new AimAndShootCommand(systems)),
+                        .deadlineWith(new ShootPlusCommand(systems)),
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[2])
                             .deadlineWith(new IntakeCommand(systems, false))
                     ),
                     new WaitCommand(2)
-                        .deadlineWith(new FloorIntakeCommand(systems)),
+                        .deadlineWith(new ParallelCommandGroup(
+                            new IntakeCommand(systems, false),
+                            new FeederBottomCommand(systems, false)
+                        )),
                     new PathCommand(systems, PATHS[3]),
                     new WaitCommand(3)
-                        .deadlineWith(new AimAndShootCommand(systems))
+                        .deadlineWith(new ShootPlusCommand(systems))
                 );
                 break;
             case TEST_PATH:
                 addCommands(
+                    commandResetAuton(systems, "New Path"),
                     new PathCommand(systems, "New Path")
                 );
                 break;

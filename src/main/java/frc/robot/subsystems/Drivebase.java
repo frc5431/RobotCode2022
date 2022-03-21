@@ -245,7 +245,7 @@ public class Drivebase extends SubsystemBase {
     }
 
     public void resetGyroAt(double yaw) {
-        m_pigeon2.setYaw(-yaw);
+        m_pigeon2.setYaw(yaw);
     }
 
     // @Log(name = "Gyroscope Rot", tabName = "Subsystems")
@@ -314,9 +314,21 @@ public class Drivebase extends SubsystemBase {
         };
     }
 
+    public SwerveModuleState[] getStatesOdometry() {
+        ChassisSpeeds s = m_kinematics.toChassisSpeeds(new SwerveModuleState[] {
+            getModuleState(m_frontLeftModule),
+            getModuleState(m_frontRightModule),
+            getModuleState(m_backLeftModule),
+            getModuleState(m_backRightModule)
+        });
+        s.vxMetersPerSecond *= 0.5; // Tweak for PathPlanner
+        s.vyMetersPerSecond *= 0.5; // Tweak for PathPlanner
+        return m_kinematics.toSwerveModuleStates(s);
+    }
+
     @Override
     public void periodic() {
-        m_odometry.update(getGyroscopeRotation(), getStates());
+        m_odometry.update(getGyroscopeRotation(), getStatesOdometry());
         field2d.setRobotPose(m_odometry.getPoseMeters());
 
         // Hockey-lock by setting rotation to realllly low number

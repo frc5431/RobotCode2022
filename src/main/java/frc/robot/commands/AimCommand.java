@@ -41,15 +41,17 @@ public class AimCommand extends CommandBase {
 
         this.timer = new Timer();
 
-        Constants.tab_subsystems.addBoolean("Turn PID At", () -> this.turnPID.atGoal());
-        Constants.tab_subsystems.addNumber("Turn PID Error", () -> {
-            try {
-                return this.turnPID.getPositionError();
-            } catch (Exception e) {
-                return 0;
-            }
-        });
-        Constants.tab_subsystems.addBoolean("Is Vision Done?", this::isFinished);
+        try {
+            Constants.tab_subsystems.addBoolean("Turn PID At", () -> this.turnPID.atGoal());
+            Constants.tab_subsystems.addNumber("Turn PID Error", () -> {
+                try {
+                    return this.turnPID.getPositionError();
+                } catch (Exception e) {
+                    return 0;
+                }
+            });
+            Constants.tab_subsystems.addBoolean("Is Vision Done?", this::isFinished);
+        } catch (Exception e) {}
 
         addRequirements(drivebase);
     }
@@ -69,7 +71,12 @@ public class AimCommand extends CommandBase {
         if (result.hasTargets()) {
             Logger.l("Meters to target: " + CameraCalc.getDistanceMeters(camera));
 
-            double calculatedValue = 4*turnPID.calculate(Units.degreesToRadians(result.getBestTarget().getYaw()));
+            double yawToTargetRadians = Units.degreesToRadians(result.getBestTarget().getYaw());
+
+            double calculatedValue = 4*turnPID.calculate(yawToTargetRadians);
+
+            Logger.l("Aim calc: %s -> %s", yawToTargetRadians, calculatedValue);
+            Logger.l("Turn PID State: %s", turnPID.getPositionError());
             
             drivebase.driveRaw(new ChassisSpeeds(0, 0, 
                     Math.copySign(
