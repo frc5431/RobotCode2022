@@ -2,8 +2,12 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import org.photonvision.PhotonCamera;
+
 import edu.wpi.first.wpilibj.Servo;
 import frc.robot.subsystems.*;
+
+import static frc.robot.Constants.CANBUS_SUBSYSTEM;
 
 public class Systems {
     private WPI_TalonFX feederBottom;
@@ -17,6 +21,8 @@ public class Systems {
 
     private Servo anglerServo;
 
+    private Drivebase drivebase;
+
     private Feeder feeder;
     private Shooter shooter;
     private Intake intake;
@@ -24,17 +30,21 @@ public class Systems {
     private Climber climber;
     private Angler angler;
 
+    private PhotonCamera camera;
+
     public Systems() {
-        feederBottom = new WPI_TalonFX(Constants.ID_FEEDER_BOTTOM);
-        feederTop = new WPI_TalonFX(Constants.ID_FEEDER_TOP);
-        shooterLeft = new WPI_TalonFX(Constants.ID_SHOOTER_LEFT);
-        shooterRight = new WPI_TalonFX(Constants.ID_SHOOTER_RIGHT);
-        intakeMotor = new WPI_TalonFX(Constants.ID_INTAKE);
-        pivotMotor = new WPI_TalonFX(Constants.ID_PIVOT);
-        climberExtend = new WPI_TalonFX(Constants.ID_CLIMBER_EXTEND);
-        climberHinge = new WPI_TalonFX(Constants.ID_CLIMBER_HINGE);
+        feederBottom = new WPI_TalonFX(Constants.ID_FEEDER_BOTTOM, CANBUS_SUBSYSTEM);
+        feederTop = new WPI_TalonFX(Constants.ID_FEEDER_TOP, CANBUS_SUBSYSTEM);
+        shooterLeft = new WPI_TalonFX(Constants.ID_SHOOTER_LEFT, CANBUS_SUBSYSTEM);
+        shooterRight = new WPI_TalonFX(Constants.ID_SHOOTER_RIGHT, CANBUS_SUBSYSTEM);
+        intakeMotor = new WPI_TalonFX(Constants.ID_INTAKE, CANBUS_SUBSYSTEM);
+        pivotMotor = new WPI_TalonFX(Constants.ID_PIVOT, CANBUS_SUBSYSTEM);
+        climberExtend = new WPI_TalonFX(Constants.ID_CLIMBER_EXTEND, CANBUS_SUBSYSTEM);
+        climberHinge = new WPI_TalonFX(Constants.ID_CLIMBER_HINGE, CANBUS_SUBSYSTEM);
 
         anglerServo = new Servo(Constants.SLOT_ANGLER);
+
+        drivebase = new Drivebase();
 
         feeder = new Feeder(feederBottom,feederTop);
         shooter = new Shooter(shooterLeft, shooterRight);
@@ -42,6 +52,12 @@ public class Systems {
         pivot = new Pivot(pivotMotor);
         climber = new Climber(climberExtend, climberHinge);
         angler = new Angler(anglerServo);
+
+        camera = new PhotonCamera(Constants.CAMERA_NAME);
+    }
+
+    public Drivebase getDrivebase() {
+        return drivebase;
     }
 
     public Feeder getFeeder() {
@@ -66,5 +82,9 @@ public class Systems {
 
     public Angler getAngler() {
         return angler;
+    }
+
+    public PhotonCamera getCamera() {
+        return camera;
     }
 }

@@ -4,28 +4,26 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
+import org.photonvision.PhotonCamera;
+import org.photonvision.common.hardware.VisionLEDMode;
+
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.*;
 import frc.robot.commands.subsystems.*;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
+import frc.robot.util.CameraCalc;
 import frc.team5431.titan.core.joysticks.LogitechExtreme3D;
 import frc.team5431.titan.core.joysticks.Xbox;
 import frc.team5431.titan.core.misc.Calc;
+import frc.team5431.titan.core.robot.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -35,12 +33,22 @@ import frc.team5431.titan.core.misc.Calc;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private final Drivebase drivebase = new Drivebase();
     private final Systems systems = new Systems();
+    private final Drivebase drivebase = systems.getDrivebase();
+    private final PhotonCamera camera = systems.getCamera();
+
+//     private final PowerDistribution pdh = new PowerDistribution();
 
     private final Xbox driver = new Xbox(0);
+<<<<<<< HEAD
     private final Joystick vjoy = new Joystick(4);
+=======
+//     private final Joystick buttonBoard = new Joystick(1);
+    private final Xbox buttonController = new Xbox(1);
+>>>>>>> a8bc3f359b897110aac3c3a77f6ceb5257789ec5
     private final LogitechExtreme3D operator = new LogitechExtreme3D(2);
+
+    private final SendableChooser<AutonCommand.State> autonChooser;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -58,8 +66,34 @@ public class RobotContainer {
                         () -> modifyAxis(-driver.getRawAxis(Xbox.Axis.RIGHT_X)) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         ));
 
+        systems.getAngler().setDefaultCommand(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, () -> CameraCalc.calculateAngler(camera) ) {
+                @Override
+                public boolean isFinished() { return false; }
+        });
+
+        systems.getClimber().getExtend().setDefaultCommand(new ClimberExtendCommand(systems, () -> {
+            return modifyAxis(buttonController.getRawAxis(Xbox.Axis.TRIGGER_RIGHT))
+                  - modifyAxis(buttonController.getRawAxis(Xbox.Axis.TRIGGER_LEFT));
+        }));
+
         // Configure the button bindings
         configureButtonBindings();
+
+        camera.setLED(Constants.DEFAULT_LED_MODE);
+
+        Constants.tab_subsystems.addNumber("Distance (m)", () -> CameraCalc.getDistanceMeters(camera));
+
+        // Constants.tab_subsystems.addNumber("PD Volts", pdh::getVoltage);
+        // Constants.tab_subsystems.addNumber("PD Temp", pdh::getTemperature);
+        // Constants.tab_subsystems.addNumber("PD Current", pdh::getTotalCurrent);
+        // Constants.tab_subsystems.addNumber("PD Joules", pdh::getTotalEnergy);
+
+        autonChooser = new SendableChooser<>();
+        autonChooser.setDefaultOption("Two Ball (taxi)", AutonCommand.State.TWO_BALL);
+        autonChooser.addOption("One Ball (no taxi)", AutonCommand.State.ONE_BALL);
+        autonChooser.addOption("Five Ball", AutonCommand.State.FIVE_BALL);
+        autonChooser.addOption("Test Path", AutonCommand.State.TEST_PATH);
+        Constants.tab_subsystems.add("Auton State", autonChooser);
     }
 
     /**
@@ -70,25 +104,26 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         // Y button zeros the gyroscope
-        new JoystickButton(driver, Xbox.Button.Y.ordinal() + 1)
+        new JoystickButton(driver, Xbox.Button.Y)
                 // No requirements because we don't need to interrupt anything
                 .whenPressed(drivebase::zeroGyroscope);
         
         // D-Pad cardinal directions
-        new POVButton(driver, 0)
+        new POVButton(driver, 0) // up
                 .whileHeld(
                     () -> drivebase.driveController(new ChassisSpeeds(Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0, 0)), drivebase);
-        new POVButton(driver, 180)
+        new POVButton(driver, 180) // down
                 .whileHeld(
                     () -> drivebase.driveController(new ChassisSpeeds(-Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0, 0)), drivebase);
-        new POVButton(driver, 270)
+        new POVButton(driver, 270) // right
                 .whileHeld(
                     () -> drivebase.driveController(new ChassisSpeeds(0, Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase);
-        new POVButton(driver, 90)
+        new POVButton(driver, 90) // left
                 .whileHeld(
                     () -> drivebase.driveController(new ChassisSpeeds(0, -Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase);
         
         // Intake (Manual)
+<<<<<<< HEAD
         new JoystickButton(vjoy, 1)
                 .whileHeld(new IntakeCommand(systems, false));
         
@@ -105,16 +140,37 @@ public class RobotContainer {
         new JoystickButton(vjoy, 4)
                 .whileHeld(() -> systems.getPivot().set(-0.1), systems.getPivot())
                 .whenReleased(() -> systems.getPivot().set(0), systems.getPivot());
+=======
+        // new JoystickButton(buttonBoard, 7)
+        new POVButton(buttonController, 270)
+                .whileHeld(new IntakeCommand(systems, false));
+        
+        // Intake Reverse (Manual)
+        // new JoystickButton(buttonBoard, 3)
+        new JoystickButton(buttonController, Xbox.Button.X)
+                .whileHeld(new IntakeCommand(systems, true));
+        
+        // Pivot Up
+        // new JoystickButton(buttonBoard, 5)
+        new POVButton(buttonController, 0)
+                .whileHeld(new PivotCommand(systems, false));
+        
+        // Pivot Down
+        // new JoystickButton(buttonBoard, 2)
+        new POVButton(buttonController, 180)
+                .whileHeld(new PivotCommand(systems, true));
+>>>>>>> a8bc3f359b897110aac3c3a77f6ceb5257789ec5
 
         // Trigger/slider Shoot
-        new JoystickButton(operator, LogitechExtreme3D.Button.TRIGGER.ordinal() + 1)
+        new JoystickButton(operator, LogitechExtreme3D.Button.TRIGGER)
                 .whileHeld(new ShooterCommand(systems, 
                         () -> Calc.map(
                                 operator.getRawAxis(LogitechExtreme3D.Axis.SLIDER), 
-                                        -1.0, 1.0, 
+                                        1.0, -1.0, 
                                         0, Shooter.MAX_VELOCITY)));
         
         // Floor Intake
+<<<<<<< HEAD
         new JoystickButton(vjoy, 5)
                 .toggleWhenPressed(new FloorIntakeCommand(systems));
         
@@ -133,6 +189,21 @@ public class RobotContainer {
         // // Shoot Far (Manual)
         // new JoystickButton(operator, LogitechExtreme3D.Button.EIGHT.ordinal() + 1)
         //         .whileHeld(new ShooterCommand(systems, Shooter.Velocity.FAR));
+=======
+        // new JoystickButton(buttonBoard, 4)
+        new JoystickButton(buttonController, Xbox.Button.A)
+                .toggleWhenPressed(new FloorIntakeCommand(systems));
+        
+        // Reject
+        // new JoystickButton(buttonBoard, 1)
+        new JoystickButton(buttonController, Xbox.Button.BACK)
+                .whileHeld(new ShootCommand(systems, Shooter.Velocity.REJECT));
+
+        // Shoot 
+        // new JoystickButton(buttonBoard, 6)
+        new JoystickButton(buttonController, Xbox.Button.B)
+                .whenHeld(new ShootPlusCommand(systems));
+>>>>>>> a8bc3f359b897110aac3c3a77f6ceb5257789ec5
         
         // Feed Both Up
         new POVButton(operator, 0)
@@ -142,14 +213,15 @@ public class RobotContainer {
         new POVButton(operator, 180)
                 .whileHeld(new FeedEverything(systems, true));
         
-        // Angler towards 90
-        new JoystickButton(operator, LogitechExtreme3D.Button.FIVE.ordinal() + 1)
+        // Angler towards 90 (lower angler)
+        new JoystickButton(operator, LogitechExtreme3D.Button.FIVE)
                 .whenPressed(new AnglerCommand(systems, true));
 
-        // Angler towards 0
-        new JoystickButton(operator, LogitechExtreme3D.Button.SIX.ordinal() + 1)
+        // Angler towards 0 (raise angler)
+        new JoystickButton(operator, LogitechExtreme3D.Button.SIX)
                 .whenPressed(new AnglerCommand(systems, false));
 
+<<<<<<< HEAD
         // Climber Extend (Manual)
         new JoystickButton(vjoy, 8)
                 .whileHeld(new ClimberExtendCommand(systems, false));
@@ -169,8 +241,84 @@ public class RobotContainer {
         // Stop All
         new JoystickButton(vjoy, 12)
                 .whileHeld(new StopAllCommand(systems));
+=======
+        // Shoot from Hub (manual)
+        new JoystickButton(operator, LogitechExtreme3D.Button.THREE)
+                .whenHeld(new AngleAndShootCommand(systems, AngleAndShootCommand.Position.HUB));
 
-        // new JoystickButton(operator, LogitechExtreme3D.Button.TWELVE.ordinal() + 1)
+        // Shoot from Safe Zone (manual)
+        new JoystickButton(operator, LogitechExtreme3D.Button.FOUR)
+                .whenHeld(new AngleAndShootCommand(systems, AngleAndShootCommand.Position.SAFEZONE));
+
+        // Climber Extend (Manual) (moved to default)
+        // new JoystickButton(buttonBoard, 16)
+        //         .whileHeld(new ClimberExtendCommand(systems, false));
+
+        // Climber Extend Reverse (Manual) (moved to default)
+        // new JoystickButton(buttonBoard, 13)
+        //         .whileHeld(new ClimberExtendCommand(systems, true));
+
+        // Climber Hinge (Manual)
+        // new JoystickButton(buttonBoard, 14)
+        new JoystickButton(buttonController, Xbox.Button.BUMPER_L)
+                .whileHeld(new ClimberHingeCommand(systems, false));
+
+        // Climber Hinge Reverse (Manual)
+        // new JoystickButton(buttonBoard, 8)
+        new JoystickButton(buttonController, Xbox.Button.BUMPER_R)
+                .whileHeld(new ClimberHingeCommand(systems, true));
+
+        // Pivot Calibration
+        new JoystickButton(operator, LogitechExtreme3D.Button.TEN)
+                .whenPressed(() -> systems.getPivot().calibrateMode(true), systems.getPivot())
+                .whenReleased(() -> {
+                    systems.getPivot().calibrateMode(false);
+                    systems.getPivot().reset();
+                }, systems.getPivot());
+>>>>>>> a8bc3f359b897110aac3c3a77f6ceb5257789ec5
+
+        // Climber Extend Calibration
+        new JoystickButton(operator, LogitechExtreme3D.Button.SEVEN)
+                .whenPressed(() -> systems.getClimber().getExtend().calibrateMode(true), systems.getClimber().getExtend())
+                .whenReleased(() -> {
+                    systems.getClimber().getExtend().calibrateMode(false);
+                    systems.getClimber().getExtend().reset();
+                }, systems.getClimber().getExtend());
+
+        // Climber Hinge Calibration
+        new JoystickButton(operator, LogitechExtreme3D.Button.EIGHT)
+                .whenPressed(() -> systems.getClimber().getHinge().calibrateMode(true), systems.getClimber().getHinge())
+                .whenReleased(() -> {
+                    systems.getClimber().getHinge().calibrateMode(false);
+                    systems.getClimber().getHinge().reset();
+                }, systems.getClimber().getHinge());
+        
+        // Calibrate All
+        new JoystickButton(buttonController, Xbox.Button.START)
+                .whenPressed(() -> {
+                    systems.getPivot().calibrateMode(true);
+                    systems.getClimber().getExtend().calibrateMode(true);
+                    systems.getClimber().getHinge().calibrateMode(true);
+                }, systems.getPivot(), systems.getClimber().getExtend(), systems.getClimber().getHinge())
+                .whenReleased(() -> {
+                    systems.getPivot().calibrateMode(false);
+                    systems.getPivot().reset();
+                    systems.getClimber().getExtend().calibrateMode(false);
+                    systems.getClimber().getExtend().reset();
+                    systems.getClimber().getHinge().calibrateMode(false);
+                    systems.getClimber().getHinge().reset();
+                }, systems.getPivot(), systems.getClimber().getExtend(), systems.getClimber().getHinge());
+        
+        // Aim/Vision
+        // new JoystickButton(buttonBoard, 11)
+        new JoystickButton(buttonController, Xbox.Button.Y)
+                .whenHeld(new AimCommand(systems));
+
+        // Stop All
+        // new JoystickButton(buttonBoard, 12)
+        //         .whileHeld(new StopAllCommand(systems));
+
+        // new JoystickButton(operator, LogitechExtreme3D.Button.TWELVE)
         //         .whileHeld(() -> systems.getShooter().set(Shooter.MAX_VELOCITY), systems.getShooter());
     }
 
@@ -180,20 +328,11 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("TestSwerve", Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 2.0);
+        return new AutonCommand(systems, autonChooser.getSelected());
+    }
 
-        return new PPSwerveControllerCommand(
-                trajectory, 
-                () -> drivebase.m_odometry.getPoseMeters(), 
-                drivebase.m_kinematics, 
-                new PIDController(0.5, 0, 0.01), 
-                new PIDController(0.5, 0, 0.01), 
-                new ProfiledPIDController(0.5, 0, 0.01, new Constraints(Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 1)),
-                (states) -> drivebase.driveRaw(drivebase.m_kinematics.toChassisSpeeds(states)), 
-                drivebase)
-            .andThen(new InstantCommand(
-                    () -> drivebase.driveRaw(new ChassisSpeeds())
-                    , drivebase));
+    public Systems getSystems() {
+        return systems;
     }
 
     private static double deadband(double value, double deadband) {
@@ -216,5 +355,17 @@ public class RobotContainer {
         value = Math.copySign(value * value, value);
 
         return value;
+    }
+
+    public void disabledInit()  {
+        drivebase.setNeutralModeDrive(NeutralMode.Coast);
+        drivebase.setNeutralModeSteer(NeutralMode.Coast);
+        camera.setLED(VisionLEDMode.kOff);
+    }
+
+    public void enabledInit() {
+        drivebase.setNeutralModeDrive(NeutralMode.Brake);
+        drivebase.setNeutralModeSteer(NeutralMode.Brake);
+        camera.setLED(Constants.DEFAULT_LED_MODE);
     }
 }

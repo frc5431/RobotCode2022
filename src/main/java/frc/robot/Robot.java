@@ -4,9 +4,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.VideoException;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.team5431.titan.core.misc.Logger;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -18,6 +22,7 @@ public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
 
     private RobotContainer m_robotContainer;
+    private Simulation m_simulation;
 
     /**
      * This function is run when the robot is first started up and should be used for any
@@ -28,6 +33,14 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
+
+        try {
+            CameraServer.startAutomaticCapture();
+        } catch (VideoException e) {
+            Logger.l("Unable to start automatic capture for CameraServer!");
+        }
+
+        m_simulation = new Simulation(m_robotContainer);
     }
 
     /**
@@ -46,16 +59,11 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
     }
 
-    /** This function is called once each time the robot enters Disabled mode. */
-    @Override
-    public void disabledInit() {}
-
-    @Override
-    public void disabledPeriodic() {}
-
     /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
     @Override
     public void autonomousInit() {
+        enabledInit();
+
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         // schedule the autonomous command (example)
@@ -70,6 +78,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        enabledInit();
+
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
@@ -85,6 +95,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
+        enabledInit();
+
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
     }
@@ -92,4 +104,32 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during test mode. */
     @Override
     public void testPeriodic() {}
+
+    @Override
+    public void simulationInit() {
+        enabledInit();
+
+        m_simulation.simulationInit();
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        m_simulation.simulationPeriodic();
+    }
+
+    /** This function is called once each time the robot enters Disabled mode. */
+    @Override
+    public void disabledInit() {
+        m_robotContainer.disabledInit();
+    }
+
+    @Override
+    public void disabledPeriodic() {}
+
+    public void enabledInit() {
+        if (isReal())
+            DriverStation.silenceJoystickConnectionWarning(false);
+
+        m_robotContainer.enabledInit();
+    }
 }

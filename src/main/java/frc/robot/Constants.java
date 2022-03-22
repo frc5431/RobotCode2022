@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import org.photonvision.common.hardware.VisionLEDMode;
+
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
@@ -25,8 +28,13 @@ public final class Constants {
     public static final int ID_PIVOT = 18;
     public static final int ID_CLIMBER_EXTEND = 14;
     public static final int ID_CLIMBER_HINGE = 13;
+    public static final int ID_PIGEON2 = 21;
+
+    public static final String CANBUS_DRIVETRAIN = "";
+    public static final String CANBUS_SUBSYSTEM = "";
 
     public static final int SLOT_ANGLER = 0;
+    public static final String CAMERA_NAME = "gloworm";
 
     /**
      * The left-to-right distance between the drivetrain wheels
@@ -41,27 +49,35 @@ public final class Constants {
      */
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.565;
 
+    public static final double ROBOT_MASS_KG = Units.lbsToKilograms(110);
+
     // public static final int DRIVETRAIN_PIGEON_ID = 0;
 
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 2;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 1;
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 9;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(85.166); // 210.938
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(85.430);
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 8;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 7;
     public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 12;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(136.406); // -4.570
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(140.449);
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 4;
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 3;
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 10;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(326.514); // 141.680
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(219.814);
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 6;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 5;
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 11;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(31.025); // 28.916
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(30.234);
+
+    public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(23.4);
+    public static final double TARGET_HEIGHT_METERS = Units.feetToMeters(8) + Units.inchesToMeters(8);
+    public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(24.3); // 34
+
+    public static final VisionLEDMode DEFAULT_LED_MODE = VisionLEDMode.kOn;
 
     public static final ShuffleboardTab tab_subsystems = Shuffleboard.getTab("Subsystems");
 }

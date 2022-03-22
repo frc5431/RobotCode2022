@@ -3,6 +3,7 @@ package frc.robot.commands.subsystems;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivebase;
+import frc.team5431.titan.core.misc.Logger;
 
 import java.util.function.DoubleSupplier;
 
@@ -26,6 +27,11 @@ public class DefaultDriveCommand extends CommandBase {
     }
 
     @Override
+    public void initialize() {
+        Logger.l("Default drive starting");
+    }
+
+    @Override
     public void execute() {
         // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement
         m_drivetrainSubsystem.driveController(
@@ -40,6 +46,7 @@ public class DefaultDriveCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        m_drivetrainSubsystem.driveController(new ChassisSpeeds(0.0, 0.0, 0.0));
+        Logger.l("Default drive ending");
+        m_drivetrainSubsystem.stop();
     }
 }

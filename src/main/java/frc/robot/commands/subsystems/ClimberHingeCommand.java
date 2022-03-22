@@ -10,7 +10,7 @@ import frc.team5431.titan.core.misc.Logger;
  */
 public class ClimberHingeCommand extends CommandBase {
     private final Climber climber;
-    private final boolean direction;
+    private final boolean reverse;
 	private final double speed;
 
     public ClimberHingeCommand(Systems systems, boolean reverse) {
@@ -23,7 +23,7 @@ public class ClimberHingeCommand extends CommandBase {
 
     public ClimberHingeCommand(Systems systems, double speed, boolean reverse) {
         this.climber = systems.getClimber();
-        this.direction = reverse;
+        this.reverse = reverse;
 		this.speed = speed;
 
         addRequirements(climber.getHinge());
@@ -36,7 +36,7 @@ public class ClimberHingeCommand extends CommandBase {
 	
 	@Override
 	public void execute() {
-        climber.setHinge(direction ? speed : -speed);
+        climber.setHinge(reverse ? -speed : speed);
 	}
 
     @Override
