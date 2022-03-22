@@ -39,7 +39,7 @@ public class RobotContainer {
     private final Systems systems = new Systems();
 
     private final Xbox driver = new Xbox(0);
-    private final Joystick buttonBoard = new Joystick(1);
+    private final Joystick vjoy = new Joystick(4);
     private final LogitechExtreme3D operator = new LogitechExtreme3D(2);
 
     /**
@@ -89,20 +89,20 @@ public class RobotContainer {
                     () -> drivebase.driveController(new ChassisSpeeds(0, -Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase);
         
         // Intake (Manual)
-        new JoystickButton(buttonBoard, 7)
+        new JoystickButton(vjoy, 1)
                 .whileHeld(new IntakeCommand(systems, false));
         
         // Intake Reverse (Manual)
-        new JoystickButton(buttonBoard, 3)
+        new JoystickButton(vjoy, 2)
                 .whileHeld(new IntakeCommand(systems, true));
         
         // Pivot Up
-        new JoystickButton(buttonBoard, 5)
+        new JoystickButton(vjoy, 3)
                 .whileHeld(() -> systems.getPivot().set(0.1), systems.getPivot())
                 .whenReleased(() -> systems.getPivot().set(0), systems.getPivot());
         
         // Pivot Down
-        new JoystickButton(buttonBoard, 2)
+        new JoystickButton(vjoy, 4)
                 .whileHeld(() -> systems.getPivot().set(-0.1), systems.getPivot())
                 .whenReleased(() -> systems.getPivot().set(0), systems.getPivot());
 
@@ -115,15 +115,15 @@ public class RobotContainer {
                                         0, Shooter.MAX_VELOCITY)));
         
         // Floor Intake
-        new JoystickButton(buttonBoard, 4)
+        new JoystickButton(vjoy, 5)
                 .toggleWhenPressed(new FloorIntakeCommand(systems));
         
         // Reject
-        new JoystickButton(buttonBoard, 1)
+        new JoystickButton(vjoy, 6)
                 .whileHeld(new ShootCommand(systems, Shooter.Velocity.REJECT));
 
         // Shoot 
-        new JoystickButton(buttonBoard, 7)
+        new JoystickButton(vjoy, 7)
                 .whileHeld(new ShootCommand(systems, Shooter.Velocity.NORMAL));
         
         // // Shoot Close (Manual)
@@ -151,23 +151,23 @@ public class RobotContainer {
                 .whenPressed(new AnglerCommand(systems, false));
 
         // Climber Extend (Manual)
-        new JoystickButton(buttonBoard, 16)
+        new JoystickButton(vjoy, 8)
                 .whileHeld(new ClimberExtendCommand(systems, false));
 
         // Climber Extend Reverse (Manual)
-        new JoystickButton(buttonBoard, 13)
+        new JoystickButton(vjoy, 9)
                 .whileHeld(new ClimberExtendCommand(systems, true));
 
         // Climber Hinge (Manual)
-        new JoystickButton(buttonBoard, 14)
+        new JoystickButton(vjoy, 10)
                 .whileHeld(new ClimberHingeCommand(systems, false));
 
         // Climber Hinge Reverse (Manual)
-        new JoystickButton(buttonBoard, 8)
+        new JoystickButton(vjoy, 11)
                 .whileHeld(new ClimberHingeCommand(systems, true));
 
         // Stop All
-        new JoystickButton(buttonBoard, 12)
+        new JoystickButton(vjoy, 12)
                 .whileHeld(new StopAllCommand(systems));
 
         // new JoystickButton(operator, LogitechExtreme3D.Button.TWELVE.ordinal() + 1)
