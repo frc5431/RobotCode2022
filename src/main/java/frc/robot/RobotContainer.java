@@ -134,13 +134,11 @@ public class RobotContainer {
         
         // Pivot Up
         new JoystickButton(vjoy, 3)
-                .whileHeld(() -> systems.getPivot().set(0.1), systems.getPivot())
-                .whenReleased(() -> systems.getPivot().set(0), systems.getPivot());
+                .whileHeld(new PivotCommand(systems, false));
         
         // Pivot Down
         new JoystickButton(vjoy, 4)
-                .whileHeld(() -> systems.getPivot().set(-0.1), systems.getPivot())
-                .whenReleased(() -> systems.getPivot().set(0), systems.getPivot());
+                .whileHeld(new PivotCommand(systems, true));
 
         // new JoystickButton(buttonBoard, 7)
         new POVButton(buttonController, 270)
