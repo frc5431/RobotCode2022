@@ -1,34 +1,24 @@
 package frc.robot.commands;
 
-import org.photonvision.PhotonCamera;
-
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Systems;
-import frc.robot.commands.subsystems.AnglerCommand;
-import frc.robot.util.CameraCalc;
+import frc.robot.commands.subsystems.IntakeCommand;
 
 public class AimAndShootCommand extends ParallelCommandGroup {
     public static final double AIM_LENGTH = 0.75;
-    public static final double AIM_DELAY = 0.65; // delay after start to aim
-    public static final double SHOOT_DELAY = 0.1; // delay after aim to shoot
 
     /*
      * 7.5m  - 17750 - 0.65
      * 2.15m - 11240 - 0.45
      */
 
-    private final PhotonCamera camera;
-    
     public AimAndShootCommand(Systems systems) {
-        this.camera = systems.getCamera();
-
         addCommands(
             new WaitCommand(AIM_LENGTH)
                 .deadlineWith(new AimCommand(systems)),
-            new WaitCommand(AIM_DELAY)
-                .andThen(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, () -> CameraCalc.calculateAngler(camera) )),
-            new WaitCommand(AIM_DELAY + SHOOT_DELAY)
-                .andThen(new ShootCommand(systems, () -> CameraCalc.calculateRPM(camera) ))
+            new WaitCommand(AIM_LENGTH)
+                .andThen(new ShootPlusCommand(systems)),
+            new IntakeCommand(systems, false)
         );
     }
 }
