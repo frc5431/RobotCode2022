@@ -71,7 +71,7 @@ public class Drivebase extends SubsystemBase {
 
     public static final double MIN_ANGULAR_VELOCITY = 0.6;
     // Seconds to ramp from neutral to full
-    public static final double RAMPING_FROM_0_TO_FULL = 0.5; // 1;
+    public static final double RAMPING_FROM_0_TO_FULL = 0; // 0.5;
 
     public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
                     // Front left
@@ -328,7 +328,7 @@ public class Drivebase extends SubsystemBase {
 
     @Override
     public void periodic() {
-        m_odometry.update(getGyroscopeRotation(), getStatesOdometry());
+        m_odometry.update(getGyroscopeRotation(), getStates());
         field2d.setRobotPose(m_odometry.getPoseMeters());
 
         // Hockey-lock by setting rotation to realllly low number

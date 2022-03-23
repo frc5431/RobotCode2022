@@ -29,7 +29,7 @@ public class AutonCommand extends SequentialCommandGroup {
     };
 
     public static enum State {
-        ONE_BALL, TWO_BALL, THREE_BALL, FIVE_BALL, SIX_BALL, TEST_PATH
+        ONE_BALL, TWO_BALL, THREE_BALL, FIVE_BALL, SIX_BALL, TEST_PATH, JUST_PATH
     }
 
     public AutonCommand(Systems systems, State state) {
@@ -63,19 +63,19 @@ public class AutonCommand extends SequentialCommandGroup {
                         .deadlineWith(new PivotCommand(systems, true)),
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[0])
-                            .deadlineWith(new IntakeCommand(systems, false))
+                            .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(3)
-                        .deadlineWith(new ShootPlusCommand(systems)),
+                        .deadlineWith(new AimAndShootCommand(systems)),
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[1])
-                            .deadlineWith(new IntakeCommand(systems, false))
+                            .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(2.5)
-                        .deadlineWith(new ShootPlusCommand(systems)),
+                        .deadlineWith(new AimAndShootCommand(systems)),
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[2])
-                            .deadlineWith(new IntakeCommand(systems, false))
+                            .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(2)
                         .deadlineWith(new ParallelCommandGroup(
@@ -83,9 +83,18 @@ public class AutonCommand extends SequentialCommandGroup {
                             new FeederBottomCommand(systems, false)
                         )),
                     new PathCommand(systems, PATHS[3]),
-                    new WaitCommand(3)
-                        .deadlineWith(new ShootPlusCommand(systems))
+                    new AimAndShootCommand(systems)
+                        // .alongWith(new IntakeCommand(systems, false))
                 );
+                break;
+            case JUST_PATH:
+            addCommands(
+                commandResetAuton(systems, PATHS[0]),
+                new PathCommand(systems, PATHS[0]),
+                new PathCommand(systems, PATHS[1]),
+                new PathCommand(systems, PATHS[2]),
+                new PathCommand(systems, PATHS[3])
+            );
                 break;
             case TEST_PATH:
                 addCommands(

@@ -93,6 +93,7 @@ public class RobotContainer {
         autonChooser.addOption("One Ball (no taxi)", AutonCommand.State.ONE_BALL);
         autonChooser.addOption("Five Ball", AutonCommand.State.FIVE_BALL);
         autonChooser.addOption("Test Path", AutonCommand.State.TEST_PATH);
+        autonChooser.addOption("Just Path", AutonCommand.State.JUST_PATH);
         Constants.tab_subsystems.add("Auton State", autonChooser);
     }
 
@@ -148,7 +149,10 @@ public class RobotContainer {
         // Intake Reverse (Manual)
         // new JoystickButton(buttonBoard, 3)
         new JoystickButton(buttonController, Xbox.Button.X)
-                .whileHeld(new IntakeCommand(systems, true));
+                .whileHeld(
+                        new IntakeCommand(systems, true)
+                            .alongWith(new FeedEverything(systems, true))
+                );
         
         // Pivot Up
         // new JoystickButton(buttonBoard, 5)
@@ -349,13 +353,16 @@ public class RobotContainer {
         // Deadband
         value = deadband(value, 0.075);
 
+        value = value * value * value;
+
         // Square the axis
-        value = Math.copySign(value * value, value);
+        // value = Math.copySign(value * value, value);
 
         return value;
     }
 
     public void disabledInit()  {
+        drivebase.stop();
         drivebase.setNeutralModeDrive(NeutralMode.Coast);
         drivebase.setNeutralModeSteer(NeutralMode.Coast);
         camera.setLED(VisionLEDMode.kOff);

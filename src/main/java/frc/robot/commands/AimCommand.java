@@ -24,6 +24,8 @@ public class AimCommand extends CommandBase {
     private final Timer timer;
     private static final double MIN_DURATION = 0.25;
 
+    private boolean lostTarget;
+
     public AimCommand(Systems systems) {
         this.drivebase = systems.getDrivebase();
         this.camera = systems.getCamera();
@@ -62,6 +64,8 @@ public class AimCommand extends CommandBase {
         camera.setLED(VisionLEDMode.kOn);
         timer.reset();
         timer.start();
+        turnPID.reset(0);
+        lostTarget = false;
     }
 
     @Override
@@ -73,7 +77,7 @@ public class AimCommand extends CommandBase {
 
             double yawToTargetRadians = Units.degreesToRadians(result.getBestTarget().getYaw());
 
-            double calculatedValue = 4*turnPID.calculate(yawToTargetRadians);
+            double calculatedValue = turnPID.calculate(yawToTargetRadians);
 
             Logger.l("Aim calc: %s -> %s", yawToTargetRadians, calculatedValue);
             Logger.l("Turn PID State: %s", turnPID.getPositionError());
@@ -88,7 +92,7 @@ public class AimCommand extends CommandBase {
                     )
                 )
             );
-        }
+        } else lostTarget = true;
     }
 
     @Override
@@ -100,6 +104,6 @@ public class AimCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return timer.hasElapsed(MIN_DURATION) && turnPID.atGoal();
+        return lostTarget || (timer.hasElapsed(MIN_DURATION) && turnPID.atGoal());
     }
 }
