@@ -23,8 +23,6 @@ public class Angler extends SubsystemBase {
 
         Constants.tab_subsystems.addNumber("Angler Position", 
                 () -> anglerServo.get());
-        // Constants.tab_subsystems.addNumber("Angler Angle", 
-        //         () -> anglerServo.getAngle());
     }
 
     public void set(double value) {

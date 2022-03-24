@@ -27,11 +27,6 @@ public class Shooter extends SubsystemBase {
     private static final double DEFAULT_KD = 0;
     private static final double DEFAULT_KF = 0.055;
 
-    // public static NetworkTableEntry entryKP = null;
-    // public static NetworkTableEntry entryKI = null;
-    // public static NetworkTableEntry entryKD = null;
-    // public static NetworkTableEntry entryKF = null;
-
     public static enum Velocity {
         OFF(0), REJECT(VELOCITY_REJECT), NORMAL(VELOCITY_NORMAL);
 
@@ -78,95 +73,12 @@ public class Shooter extends SubsystemBase {
         shooter.config_kF(0, DEFAULT_KF);
         _shooterFollow.config_kF(0, DEFAULT_KF);
 
-        // if (entryKP == null) {
-        //     entryKP = Constants.tab_subsystems
-        //             .add("Shooter kP", DEFAULT_KP)
-        //             .withWidget(BuiltInWidgets.kNumberSlider)
-        //             .withProperties(Map.of(
-        //                 "min", 0,
-        //                 "max", 2,
-        //                 "block increment", 0.01))
-        //             .getEntry();
-        // }
-        // if (entryKI == null) {
-        //     entryKI = Constants.tab_subsystems
-        //             .add("Shooter kI", DEFAULT_KI)
-        //             .withWidget(BuiltInWidgets.kNumberSlider)
-        //             .withProperties(Map.of(
-        //                 "min", 0,
-        //                 "max", 2,
-        //                 "block increment", 0.01))
-        //             .getEntry();
-        // }
-        // if (entryKD == null) {
-        //     entryKD = Constants.tab_subsystems
-        //             .add("Shooter kD", DEFAULT_KD)
-        //             .withWidget(BuiltInWidgets.kNumberSlider)
-        //             .withProperties(Map.of(
-        //                 "min", 0,
-        //                 "max", 2,
-        //                 "block increment", 0.01))
-        //             .getEntry();
-        // }
-        // if (entryKF == null) {
-        //     entryKF = Constants.tab_subsystems
-        //             .add("Shooter kF", DEFAULT_KF)
-        //             .withWidget(BuiltInWidgets.kNumberSlider)
-        //             .withProperties(Map.of(
-        //                 "min", 0,
-        //                 "max", 0.5,
-        //                 "block increment", 0.005))
-        //             .getEntry();
-        // }
-
-        // entryKP.addListener(this::updateP, 
-        //         EntryListenerFlags.kNew | 
-        //         EntryListenerFlags.kImmediate | 
-        //         EntryListenerFlags.kUpdate);
-        // entryKI.addListener(this::updateI, 
-        //         EntryListenerFlags.kNew | 
-        //         EntryListenerFlags.kImmediate | 
-        //         EntryListenerFlags.kUpdate);
-        // entryKD.addListener(this::updateD, 
-        //         EntryListenerFlags.kNew | 
-        //         EntryListenerFlags.kImmediate | 
-        //         EntryListenerFlags.kUpdate);
-        // entryKF.addListener(this::updateF, 
-        //         EntryListenerFlags.kNew | 
-        //         EntryListenerFlags.kImmediate | 
-        //         EntryListenerFlags.kUpdate);
-
         shooter.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 50);
 
         shooter.set(ControlMode.Velocity, 0);
-
-        // Constants.tab_subsystems.addNumber("Shooter Supplier", () -> ShooterCommand.getSupplierToTab().getAsDouble());
-
-        // Constants.tab_subsystems.addBoolean("Shooter At Velocity", this::atVelocity);
         Constants.tab_subsystems.addNumber("Shooter Target", shooter::getClosedLoopTarget);
         Constants.tab_subsystems.addNumber("Shooter Velocity", shooter::getSelectedSensorVelocity);
-        // Constants.tab_subsystems.addNumber("Shooter get()", shooter::get);
     }
-
-    // public void updateP(EntryNotification notif) {
-    //     shooter.config_kP(0, notif.value.getDouble());
-    //     _shooterFollow.config_kP(0, notif.value.getDouble());
-    // }
-
-    // public void updateI(EntryNotification notif) {
-    //     shooter.config_kI(0, notif.value.getDouble());
-    //     _shooterFollow.config_kI(0, notif.value.getDouble());
-    // }
-
-    // public void updateD(EntryNotification notif) {
-    //     shooter.config_kD(0, notif.value.getDouble());
-    //     _shooterFollow.config_kD(0, notif.value.getDouble());
-    // }
-
-    // public void updateF(EntryNotification notif) {
-    //     shooter.config_kF(0, notif.value.getDouble());
-    //     _shooterFollow.config_kF(0, notif.value.getDouble());
-    // }
 
     public void set(Shooter.Velocity velocity) {
         set(velocity.getVelocity());

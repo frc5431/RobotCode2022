@@ -23,8 +23,9 @@ public class AimCommand extends CommandBase {
     private final ProfiledPIDController turnPID;
     private final Timer timer;
     private static final double MIN_DURATION = 0.25;
+    private static final double MIN_POWER = 0.1;
 
-    private boolean lostTarget;
+    private boolean lostTarget = false;
 
     public AimCommand(Systems systems) {
         this.drivebase = systems.getDrivebase();
@@ -44,7 +45,6 @@ public class AimCommand extends CommandBase {
         this.timer = new Timer();
 
         try {
-            Constants.tab_subsystems.addBoolean("Turn PID At", () -> this.turnPID.atGoal());
             Constants.tab_subsystems.addNumber("Turn PID Error", () -> {
                 try {
                     return this.turnPID.getPositionError();
@@ -73,6 +73,7 @@ public class AimCommand extends CommandBase {
         PhotonPipelineResult result = camera.getLatestResult();
 
         if (result.hasTargets()) {
+            lostTarget = false;
             Logger.l("Meters to target: " + CameraCalc.getDistanceMeters(camera));
 
             double yawToTargetRadians = Units.degreesToRadians(result.getBestTarget().getYaw());
@@ -82,28 +83,36 @@ public class AimCommand extends CommandBase {
             Logger.l("Aim calc: %s -> %s", yawToTargetRadians, calculatedValue);
             Logger.l("Turn PID State: %s", turnPID.getPositionError());
             
-            drivebase.driveRaw(new ChassisSpeeds(0, 0, 
-                    Math.copySign(
-                        Math.max(
-                            Math.abs(calculatedValue),
-                            Drivebase.MIN_ANGULAR_VELOCITY
-                        ), 
-                        calculatedValue
+            if (Math.abs(calculatedValue) <= MIN_POWER) {
+                drivebase.stop();
+            } else {
+                drivebase.driveRaw(new ChassisSpeeds(0, 0, 
+                        Math.copySign(
+                            Math.max(
+                                Math.abs(calculatedValue),
+                                Drivebase.MIN_ANGULAR_VELOCITY
+                            ), 
+                            calculatedValue
+                        )
                     )
-                )
-            );
-        } else lostTarget = true;
+                );
+            }
+        } else {
+            // lostTarget = true;
+            drivebase.stop();
+        }
     }
 
     @Override
     public void end(boolean interrupted) {
-        camera.setDriverMode(true);
+        camera.setDriverMode(Constants.DRIVER_MODE);
         camera.setLED(Constants.DEFAULT_LED_MODE);
         timer.stop();
+        Logger.l("Aim Command ending - lost? %s", lostTarget);
     }
 
     @Override
     public boolean isFinished() {
-        return lostTarget || (timer.hasElapsed(MIN_DURATION) && turnPID.atGoal());
+        return timer.hasElapsed(MIN_DURATION) && (lostTarget || turnPID.atGoal());
     }
 }

@@ -14,10 +14,6 @@ import frc.team5431.titan.core.misc.Logger;
 public class CameraCalc {
     private static double cachedDistance = -1;
 
-    static {
-        Constants.tab_subsystems.addNumber("Cached Distance", () -> cachedDistance);
-    }
-
     public static double getDistanceMeters(PhotonCamera camera) {
         PhotonPipelineResult result = camera.getLatestResult();
 
@@ -53,6 +49,6 @@ public class CameraCalc {
             return Shooter.VELOCITY_NORMAL;
         }
 
-        return MathUtil.clamp(Calc.map(distance, 2.15, 7.45, 12800, 19000), 12000, 20000); // prev max: 17750
+        return MathUtil.clamp(Calc.map(distance, 2.15, 7.45, 12800, 19000), 12000, 20000); // // prev max: 17750
     }
 }

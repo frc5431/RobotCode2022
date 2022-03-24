@@ -40,7 +40,7 @@ public class RobotContainer {
 //     private final PowerDistribution pdh = new PowerDistribution();
 
     private final Xbox driver = new Xbox(0);
-//     private final Joystick buttonBoard = new Joystick(1);
+  //private final Joystick vjoy = new vjoy(4);
     private final Xbox buttonController = new Xbox(1);
     private final LogitechExtreme3D operator = new LogitechExtreme3D(2);
 
@@ -76,13 +76,9 @@ public class RobotContainer {
         configureButtonBindings();
 
         camera.setLED(Constants.DEFAULT_LED_MODE);
+        camera.setPipelineIndex(Constants.VISION_PIPELINE_INDEX);
 
         Constants.tab_subsystems.addNumber("Distance (m)", () -> CameraCalc.getDistanceMeters(camera));
-
-        // Constants.tab_subsystems.addNumber("PD Volts", pdh::getVoltage);
-        // Constants.tab_subsystems.addNumber("PD Temp", pdh::getTemperature);
-        // Constants.tab_subsystems.addNumber("PD Current", pdh::getTotalCurrent);
-        // Constants.tab_subsystems.addNumber("PD Joules", pdh::getTotalEnergy);
 
         autonChooser = new SendableChooser<>();
         autonChooser.setDefaultOption("Two Ball (taxi)", AutonCommand.State.TWO_BALL);
@@ -301,7 +297,7 @@ public class RobotContainer {
         drivebase.stop();
         drivebase.setNeutralModeDrive(NeutralMode.Coast);
         drivebase.setNeutralModeSteer(NeutralMode.Coast);
-        camera.setLED(VisionLEDMode.kOff);
+        // camera.setLED(VisionLEDMode.kOff);
     }
 
     public void enabledInit() {

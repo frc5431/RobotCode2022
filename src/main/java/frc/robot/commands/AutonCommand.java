@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Systems;
 import frc.robot.commands.subsystems.DriveCommand;
-import frc.robot.commands.subsystems.FeederBottomCommand;
 import frc.robot.commands.subsystems.IntakeCommand;
 import frc.robot.commands.subsystems.PivotCommand;
 import frc.robot.subsystems.Drivebase;
@@ -66,24 +65,26 @@ public class AutonCommand extends SequentialCommandGroup {
                             .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(3)
-                        .deadlineWith(new AimAndShootCommand(systems)),
+                        .deadlineWith(new ShootPlusCommand(systems)
+                                .alongWith(new IntakeCommand(systems, false))),
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[1])
                             .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(2.5)
-                        .deadlineWith(new AimAndShootCommand(systems)),
-                    new ParallelCommandGroup(
-                        new PathCommand(systems, PATHS[2])
-                            .deadlineWith(new FloorIntakeCommand(systems, false))
-                    ),
-                    new WaitCommand(2)
-                        .deadlineWith(new ParallelCommandGroup(
-                            new IntakeCommand(systems, false),
-                            new FeederBottomCommand(systems, false)
-                        )),
-                    new PathCommand(systems, PATHS[3]),
-                    new AimAndShootCommand(systems)
+                        .deadlineWith(new ShootPlusCommand(systems)
+                                .alongWith(new IntakeCommand(systems, false)))
+                    // new ParallelCommandGroup(
+                    //     new PathCommand(systems, PATHS[2])
+                    //         .deadlineWith(new FloorIntakeCommand(systems, false))
+                    // ),
+                    // new WaitCommand(2)
+                    //     .deadlineWith(new ParallelCommandGroup(
+                    //         new IntakeCommand(systems, false),
+                    //         new FeederBottomCommand(systems, false)
+                    //     )),
+                    // new PathCommand(systems, PATHS[3]),
+                    // new AimAndShootCommand(systems)
                         // .alongWith(new IntakeCommand(systems, false))
                 );
                 break;
@@ -91,9 +92,12 @@ public class AutonCommand extends SequentialCommandGroup {
             addCommands(
                 commandResetAuton(systems, PATHS[0]),
                 new PathCommand(systems, PATHS[0]),
-                new PathCommand(systems, PATHS[1]),
-                new PathCommand(systems, PATHS[2]),
-                new PathCommand(systems, PATHS[3])
+                // commandResetAuton(systems, PATHS[1]),
+                new PathCommand(systems, PATHS[1])
+                // commandResetAuton(systems, PATHS[2]),
+                // new PathCommand(systems, PATHS[2]),
+                // commandResetAuton(systems, PATHS[3]),
+                // new PathCommand(systems, PATHS[3])
             );
                 break;
             case TEST_PATH:
