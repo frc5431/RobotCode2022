@@ -73,19 +73,15 @@ public class AutonCommand extends SequentialCommandGroup {
                     ),
                     new WaitCommand(2.5)
                         .deadlineWith(new ShootPlusCommand(systems)
-                                .alongWith(new IntakeCommand(systems, false)))
-                    // new ParallelCommandGroup(
-                    //     new PathCommand(systems, PATHS[2])
-                    //         .deadlineWith(new FloorIntakeCommand(systems, false))
-                    // ),
-                    // new WaitCommand(2)
-                    //     .deadlineWith(new ParallelCommandGroup(
-                    //         new IntakeCommand(systems, false),
-                    //         new FeederBottomCommand(systems, false)
-                    //     )),
-                    // new PathCommand(systems, PATHS[3]),
-                    // new AimAndShootCommand(systems)
-                        // .alongWith(new IntakeCommand(systems, false))
+                                .alongWith(new IntakeCommand(systems, false))),
+                    new ParallelCommandGroup(
+                        new PathCommand(systems, PATHS[2])
+                            .deadlineWith(new FloorIntakeCommand(systems, false))
+                    ),
+                    new WaitCommand(2)
+                        .deadlineWith(new FloorIntakeCommand(systems, false)),
+                    new PathCommand(systems, PATHS[3]),
+                    new AimAndShootCommand(systems)
                 );
                 break;
             case JUST_PATH:
@@ -111,7 +107,7 @@ public class AutonCommand extends SequentialCommandGroup {
         }
     }
 
-    public CommandBase commandResetAuton(Systems systems, String path) {
+    public static CommandBase commandResetAuton(Systems systems, String path) {
         return new InstantCommand(() -> {
             // reset odometry
             PathPlannerTrajectory trajectory = PathPlanner.loadPath(path, Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 1.0);

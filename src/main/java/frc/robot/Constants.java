@@ -80,10 +80,8 @@ public final class Constants {
     public static final VisionLEDMode DEFAULT_LED_MODE = VisionLEDMode.kOn;
     public static final boolean DRIVER_MODE = false;
 
-    // 0 - rockwall
-    // 1 - blank
-    // 2 - school
-    public static final int VISION_PIPELINE_INDEX = 2;
+    public static final int VISION_PIPELINE_INDEX = 0;
 
     public static final ShuffleboardTab tab_subsystems = Shuffleboard.getTab("Subsystems");
+    public static final ShuffleboardTab tab_commands = Shuffleboard.getTab("Commands");
 }
