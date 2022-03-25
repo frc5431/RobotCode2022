@@ -15,6 +15,7 @@ public class FloorIntakeCommand extends ParallelCommandGroup {
         addCommands(
             new IntakeCommand(systems, false),
             useProxy ? new ProxyScheduleCommand(new FeederBottomCommand(systems, false)) : new FeederBottomCommand(systems, false)
+            // useProxy ? new ProxyScheduleCommand(new FeederTopCommand(systems, false)) : new FeederTopCommand(systems, false)
         );
     }
 }

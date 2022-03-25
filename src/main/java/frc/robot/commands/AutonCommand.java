@@ -17,7 +17,7 @@ import frc.robot.subsystems.Shooter;
 
 public class AutonCommand extends SequentialCommandGroup {
     private static final double SHOOT_TIME = 5;
-    private static final double DRIVE_TIME = 1.75;
+    private static final double DRIVE_TIME = 1;
     private static final double PIVOT_TIME = 0.65;
 
     public static final String[] PATHS = new String[] {
@@ -43,26 +43,24 @@ public class AutonCommand extends SequentialCommandGroup {
                 break;
             case TWO_BALL:
                 addCommands(
-                    commandResetAuton(systems, PATHS[0]),
+                    // commandResetAuton(systems, PATHS[0]),
+                    // new WaitCommand(PIVOT_TIME)
+                    //     .deadlineWith(new PivotCommand(systems, true)),
+                    // new ParallelCommandGroup(
+                    //     new PathCommand(systems, PATHS[0])
+                    //         .deadlineWith(new FloorIntakeCommand(systems, false))
+                    // ),
+                    // new WaitCommand(3)
+                    //     .deadlineWith(new ShootPlusCommand(systems)
+                    //             .alongWith(new IntakeCommand(systems, false)))
+                    new InstantCommand(() -> systems.getDrivebase().resetGyroAt(0), systems.getDrivebase()), // 146
                     new WaitCommand(PIVOT_TIME)
                         .deadlineWith(new PivotCommand(systems, true)),
-                    new ParallelCommandGroup(
-                        new PathCommand(systems, PATHS[0])
-                            .deadlineWith(new FloorIntakeCommand(systems, false))
-                    ),
-                    new WaitCommand(3)
-                        .deadlineWith(new ShootPlusCommand(systems)
-                                .alongWith(new IntakeCommand(systems, false)))
-                    // new ParallelCommandGroup(
-                    //     new SequentialCommandGroup(
-                    //         new WaitCommand(SHOOT_TIME)
-                    //             .deadlineWith(new ShootCommand(systems, Shooter.Velocity.NORMAL)),
-                    //         new WaitCommand(DRIVE_TIME)
-                    //         .deadlineWith(new DriveCommand(systems, 0.3, 0.0, false))
-                    //     ),
-                    //     new WaitCommand(PIVOT_TIME)
-                    //         .deadlineWith(new PivotCommand(systems, true))
-                    // )
+                    new WaitCommand(DRIVE_TIME)
+                        .deadlineWith(new DriveCommand(systems, 0.3, 0.0, false)
+                                .alongWith(new FloorIntakeCommand(systems, false))),
+                    new WaitCommand(SHOOT_TIME)
+                            .deadlineWith(new AimAndShootCommand(systems))
                 );
                 break;
             case THREE_BALL:
