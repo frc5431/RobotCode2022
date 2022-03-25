@@ -81,9 +81,9 @@ public class RobotContainer {
         Constants.tab_subsystems.addNumber("Distance (m)", () -> CameraCalc.getDistanceMeters(camera));
 
         autonChooser = new SendableChooser<>();
-        autonChooser.setDefaultOption("Two Ball (taxi)", AutonCommand.State.TWO_BALL);
-        autonChooser.addOption("One Ball (no taxi)", AutonCommand.State.ONE_BALL);
-        autonChooser.addOption("Five Ball", AutonCommand.State.FIVE_BALL);
+        autonChooser.setDefaultOption("Three Ball", AutonCommand.State.THREE_BALL);
+        // autonChooser.addOption("One Ball (no taxi)", AutonCommand.State.ONE_BALL);
+        autonChooser.addOption("Two Ball (taxi)", AutonCommand.State.TWO_BALL);
         autonChooser.addOption("Test Path", AutonCommand.State.TEST_PATH);
         autonChooser.addOption("Just Path", AutonCommand.State.JUST_PATH);
         Constants.tab_subsystems.add("Auton State", autonChooser);
