@@ -73,15 +73,15 @@ public class AutonCommand extends SequentialCommandGroup {
                     ),
                     new WaitCommand(2.5)
                         .deadlineWith(new ShootPlusCommand(systems)
-                                .alongWith(new IntakeCommand(systems, false))),
-                    new ParallelCommandGroup(
-                        new PathCommand(systems, PATHS[2])
-                            .deadlineWith(new FloorIntakeCommand(systems, false))
-                    ),
-                    new WaitCommand(2)
-                        .deadlineWith(new FloorIntakeCommand(systems, false)),
-                    new PathCommand(systems, PATHS[3]),
-                    new AimAndShootCommand(systems)
+                                .alongWith(new IntakeCommand(systems, false)))
+                    // new ParallelCommandGroup(
+                    //     new PathCommand(systems, PATHS[2])
+                    //         .deadlineWith(new FloorIntakeCommand(systems, false))
+                    // ),
+                    // new WaitCommand(2)
+                    //     .deadlineWith(new FloorIntakeCommand(systems, false)),
+                    // new PathCommand(systems, PATHS[3]),
+                    // new AimAndShootCommand(systems)
                 );
                 break;
             case JUST_PATH:
