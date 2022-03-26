@@ -17,7 +17,7 @@ import frc.robot.subsystems.Shooter;
 
 public class AutonCommand extends SequentialCommandGroup {
     private static final double SHOOT_TIME = 5;
-    private static final double DRIVE_TIME = 1;
+    private static final double DRIVE_TIME = 1.7;
     private static final double PIVOT_TIME = 0.65;
 
     public static final String[] PATHS = new String[] {
@@ -60,7 +60,8 @@ public class AutonCommand extends SequentialCommandGroup {
                         .deadlineWith(new DriveCommand(systems, 0.3, 0.0, false)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
                     new WaitCommand(SHOOT_TIME)
-                            .deadlineWith(new AimAndShootCommand(systems)),
+                            .deadlineWith(new ShootPlusCommand(systems)
+                                .alongWith(new IntakeCommand(systems, false))),
                     new InstantCommand(() -> systems.getDrivebase().resetGyroAt(146), systems.getDrivebase())
                 );
                 break;
