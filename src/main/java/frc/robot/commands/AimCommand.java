@@ -26,8 +26,13 @@ public class AimCommand extends CommandBase {
     private static final double MIN_POWER = 0.1;
 
     private boolean lostTarget = false;
+    private final boolean cancelIfNoTarget;
 
     public AimCommand(Systems systems) {
+        this(systems, false);
+    }
+
+    public AimCommand(Systems systems, boolean cancel) {
         this.drivebase = systems.getDrivebase();
         this.camera = systems.getCamera();
         this.turnPID = new ProfiledPIDController(
@@ -43,6 +48,8 @@ public class AimCommand extends CommandBase {
         this.turnPID.setTolerance(0.05, 0.2);
 
         this.timer = new Timer();
+
+        this.cancelIfNoTarget = cancel;
 
         try {
             Constants.tab_subsystems.addNumber("Turn PID Error", () -> {
@@ -98,7 +105,8 @@ public class AimCommand extends CommandBase {
                 );
             }
         } else {
-            // lostTarget = true;
+            if (cancelIfNoTarget)
+                lostTarget = true;
             drivebase.stop();
         }
     }
