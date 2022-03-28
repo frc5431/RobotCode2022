@@ -116,6 +116,7 @@ public class AimCommand extends CommandBase {
         camera.setDriverMode(Constants.DRIVER_MODE);
         camera.setLED(Constants.DEFAULT_LED_MODE);
         timer.stop();
+        drivebase.stop();
         Logger.l("Aim Command ending - lost? %s", lostTarget);
     }
 
