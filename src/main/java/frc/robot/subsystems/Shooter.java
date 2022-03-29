@@ -25,7 +25,7 @@ public class Shooter extends SubsystemBase {
     private static final double DEFAULT_KP = 0;
     private static final double DEFAULT_KI = 0;
     private static final double DEFAULT_KD = 0;
-    private static final double DEFAULT_KF = 0.055;
+    private static final double DEFAULT_KF = 0.05; // 0.055
 
     public static enum Velocity {
         OFF(0), REJECT(VELOCITY_REJECT), NORMAL(VELOCITY_NORMAL);
