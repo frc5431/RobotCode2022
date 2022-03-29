@@ -14,9 +14,9 @@ public class Shooter extends SubsystemBase {
 
     public static final double VELOCITY_REJECT = 9500;
     public static final double VELOCITY_NORMAL = 13000; // 13000
-    public static final double VELOCITY_BUFFER = 300;
+    public static final double VELOCITY_BUFFER = 100;
 
-    public static final double MAX_VELOCITY = 21800;
+    public static final double MAX_VELOCITY = 21350; // theoretical 21800
 
     public static final NeutralMode NEUTRALMODE = NeutralMode.Coast;
     public static final boolean REVERSE = true;
@@ -78,6 +78,7 @@ public class Shooter extends SubsystemBase {
         shooter.set(ControlMode.Velocity, 0);
         Constants.tab_subsystems.addNumber("Shooter Target", shooter::getClosedLoopTarget);
         Constants.tab_subsystems.addNumber("Shooter Velocity", shooter::getSelectedSensorVelocity);
+        Constants.tab_subsystems.addNumber("Shooter Error", shooter::getClosedLoopError);
     }
 
     public void set(Shooter.Velocity velocity) {

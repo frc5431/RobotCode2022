@@ -4,6 +4,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Systems;
 import frc.robot.commands.subsystems.FeederBottomCommand;
 import frc.robot.commands.subsystems.FeederTopCommand;
@@ -15,7 +16,7 @@ public class ShootCommand extends ParallelCommandGroup {
     public static final double FEEDER_PUSH_DOWN_DELAY = 0.25;
     public static final double MIN_SHOOTER_WAIT_TILL_SPEED = 1.0; // before flywheel change: 0.25
     public static final double MAX_SHOOTER_WAIT_TILL_SPEED = 1.8; // before flywheel change: 0.5
-    public static final double FEEDER_BOTTOM_DELAY = 0.175;
+    public static final double FEEDER_BOTTOM_DELAY = 0.75; // 0.175
 
     public ShootCommand(Systems systems, Shooter.Velocity velocity) {
         this(systems, velocity.getVelocity());
@@ -38,6 +39,7 @@ public class ShootCommand extends ParallelCommandGroup {
                 new ParallelCommandGroup(
                     new SequentialCommandGroup(
                         new WaitCommand(FEEDER_BOTTOM_DELAY),
+                        new WaitUntilCommand(() -> systems.getShooter().atVelocity()),
                         new FeederBottomCommand(systems, false)
                     ),
                     new FeederTopCommand(systems, false)

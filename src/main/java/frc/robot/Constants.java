@@ -34,6 +34,7 @@ public final class Constants {
     public static final String CANBUS_SUBSYSTEM = "";
 
     public static final int SLOT_ANGLER = 0;
+    public static final int SLOT_FEEDER_SENSOR = 0;
     public static final String CAMERA_NAME = "gloworm";
 
     /**

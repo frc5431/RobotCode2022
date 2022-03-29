@@ -78,6 +78,8 @@ public class RobotContainer {
         camera.setLED(Constants.DEFAULT_LED_MODE);
         camera.setPipelineIndex(Constants.VISION_PIPELINE_INDEX);
 
+        Constants.tab_subsystems.addBoolean("DIO result", () -> systems.getUpperFeederSensor().get());
+
         Constants.tab_subsystems.addNumber("Distance (m)", () -> CameraCalc.getDistanceMeters(camera));
 
         autonChooser = new SendableChooser<>();
