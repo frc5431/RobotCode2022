@@ -58,8 +58,12 @@ public class AimCommand extends CommandBase {
                 } catch (Exception e) {
                     return 0;
                 }
-            });
-            Constants.tab_subsystems.addBoolean("Is Vision Done?", this::isFinished);
+            })
+                    .withPosition(6, 1)
+                    .withSize(2, 1);
+            Constants.tab_subsystems.addBoolean("Is Vision Done?", this::isFinished)
+                    .withPosition(0, 0)
+                    .withSize(2, 2);
         } catch (Exception e) {}
 
         addRequirements(drivebase);

@@ -21,8 +21,9 @@ public class Angler extends SubsystemBase {
     public Angler(Servo servo) {
         anglerServo = servo;
 
-        Constants.tab_subsystems.addNumber("Angler Position", 
-                () -> anglerServo.get());
+        Constants.tab_subsystems.addNumber("Angler Position", () -> anglerServo.get())
+                .withPosition(18, 2)
+                .withSize(2, 1);
     }
 
     public void set(double value) {

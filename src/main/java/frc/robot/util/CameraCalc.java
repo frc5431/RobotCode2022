@@ -12,7 +12,7 @@ import frc.team5431.titan.core.misc.Calc;
 import frc.team5431.titan.core.misc.Logger;
 
 public class CameraCalc {
-    private static double cachedDistance = -1;
+    private static double cachedDistance = 8; // -1
 
     public static double getDistanceMeters(PhotonCamera camera) {
         PhotonPipelineResult result = camera.getLatestResult();

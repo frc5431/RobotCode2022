@@ -76,9 +76,15 @@ public class Shooter extends SubsystemBase {
         shooter.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 50);
 
         shooter.set(ControlMode.Velocity, 0);
-        Constants.tab_subsystems.addNumber("Shooter Target", shooter::getClosedLoopTarget);
-        Constants.tab_subsystems.addNumber("Shooter Velocity", shooter::getSelectedSensorVelocity);
-        Constants.tab_subsystems.addNumber("Shooter Error", shooter::getClosedLoopError);
+        Constants.tab_subsystems.addNumber("Shooter Target", shooter::getClosedLoopTarget)
+                .withPosition(2, 0)
+                .withSize(2, 1);
+        Constants.tab_subsystems.addNumber("Shooter Velocity", shooter::getSelectedSensorVelocity)
+                .withPosition(2, 1)
+                .withSize(2, 1);
+        Constants.tab_subsystems.addBoolean("Shooter At Velocity", this::atVelocity)
+                .withPosition(0, 5)
+                .withSize(2, 1);
     }
 
     public void set(Shooter.Velocity velocity) {

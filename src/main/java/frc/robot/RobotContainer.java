@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import org.photonvision.PhotonCamera;
 
+import edu.wpi.first.cscore.VideoSource;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -77,10 +78,15 @@ public class RobotContainer {
 
         camera.setLED(Constants.DEFAULT_LED_MODE);
         camera.setPipelineIndex(Constants.VISION_PIPELINE_INDEX);
+        PhotonCamera.setVersionCheckEnabled(false);
 
-        Constants.tab_subsystems.addBoolean("DIO result", () -> systems.getUpperFeederSensor().get());
+        Constants.tab_subsystems.addBoolean("DIO result", () -> systems.getUpperFeederSensor().get())
+                .withPosition(0, 6)
+                .withSize(2, 1);
 
-        Constants.tab_subsystems.addNumber("Distance (m)", () -> CameraCalc.getDistanceMeters(camera));
+        Constants.tab_subsystems.addNumber("Distance (m)", () -> CameraCalc.getDistanceMeters(camera))
+                .withPosition(6, 0)
+                .withSize(2, 1);
 
         autonChooser = new SendableChooser<>();
         // autonChooser.addOption("One Ball (no taxi)", AutonCommand.State.ONE_BALL);
@@ -88,7 +94,9 @@ public class RobotContainer {
         autonChooser.addOption("Three Ball", AutonCommand.State.THREE_BALL);
         autonChooser.addOption("Test Path", AutonCommand.State.TEST_PATH);
         autonChooser.addOption("Just Path", AutonCommand.State.JUST_PATH);
-        Constants.tab_subsystems.add("Auton State", autonChooser);
+        Constants.tab_subsystems.add("Auton State", autonChooser)
+                .withPosition(9, 6)
+                .withSize(3, 1);
 
 
         Constants.tab_commands.add(CommandScheduler.getInstance());
@@ -97,6 +105,10 @@ public class RobotContainer {
         Constants.tab_commands.add("Path 1 - to third ball", new PathCommand(systems, AutonCommand.PATHS[1]));
         Constants.tab_commands.add("Path 2 - to terminal", new PathCommand(systems, AutonCommand.PATHS[2]));
         Constants.tab_commands.add("Path 3 - to shoot", new PathCommand(systems, AutonCommand.PATHS[3]));
+
+        for (VideoSource vs : VideoSource.enumerateSources()) {
+            System.out.println(String.format("Camera ID: %s - Name: %s - Description: %s", vs.getHandle(), vs.getName(), vs.getDescription()));
+        }
     }
 
     /**

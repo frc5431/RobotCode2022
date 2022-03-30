@@ -89,7 +89,9 @@ public class Climber extends SubsystemBase {
         public ClimberExtend(WPI_TalonFX motor) {
             super(motor);
 
-            Constants.tab_subsystems.addNumber("Climber Extend Position", () -> motor.getSelectedSensorPosition());
+            Constants.tab_subsystems.addNumber("Climber Extend Position", () -> motor.getSelectedSensorPosition())
+                    .withPosition(15, 0)
+                    .withSize(3, 1);
         }
     }
 
@@ -97,7 +99,9 @@ public class Climber extends SubsystemBase {
         public ClimberHinge(WPI_TalonFX motor) {
             super(motor);
 
-            Constants.tab_subsystems.addNumber("Climber Hinge Position", () -> motor.getSelectedSensorPosition());
+            Constants.tab_subsystems.addNumber("Climber Hinge Position", () -> motor.getSelectedSensorPosition())
+                    .withPosition(15, 1)
+                    .withSize(3, 1);
         }
     }
 }
