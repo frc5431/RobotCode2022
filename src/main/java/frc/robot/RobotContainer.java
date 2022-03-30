@@ -315,4 +315,8 @@ public class RobotContainer {
         drivebase.setNeutralModeSteer(NeutralMode.Brake);
         camera.setLED(Constants.DEFAULT_LED_MODE);
     }
+
+    public void teleopPeriodic() {
+        // System.out.println("DIO Sensor: " + systems.getUpperFeederSensor().get());
+    }
 }
