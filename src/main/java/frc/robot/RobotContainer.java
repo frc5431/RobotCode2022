@@ -102,9 +102,9 @@ public class RobotContainer {
 
         UsbCameraInfo[] cameras = UsbCamera.enumerateUsbCameras();
         for (int i = 0; i < cameras.length; i++) {
-            Constants.tab_subsystems.add(new UsbCamera(cameras[i].name, cameras[i].path))
-                    .withSize(6, 6)
-                    .withPosition(2+i*11, 4);
+            // Constants.tab_subsystems.add(new UsbCamera(cameras[i].name, cameras[i].path))
+            //         .withSize(6, 6)
+            //         .withPosition(2+i*11, 4);
         }
 
         Constants.tab_commands.add(CommandScheduler.getInstance());
