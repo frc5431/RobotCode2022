@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import org.photonvision.PhotonCamera;
 
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.UsbCameraInfo;
 import edu.wpi.first.cscore.VideoSource;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -98,6 +100,12 @@ public class RobotContainer {
                 .withPosition(9, 6)
                 .withSize(3, 1);
 
+        UsbCameraInfo[] cameras = UsbCamera.enumerateUsbCameras();
+        for (int i = 0; i < cameras.length; i++) {
+            Constants.tab_subsystems.add(new UsbCamera(cameras[i].name, cameras[i].path))
+                    .withSize(6, 6)
+                    .withPosition(2+i*11, 4);
+        }
 
         Constants.tab_commands.add(CommandScheduler.getInstance());
         Constants.tab_commands.add("Path 0 Reset Odom", AutonCommand.commandResetAuton(systems, AutonCommand.PATHS[0]));
