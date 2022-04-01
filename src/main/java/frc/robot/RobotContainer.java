@@ -172,7 +172,8 @@ public class RobotContainer {
         // Reject
         // new JoystickButton(buttonBoard, 1)
         new JoystickButton(buttonController, Xbox.Button.BACK)
-                .whileHeld(new ShootCommand(systems, Shooter.Velocity.REJECT));
+                .whileHeld(new ShootCommand(systems, Shooter.Velocity.REJECT)
+                                .alongWith(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, 0.287)));
 
         // Shoot 
         // new JoystickButton(buttonBoard, 6)
