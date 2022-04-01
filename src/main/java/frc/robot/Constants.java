@@ -74,9 +74,9 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 11;
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(30.234);
 
-    public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(23.4);
+    public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(38.9);
     public static final double TARGET_HEIGHT_METERS = Units.feetToMeters(8) + Units.inchesToMeters(8);
-    public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(24.3); // 34
+    public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(27.3); // 29
 
     public static final VisionLEDMode DEFAULT_LED_MODE = VisionLEDMode.kOn;
     public static final boolean DRIVER_MODE = false;

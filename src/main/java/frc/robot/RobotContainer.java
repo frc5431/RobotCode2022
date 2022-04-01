@@ -63,10 +63,10 @@ public class RobotContainer {
                         () -> modifyAxis(-driver.getRawAxis(Xbox.Axis.RIGHT_X)) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         ));
 
-        systems.getAngler().setDefaultCommand(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, () -> CameraCalc.calculateAngler(camera) ) {
-                @Override
-                public boolean isFinished() { return false; }
-        });
+        // systems.getAngler().setDefaultCommand(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, () -> CameraCalc.calculateAngler(camera) ) {
+        //         @Override
+        //         public boolean isFinished() { return false; }
+        // });
 
         systems.getClimber().getExtend().setDefaultCommand(new ClimberExtendCommand(systems, () -> {
             return modifyAxis(buttonController.getRawAxis(Xbox.Axis.TRIGGER_RIGHT))
@@ -105,10 +105,6 @@ public class RobotContainer {
         Constants.tab_commands.add("Path 1 - to third ball", new PathCommand(systems, AutonCommand.PATHS[1]));
         Constants.tab_commands.add("Path 2 - to terminal", new PathCommand(systems, AutonCommand.PATHS[2]));
         Constants.tab_commands.add("Path 3 - to shoot", new PathCommand(systems, AutonCommand.PATHS[3]));
-
-        for (VideoSource vs : VideoSource.enumerateSources()) {
-            System.out.println(String.format("Camera ID: %s - Name: %s - Description: %s", vs.getHandle(), vs.getName(), vs.getDescription()));
-        }
     }
 
     /**
@@ -326,6 +322,11 @@ public class RobotContainer {
         drivebase.setNeutralModeDrive(NeutralMode.Brake);
         drivebase.setNeutralModeSteer(NeutralMode.Brake);
         camera.setLED(Constants.DEFAULT_LED_MODE);
+        
+        System.out.println("VideoSource size: " + VideoSource.enumerateSources().length);
+        for (VideoSource vs : VideoSource.enumerateSources()) {
+            System.out.println(String.format("Camera ID: %s - Name: %s - Description: %s", vs.getHandle(), vs.getName(), vs.getDescription()));
+        }
     }
 
     public void teleopPeriodic() {

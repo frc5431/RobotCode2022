@@ -31,13 +31,18 @@ public class CameraCalc {
         return cachedDistance;
     }
 
+    /*
+     * 1.28m - 0.3 - 11900
+     * 1.50m - 0.325 - 11550
+     */
+
     public static double calculateAngler(PhotonCamera camera) {
         double distance = getDistanceMeters(camera);
 
         if (distance < 0)
             return -1;
 
-        return MathUtil.clamp(Calc.map(distance, 2.15, 7.5, 0.45, 0.6), 0.45, 0.6); // prev max: 0.65
+        return MathUtil.clamp(Calc.map(distance, 2.15, 7.5, 0.45, 0.6), 0.45, 0.6); // prev max: 0.45/0.6
     }
 
     public static double calculateRPM(PhotonCamera camera) {
