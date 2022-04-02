@@ -32,8 +32,13 @@ public class CameraCalc {
     }
 
     /*
-     * 1.28m - 0.3 - 11900
-     * 1.50m - 0.325 - 11550
+     * 1.28m - 0.25 - 12259
+     * 1.50m - 0.325 - 12259
+     * 2.0m - 0.4 - 12426
+     * 2.5m - 0.475 - 12426
+     * 3.0m - 0.525 - 12676
+     * 3.5m - 
+     * 8.0m - 0.8 - 16179
      */
 
     public static double calculateAngler(PhotonCamera camera) {
