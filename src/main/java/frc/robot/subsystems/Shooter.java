@@ -12,7 +12,7 @@ import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
 
-    public static final double VELOCITY_REJECT = 6640;
+    public static final double VELOCITY_REJECT = 6892;
     public static final double VELOCITY_NORMAL = 13000; // 13000
     public static final double VELOCITY_BUFFER = 100;
 
