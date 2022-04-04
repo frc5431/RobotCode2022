@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import org.photonvision.PhotonCamera;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import frc.robot.subsystems.*;
 
@@ -20,6 +21,8 @@ public class Systems {
     private WPI_TalonFX climberHinge;
 
     private Servo anglerServo;
+
+    private DigitalInput upperFeederSensor;
 
     private Drivebase drivebase;
 
@@ -43,6 +46,8 @@ public class Systems {
         climberHinge = new WPI_TalonFX(Constants.ID_CLIMBER_HINGE, CANBUS_SUBSYSTEM);
 
         anglerServo = new Servo(Constants.SLOT_ANGLER);
+
+        upperFeederSensor = new DigitalInput(Constants.SLOT_FEEDER_SENSOR);
 
         drivebase = new Drivebase();
 
@@ -82,6 +87,10 @@ public class Systems {
 
     public Angler getAngler() {
         return angler;
+    }
+
+    public DigitalInput getUpperFeederSensor() {
+        return upperFeederSensor;
     }
 
     public PhotonCamera getCamera() {

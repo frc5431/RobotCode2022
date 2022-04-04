@@ -10,7 +10,7 @@ import frc.robot.commands.subsystems.AnglerCommand;
  */
 public class AngleAndShootCommand extends ParallelCommandGroup {
     public static enum Position {
-        HUB(0.3, 13000), SAFEZONE(0.49, 14500), TERMINAL(0.6, 19500);
+        HUB(0.44, 12500), SAFEZONE(0.51, 12600), TERMINAL(0.6, 19500);
 
         private double anglerPos;
         private double rpm;

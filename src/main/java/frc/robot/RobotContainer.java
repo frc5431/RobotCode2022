@@ -7,13 +7,16 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import org.photonvision.PhotonCamera;
-import org.photonvision.common.hardware.VisionLEDMode;
 
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.UsbCameraInfo;
+import edu.wpi.first.cscore.VideoSource;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.*;
 import frc.robot.commands.subsystems.*;
@@ -40,7 +43,7 @@ public class RobotContainer {
 //     private final PowerDistribution pdh = new PowerDistribution();
 
     private final Xbox driver = new Xbox(0);
-//     private final Joystick buttonBoard = new Joystick(1);
+  //private final Joystick vjoy = new vjoy(4);
     private final Xbox buttonController = new Xbox(1);
     private final LogitechExtreme3D operator = new LogitechExtreme3D(2);
 
@@ -62,10 +65,10 @@ public class RobotContainer {
                         () -> modifyAxis(-driver.getRawAxis(Xbox.Axis.RIGHT_X)) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         ));
 
-        systems.getAngler().setDefaultCommand(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, () -> CameraCalc.calculateAngler(camera) ) {
-                @Override
-                public boolean isFinished() { return false; }
-        });
+        // systems.getAngler().setDefaultCommand(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, () -> CameraCalc.calculateAngler(camera) ) {
+        //         @Override
+        //         public boolean isFinished() { return false; }
+        // });
 
         systems.getClimber().getExtend().setDefaultCommand(new ClimberExtendCommand(systems, () -> {
             return modifyAxis(buttonController.getRawAxis(Xbox.Axis.TRIGGER_RIGHT))
@@ -76,21 +79,40 @@ public class RobotContainer {
         configureButtonBindings();
 
         camera.setLED(Constants.DEFAULT_LED_MODE);
+        camera.setPipelineIndex(Constants.VISION_PIPELINE_INDEX);
+        PhotonCamera.setVersionCheckEnabled(false);
 
-        Constants.tab_subsystems.addNumber("Distance (m)", () -> CameraCalc.getDistanceMeters(camera));
+        Constants.tab_subsystems.addBoolean("DIO result", () -> systems.getUpperFeederSensor().get())
+                .withPosition(0, 6)
+                .withSize(2, 1);
 
-        // Constants.tab_subsystems.addNumber("PD Volts", pdh::getVoltage);
-        // Constants.tab_subsystems.addNumber("PD Temp", pdh::getTemperature);
-        // Constants.tab_subsystems.addNumber("PD Current", pdh::getTotalCurrent);
-        // Constants.tab_subsystems.addNumber("PD Joules", pdh::getTotalEnergy);
+        Constants.tab_subsystems.addNumber("Distance (m)", () -> CameraCalc.getDistanceMeters(camera))
+                .withPosition(6, 0)
+                .withSize(2, 1);
 
         autonChooser = new SendableChooser<>();
+        // autonChooser.addOption("One Ball (no taxi)", AutonCommand.State.ONE_BALL);
         autonChooser.setDefaultOption("Two Ball (taxi)", AutonCommand.State.TWO_BALL);
-        autonChooser.addOption("One Ball (no taxi)", AutonCommand.State.ONE_BALL);
-        autonChooser.addOption("Five Ball", AutonCommand.State.FIVE_BALL);
+        autonChooser.addOption("Three Ball", AutonCommand.State.THREE_BALL);
         autonChooser.addOption("Test Path", AutonCommand.State.TEST_PATH);
         autonChooser.addOption("Just Path", AutonCommand.State.JUST_PATH);
-        Constants.tab_subsystems.add("Auton State", autonChooser);
+        Constants.tab_subsystems.add("Auton State", autonChooser)
+                .withPosition(9, 6)
+                .withSize(3, 1);
+
+        UsbCameraInfo[] cameras = UsbCamera.enumerateUsbCameras();
+        for (int i = 0; i < cameras.length; i++) {
+            // Constants.tab_subsystems.add(new UsbCamera(cameras[i].name, cameras[i].path))
+            //         .withSize(6, 6)
+            //         .withPosition(2+i*11, 4);
+        }
+
+        Constants.tab_commands.add(CommandScheduler.getInstance());
+        Constants.tab_commands.add("Path 0 Reset Odom", AutonCommand.commandResetAuton(systems, AutonCommand.PATHS[0]));
+        Constants.tab_commands.add("Path 0 - to first ball", new PathCommand(systems, AutonCommand.PATHS[0]));
+        Constants.tab_commands.add("Path 1 - to third ball", new PathCommand(systems, AutonCommand.PATHS[1]));
+        Constants.tab_commands.add("Path 2 - to terminal", new PathCommand(systems, AutonCommand.PATHS[2]));
+        Constants.tab_commands.add("Path 3 - to shoot", new PathCommand(systems, AutonCommand.PATHS[3]));
     }
 
     /**
@@ -158,7 +180,8 @@ public class RobotContainer {
         // Reject
         // new JoystickButton(buttonBoard, 1)
         new JoystickButton(buttonController, Xbox.Button.BACK)
-                .whileHeld(new ShootCommand(systems, Shooter.Velocity.REJECT));
+                .whileHeld(new ShootCommand(systems, Shooter.Velocity.REJECT)
+                                .alongWith(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, 0.287)));
 
         // Shoot 
         // new JoystickButton(buttonBoard, 6)
@@ -301,12 +324,21 @@ public class RobotContainer {
         drivebase.stop();
         drivebase.setNeutralModeDrive(NeutralMode.Coast);
         drivebase.setNeutralModeSteer(NeutralMode.Coast);
-        camera.setLED(VisionLEDMode.kOff);
+        // camera.setLED(VisionLEDMode.kOff);
     }
 
     public void enabledInit() {
         drivebase.setNeutralModeDrive(NeutralMode.Brake);
         drivebase.setNeutralModeSteer(NeutralMode.Brake);
         camera.setLED(Constants.DEFAULT_LED_MODE);
+        
+        System.out.println("VideoSource size: " + VideoSource.enumerateSources().length);
+        for (VideoSource vs : VideoSource.enumerateSources()) {
+            System.out.println(String.format("Camera ID: %s - Name: %s - Description: %s", vs.getHandle(), vs.getName(), vs.getDescription()));
+        }
+    }
+
+    public void teleopPeriodic() {
+        // System.out.println("DIO Sensor: " + systems.getUpperFeederSensor().get());
     }
 }

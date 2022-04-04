@@ -21,7 +21,7 @@ import static java.lang.Math.min;
  * @author Ryan Hirasaki
  */
 public class Pivot extends SubsystemBase {
-    public static final double PIVOT_DOWN_LIMIT = -49000;
+    public static final double PIVOT_DOWN_LIMIT = -45000; // -49k
     public static final double PIVOT_UP_LIMIT = 0;
     public static final boolean REVERSE = false;
     public static final NeutralMode NEUTRALMODE = NeutralMode.Brake;
@@ -75,7 +75,9 @@ public class Pivot extends SubsystemBase {
         this.pivotMotor.config_kD(0, PIVOT_kD);
         this.pivotMotor.config_kF(0, PIVOT_kF);
 
-        Constants.tab_subsystems.addNumber("Pivot Position", this.pivotMotor::getSelectedSensorPosition);
+        Constants.tab_subsystems.addNumber("Pivot Position", this.pivotMotor::getSelectedSensorPosition)
+                .withPosition(18, 3)
+                .withSize(2, 1);
     }
 
     public void calibrateMode(boolean value) {

@@ -15,7 +15,7 @@ public class AimAndShootCommand extends ParallelCommandGroup {
     public AimAndShootCommand(Systems systems) {
         addCommands(
             new WaitCommand(AIM_LENGTH)
-                .deadlineWith(new AimCommand(systems)),
+                .deadlineWith(new AimCommand(systems, true)),
             new WaitCommand(AIM_LENGTH)
                 .andThen(new ShootPlusCommand(systems)),
             new IntakeCommand(systems, false)

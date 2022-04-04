@@ -12,11 +12,7 @@ import frc.team5431.titan.core.misc.Calc;
 import frc.team5431.titan.core.misc.Logger;
 
 public class CameraCalc {
-    private static double cachedDistance = -1;
-
-    static {
-        Constants.tab_subsystems.addNumber("Cached Distance", () -> cachedDistance);
-    }
+    private static double cachedDistance = 8; // -1
 
     public static double getDistanceMeters(PhotonCamera camera) {
         PhotonPipelineResult result = camera.getLatestResult();
@@ -35,13 +31,23 @@ public class CameraCalc {
         return cachedDistance;
     }
 
+    /*
+     * 1.28m - 0.25 - 12259
+     * 1.50m - 0.325 - 12259
+     * 2.0m - 0.4 - 12426
+     * 2.5m - 0.475 - 12426
+     * 3.0m - 0.525 - 12676
+     * 3.5m - 
+     * 8.0m - 0.8 - 16179
+     */
+
     public static double calculateAngler(PhotonCamera camera) {
         double distance = getDistanceMeters(camera);
 
         if (distance < 0)
             return -1;
 
-        return MathUtil.clamp(Calc.map(distance, 2.15, 7.5, 0.45, 0.6), 0.45, 0.6); // prev max: 0.65
+        return MathUtil.clamp(Calc.map(distance, 2.15, 7.5, 0.45, 0.6), 0.45, 0.6); // prev max: 0.45/0.6
     }
 
     public static double calculateRPM(PhotonCamera camera) {
@@ -53,6 +59,7 @@ public class CameraCalc {
             return Shooter.VELOCITY_NORMAL;
         }
 
-        return MathUtil.clamp(Calc.map(distance, 2.15, 7.45, 12800, 19000), 12000, 20000); // prev max: 17750
+        // return MathUtil.clamp(Calc.map(distance, 2.15, 7.45, 11500, 17750), 11300, 19000); // // prev max: 17750
+        return MathUtil.clamp(Calc.map(distance, 2.15, 7.45, 10000, 15050), 9000, 16000);
     }
 }

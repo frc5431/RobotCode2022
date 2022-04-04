@@ -199,8 +199,8 @@ public class Drivebase extends SubsystemBase {
         ((WPI_TalonFX) m_backRightModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
 
         ShuffleboardLayout chassisSpeedsLayout = Constants.tab_subsystems.getLayout("ChassisSpeeds", BuiltInLayouts.kList)
-                .withSize(3, 4)
-                .withPosition(12, 0);
+                .withSize(2, 3)
+                .withPosition(21, 0);
         chassisSpeedsLayout.addNumber("vX", () -> m_chassisSpeeds.vxMetersPerSecond);
         chassisSpeedsLayout.addNumber("vY", () -> m_chassisSpeeds.vyMetersPerSecond);
         chassisSpeedsLayout.addNumber("oR", () -> m_chassisSpeeds.omegaRadiansPerSecond);
@@ -209,11 +209,12 @@ public class Drivebase extends SubsystemBase {
 
         Constants.tab_subsystems.add("Field", field2d)
                 .withWidget(BuiltInWidgets.kField)
-                .withSize(8, 5);
+                .withPosition(8, 0)
+                .withSize(6, 4);
 
-        Constants.tab_subsystems.addNumber("Gyro Rotation", () -> this.getGyroscopeRotation().getDegrees());
-
-        // Constants.tab_subsystems.addString("Relative Driving?", () -> this.relativeDriving == null ? "null" : this.relativeDriving.toString());
+        Constants.tab_subsystems.addNumber("Gyro Rotation", () -> this.getGyroscopeRotation().getDegrees())
+                .withPosition(15, 3)
+                .withSize(2, 1);
     }
 
     // private ShuffleboardLayout getSMLayout(ShuffleboardLayout layout) {

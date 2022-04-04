@@ -12,19 +12,21 @@ import edu.wpi.first.wpilibj.Servo;
  */
 public class Angler extends SubsystemBase {
 
-    public static final double DEFAULT_SPEED = 0.05;
-    public static final double DOWN_LIMIT = 0.3;
-    public static final double UP_LIMIT = 0.8;
+    public static final double DEFAULT_SPEED = 0.025;
+    public static final double DOWN_LIMIT = 0.225; // 0.2
+    public static final double UP_LIMIT = 0.8; // 0.7
 
     private Servo anglerServo;
     
     public Angler(Servo servo) {
         anglerServo = servo;
 
-        Constants.tab_subsystems.addNumber("Angler Position", 
-                () -> anglerServo.get());
-        // Constants.tab_subsystems.addNumber("Angler Angle", 
-        //         () -> anglerServo.getAngle());
+        Constants.tab_subsystems.addNumber("Angler Position", () -> anglerServo.get())
+                .withPosition(18, 2)
+                .withSize(2, 1);
+        Constants.tab_subsystems.addNumber("Angler Raw", () -> anglerServo.getRaw())
+                .withPosition(18, 1)
+                .withSize(2, 1);
     }
 
     public void set(double value) {
