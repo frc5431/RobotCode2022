@@ -101,12 +101,14 @@ public class RobotContainer {
                 .withPosition(9, 6)
                 .withSize(3, 1);
 
-        UsbCameraInfo[] cameras = UsbCamera.enumerateUsbCameras();
-        for (int i = 0; i < cameras.length; i++) {
-            // Constants.tab_subsystems.add(new UsbCamera(cameras[i].name, cameras[i].path))
-            //         .withSize(6, 6)
-            //         .withPosition(2+i*11, 4);
-        }
+        try {
+            UsbCameraInfo[] cameras = UsbCamera.enumerateUsbCameras();
+            for (int i = 0; i < cameras.length; i++) {
+                // Constants.tab_subsystems.add(new UsbCamera(cameras[i].name, cameras[i].path))
+                //         .withSize(6, 6)
+                //         .withPosition(2+i*11, 4);
+            }
+        } catch (Exception e) {}
 
         Constants.tab_commands.add(CommandScheduler.getInstance());
         Constants.tab_commands.add("Path 0 Reset Odom", AutonCommand.commandResetAuton(systems, AutonCommand.PATHS[0]));
