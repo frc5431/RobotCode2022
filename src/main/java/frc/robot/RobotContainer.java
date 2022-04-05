@@ -65,10 +65,10 @@ public class RobotContainer {
                         () -> modifyAxis(-driver.getRawAxis(Xbox.Axis.RIGHT_X)) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         ));
 
-        // systems.getAngler().setDefaultCommand(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, () -> CameraCalc.calculateAngler(camera) ) {
-        //         @Override
-        //         public boolean isFinished() { return false; }
-        // });
+        systems.getAngler().setDefaultCommand(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, () -> CameraCalc.calculateAngler(camera) ) {
+                @Override
+                public boolean isFinished() { return false; }
+        });
 
         systems.getClimber().getExtend().setDefaultCommand(new ClimberExtendCommand(systems, () -> {
             return modifyAxis(buttonController.getRawAxis(Xbox.Axis.TRIGGER_RIGHT))
@@ -94,6 +94,7 @@ public class RobotContainer {
         // autonChooser.addOption("One Ball (no taxi)", AutonCommand.State.ONE_BALL);
         autonChooser.setDefaultOption("Two Ball (taxi)", AutonCommand.State.TWO_BALL);
         autonChooser.addOption("Three Ball", AutonCommand.State.THREE_BALL);
+        autonChooser.addOption("Five Ball", AutonCommand.State.FIVE_BALL);
         autonChooser.addOption("Test Path", AutonCommand.State.TEST_PATH);
         autonChooser.addOption("Just Path", AutonCommand.State.JUST_PATH);
         Constants.tab_subsystems.add("Auton State", autonChooser)

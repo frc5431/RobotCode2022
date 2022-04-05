@@ -7,8 +7,8 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import frc.robot.subsystems.Angler;
 import frc.robot.subsystems.Shooter;
-import frc.team5431.titan.core.misc.Calc;
 import frc.team5431.titan.core.misc.Logger;
 
 public class CameraCalc {
@@ -41,15 +41,25 @@ public class CameraCalc {
      * 8.0m - 0.8 - 16179
      */
 
+    /* Equation:
+     * y = 0.676876 * log (distance) + 0.195982
+     * (max with the MIN_LIMIT)
+     */
     public static double calculateAngler(PhotonCamera camera) {
         double distance = getDistanceMeters(camera);
 
         if (distance < 0)
             return -1;
+        
+        double value = 0.676876 * Math.log10(distance) + 0.195982;
 
-        return MathUtil.clamp(Calc.map(distance, 2.15, 7.5, 0.45, 0.6), 0.45, 0.6); // prev max: 0.45/0.6
+        return MathUtil.clamp(value, Angler.DOWN_LIMIT, Angler.UP_LIMIT);
+        // return MathUtil.clamp(Calc.map(distance, 2.15, 7.5, 0.45, 0.6), 0.45, 0.6); // prev max: 0.45/0.6
     }
 
+    /* Equation:
+     * y = 12000 ( (0.0317023 * (1.36189 ^ distance) ) + 0.973105)
+     */
     public static double calculateRPM(PhotonCamera camera) {
         double distance = getDistanceMeters(camera);
 
@@ -59,7 +69,8 @@ public class CameraCalc {
             return Shooter.VELOCITY_NORMAL;
         }
 
+        return 12000 * ( 0.0317023 * Math.pow(1.36189, distance) + 0.973105 );
         // return MathUtil.clamp(Calc.map(distance, 2.15, 7.45, 11500, 17750), 11300, 19000); // // prev max: 17750
-        return MathUtil.clamp(Calc.map(distance, 2.15, 7.45, 10000, 15050), 9000, 16000);
+        // return MathUtil.clamp(Calc.map(distance, 2.15, 7.45, 10000, 15050), 9000, 16000);
     }
 }

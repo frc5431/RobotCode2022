@@ -89,7 +89,7 @@ public class AimCommand extends CommandBase {
 
             double yawToTargetRadians = Units.degreesToRadians(result.getBestTarget().getYaw());
 
-            double calculatedValue = 2*turnPID.calculate(yawToTargetRadians);
+            double calculatedValue = 4*turnPID.calculate(yawToTargetRadians);
 
             Logger.l("Aim calc: %s -> %s", yawToTargetRadians, calculatedValue);
             Logger.l("Turn PID State: %s", turnPID.getPositionError());
