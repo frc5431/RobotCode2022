@@ -26,6 +26,8 @@ public class ShootCommand extends ParallelCommandGroup {
         this(systems, () -> velocity);
     }
 
+    // option to shoot anyway regardless of flywheel velocity
+
     public ShootCommand(Systems systems, DoubleSupplier supplier) {
         addCommands(
             new SequentialCommandGroup(

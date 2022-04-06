@@ -17,7 +17,6 @@ import frc.robot.subsystems.Shooter;
 
 public class AutonCommand extends SequentialCommandGroup {
     private static final double SHOOT_TIME = 5;
-    private static final double DRIVE_TIME = 1.7;
     private static final double PIVOT_TIME = 0.65;
 
     public static final String[] PATHS = new String[] {
@@ -28,7 +27,7 @@ public class AutonCommand extends SequentialCommandGroup {
     };
 
     public static enum State {
-        ONE_BALL, TWO_BALL, THREE_BALL, FIVE_BALL, SIX_BALL, TEST_PATH, JUST_PATH
+        ONE_BALL, TWO_BALL, THREE_BALL, FOUR_BALL, FIVE_BALL, SIX_BALL, TEST_PATH, JUST_PATH
     }
 
     public AutonCommand(Systems systems, State state) {
@@ -56,7 +55,7 @@ public class AutonCommand extends SequentialCommandGroup {
                     new InstantCommand(() -> systems.getDrivebase().resetGyroAt(0), systems.getDrivebase()), // 146
                     new WaitCommand(PIVOT_TIME)
                         .deadlineWith(new PivotCommand(systems, true)),
-                    new WaitCommand(DRIVE_TIME)
+                    new WaitCommand(1.7)
                         .deadlineWith(new DriveCommand(systems, 0.3, 0.0, false)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
                     new WaitCommand(SHOOT_TIME)
@@ -93,6 +92,22 @@ public class AutonCommand extends SequentialCommandGroup {
                     // new AimAndShootCommand(systems)
                 );
                 break;
+            case FOUR_BALL:
+                addCommands(
+                    new InstantCommand(() -> systems.getDrivebase().resetGyroAt(0), systems.getDrivebase()), // 146
+                    new WaitCommand(PIVOT_TIME)
+                        .deadlineWith(new PivotCommand(systems, true)),
+                    new WaitCommand(1.7)
+                        .deadlineWith(new DriveCommand(systems, 1.4, -0.2, 0.0)
+                                .alongWith(new FloorIntakeCommand(systems, false))),
+                    new WaitCommand(SHOOT_TIME)
+                            .deadlineWith(new AimAndShootCommand(systems)),
+                    new WaitCommand(2.0)
+                        .deadlineWith(new DriveCommand(systems, 1.5, -0.9, 0.0)
+                                .alongWith(new FloorIntakeCommand(systems, false))),
+                    new InstantCommand(() -> systems.getDrivebase().resetGyroAt(146), systems.getDrivebase())
+                );
+                break;
             case FIVE_BALL:
                 addCommands(
                     commandResetAuton(systems, PATHS[0]),
@@ -103,15 +118,13 @@ public class AutonCommand extends SequentialCommandGroup {
                             .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(3)
-                        .deadlineWith(new ShootPlusCommand(systems)
-                                .alongWith(new IntakeCommand(systems, false))),
+                        .deadlineWith(new AimAndShootCommand(systems)),
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[1])
                             .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(2.5)
-                        .deadlineWith(new ShootPlusCommand(systems)
-                                .alongWith(new IntakeCommand(systems, false))),
+                        .deadlineWith(new AimAndShootCommand(systems)),
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[2])
                             .deadlineWith(new FloorIntakeCommand(systems, false))
