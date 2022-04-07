@@ -19,16 +19,28 @@ public class ShootCommand extends ParallelCommandGroup {
     public static final double FEEDER_BOTTOM_DELAY = 0.75; // 0.175
 
     public ShootCommand(Systems systems, Shooter.Velocity velocity) {
-        this(systems, velocity.getVelocity());
+        this(systems, velocity, true);
+    }
+
+    public ShootCommand(Systems systems, Shooter.Velocity velocity, boolean waitForFlywheel) {
+        this(systems, velocity.getVelocity(), waitForFlywheel);
     }
 
     public ShootCommand(Systems systems, double velocity) {
-        this(systems, () -> velocity);
+        this(systems, velocity, true);
+    }
+
+    public ShootCommand(Systems systems, double velocity, boolean waitForFlywheel) {
+        this(systems, () -> velocity, waitForFlywheel);
     }
 
     // option to shoot anyway regardless of flywheel velocity
 
     public ShootCommand(Systems systems, DoubleSupplier supplier) {
+        this(systems, supplier, true);
+    }
+
+    public ShootCommand(Systems systems, DoubleSupplier supplier, boolean waitForFlywheel) {
         addCommands(
             new SequentialCommandGroup(
                 // new WaitUntilCommand(() -> !systems.getUpperFeederSensor().get()),
@@ -45,7 +57,7 @@ public class ShootCommand extends ParallelCommandGroup {
                             .deadlineWith(new FeederTopCommand(systems, true))
                     )),
                 new WaitCommand(() -> Calc.map(supplier.getAsDouble(), 0, Shooter.MAX_VELOCITY, MIN_SHOOTER_WAIT_TILL_SPEED, MAX_SHOOTER_WAIT_TILL_SPEED)), 
-                new WaitUntilCommand(() -> systems.getShooter().atVelocity()),
+                new WaitUntilCommand(() -> (systems.getShooter().atVelocity() || !waitForFlywheel)),
                 // new ParallelCommandGroup(
                 //     new SequentialCommandGroup(
                 //         // new WaitCommand(FEEDER_BOTTOM_DELAY),

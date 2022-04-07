@@ -15,15 +15,19 @@ public class ShootPlusCommand extends ParallelCommandGroup {
      */
 
     private final PhotonCamera camera;
-    
+
     public ShootPlusCommand(Systems systems) {
+        this(systems, true);
+    }
+    
+    public ShootPlusCommand(Systems systems, boolean waitForFlywheel) {
         this.camera = systems.getCamera();
 
         addCommands(
             // new AnglerCommand(systems, AnglerCommand.COMMAND.SET, CameraCalc.calculateAngler(camera)),
             // new WaitCommand(SHOOT_DELAY)
             //     .andThen(
-                    new ShootCommand(systems, () -> CameraCalc.calculateRPM(camera))
+                    new ShootCommand(systems, () -> CameraCalc.calculateRPM(camera), waitForFlywheel)
                     // )
         );
     }

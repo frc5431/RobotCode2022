@@ -35,7 +35,7 @@ public class AutonCommand extends SequentialCommandGroup {
             case ONE_BALL:
                 addCommands(
                     new WaitCommand(SHOOT_TIME)
-                        .deadlineWith(new ShootCommand(systems, Shooter.Velocity.NORMAL)),
+                        .deadlineWith(new ShootCommand(systems, Shooter.Velocity.NORMAL, false)),
                     new WaitCommand(PIVOT_TIME)
                         .deadlineWith(new PivotCommand(systems, true))
                 );
@@ -59,7 +59,7 @@ public class AutonCommand extends SequentialCommandGroup {
                         .deadlineWith(new DriveCommand(systems, 0.3, 0.0, false)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
                     new WaitCommand(SHOOT_TIME)
-                            .deadlineWith(new AimAndShootCommand(systems)),
+                            .deadlineWith(new AimAndShootCommand(systems, false)),
                     new InstantCommand(() -> systems.getDrivebase().resetGyroAt(146), systems.getDrivebase())
                 );
                 break;
@@ -73,14 +73,14 @@ public class AutonCommand extends SequentialCommandGroup {
                             .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(3)
-                        .deadlineWith(new ShootPlusCommand(systems)
+                        .deadlineWith(new ShootPlusCommand(systems, false)
                                 .alongWith(new IntakeCommand(systems, false))),
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[1])
                             .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(2.5)
-                        .deadlineWith(new ShootPlusCommand(systems)
+                        .deadlineWith(new ShootPlusCommand(systems, false)
                                 .alongWith(new IntakeCommand(systems, false)))
                     // new ParallelCommandGroup(
                     //     new PathCommand(systems, PATHS[2])
@@ -89,7 +89,7 @@ public class AutonCommand extends SequentialCommandGroup {
                     // new WaitCommand(2)
                     //     .deadlineWith(new FloorIntakeCommand(systems, false)),
                     // new PathCommand(systems, PATHS[3]),
-                    // new AimAndShootCommand(systems)
+                    // new AimAndShootCommand(systems, false)
                 );
                 break;
             case FOUR_BALL:
@@ -100,12 +100,19 @@ public class AutonCommand extends SequentialCommandGroup {
                     new WaitCommand(1.7)
                         .deadlineWith(new DriveCommand(systems, 1.4, -0.2, 0.0)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
-                    new WaitCommand(SHOOT_TIME)
-                            .deadlineWith(new AimAndShootCommand(systems)),
+                    new WaitCommand(3)
+                            .deadlineWith(new AimAndShootCommand(systems, false)),
                     new WaitCommand(2.0)
                         .deadlineWith(new DriveCommand(systems, 1.5, -0.9, 0.0)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
-                    new InstantCommand(() -> systems.getDrivebase().resetGyroAt(146), systems.getDrivebase())
+                    new WaitCommand(2.2)
+                        .deadlineWith(new FloorIntakeCommand(systems, false)),
+                    new WaitCommand(2.0)
+                        .deadlineWith(new DriveCommand(systems, -1.5, 0.9, 0.0)
+                                .alongWith(new FloorIntakeCommand(systems, false))),
+                    new WaitCommand(3)
+                            .deadlineWith(new AimAndShootCommand(systems, false)),
+                    new InstantCommand(() -> systems.getDrivebase().resetGyroAt(-155.6), systems.getDrivebase())
                 );
                 break;
             case FIVE_BALL:
@@ -118,13 +125,13 @@ public class AutonCommand extends SequentialCommandGroup {
                             .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(3)
-                        .deadlineWith(new AimAndShootCommand(systems)),
+                        .deadlineWith(new AimAndShootCommand(systems, false)),
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[1])
                             .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(2.5)
-                        .deadlineWith(new AimAndShootCommand(systems)),
+                        .deadlineWith(new AimAndShootCommand(systems, false)),
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[2])
                             .deadlineWith(new FloorIntakeCommand(systems, false))
@@ -132,7 +139,7 @@ public class AutonCommand extends SequentialCommandGroup {
                     new WaitCommand(2)
                         .deadlineWith(new FloorIntakeCommand(systems, false)),
                     new PathCommand(systems, PATHS[3]),
-                    new AimAndShootCommand(systems)
+                    new AimAndShootCommand(systems, false)
                 );
                 break;
             case JUST_PATH:

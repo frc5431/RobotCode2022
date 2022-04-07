@@ -47,8 +47,9 @@ public class CameraCalc {
      * 8.0m - 0.8 - 15095
      */
 
-    /* Equation:
-     * y = 0.676876 * log (distance) + 0.195982
+    /** Equation:
+     * y = logarithm(distance, 1.83452, 0.595659, 0.255365) / 
+     *     quadratic(distance, 0.0160751, -0.104268, 2.58818)
      * (max with the MIN_LIMIT)
      */
     public static double calculateAngler(PhotonCamera camera) {
@@ -57,14 +58,16 @@ public class CameraCalc {
         if (distance < 0)
             return -1;
         
-        double value = 0.676876 * Math.log10(distance) + 0.195982;
+        double value = logarithm(distance, 1.83452, 0.595659, 0.255365) / 
+                       quadratic(distance, 0.0160751, -0.104268, 2.58818);
 
         return MathUtil.clamp(value, Angler.DOWN_LIMIT, Angler.UP_LIMIT);
         // return MathUtil.clamp(Calc.map(distance, 2.15, 7.5, 0.45, 0.6), 0.45, 0.6); // prev max: 0.45/0.6
     }
 
-    /* Equation:
-     * y = 12000 ( (0.0317023 * (1.36189 ^ distance) ) + 0.973105)
+    /** Equation:
+     * y = 12000 * (quadratic(distance, 0.130406, -0.275359, 3.04742) /
+     *              quadratic(distance, 0.0651734, 0.0764011, 2.52512))
      */
     public static double calculateRPM(PhotonCamera camera) {
         double distance = getDistanceMeters(camera);
@@ -75,8 +78,29 @@ public class CameraCalc {
             return Shooter.VELOCITY_NORMAL;
         }
 
-        return 12000 * ( 0.0317023 * Math.pow(1.36189, distance) + 0.973105 );
+        return 12000 * (quadratic(distance, 0.130406, -0.275359, 3.04742) /
+                        quadratic(distance, 0.0651734, 0.0764011, 2.52512));
         // return MathUtil.clamp(Calc.map(distance, 2.15, 7.45, 11500, 17750), 11300, 19000); // // prev max: 17750
         // return MathUtil.clamp(Calc.map(distance, 2.15, 7.45, 10000, 15050), 9000, 16000);
+    }
+
+    /**
+     * Helper function for quadratic equations
+     * 
+     * ax^2 + bx + c
+     */
+    public static double quadratic(double x, double a, double b, double c) {
+        return a * x * x
+             + b * x
+             + c;
+    }
+
+    /**
+     * Helper function for logarithm equations
+     * 
+     * a * log(x - c) + b
+     */
+    public static double logarithm(double x, double a, double b, double c) {
+        return a * Math.log10(x - c) + b; 
     }
 }

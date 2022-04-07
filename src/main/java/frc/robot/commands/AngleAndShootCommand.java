@@ -10,7 +10,7 @@ import frc.robot.commands.subsystems.AnglerCommand;
  */
 public class AngleAndShootCommand extends ParallelCommandGroup {
     public static enum Position {
-        HUB(0.44, 12500), SAFEZONE(0.51, 12600), TERMINAL(0.6, 19500);
+        HUB(0.25, 12750), SAFEZONE(0.675, 12626), TERMINAL(0.8, 15000);
 
         private double anglerPos;
         private double rpm;
@@ -28,11 +28,15 @@ public class AngleAndShootCommand extends ParallelCommandGroup {
             return rpm;
         }
     }
-
+    
     public AngleAndShootCommand(Systems systems, Position pos) {
+        this(systems, pos, true);
+    }
+
+    public AngleAndShootCommand(Systems systems, Position pos, boolean waitForFlywheel) {
         addCommands(
             new AnglerCommand(systems, AnglerCommand.COMMAND.SET, pos.getAnglerPos()),
-            new ShootCommand(systems, pos.getRpm())
+            new ShootCommand(systems, pos.getRpm(), waitForFlywheel)
         );
     }
 }

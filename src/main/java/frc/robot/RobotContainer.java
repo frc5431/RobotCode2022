@@ -92,10 +92,10 @@ public class RobotContainer {
 
         autonChooser = new SendableChooser<>();
         // autonChooser.addOption("One Ball (no taxi)", AutonCommand.State.ONE_BALL);
-        autonChooser.setDefaultOption("Two Ball (taxi)", AutonCommand.State.TWO_BALL);
-        autonChooser.addOption("Three Ball", AutonCommand.State.THREE_BALL);
-        autonChooser.addOption("Four Ball", AutonCommand.State.FOUR_BALL);
-        autonChooser.addOption("Five Ball", AutonCommand.State.FIVE_BALL);
+        autonChooser.setDefaultOption("Two Ball (time)", AutonCommand.State.TWO_BALL);
+        autonChooser.addOption("Three Ball (path)", AutonCommand.State.THREE_BALL);
+        autonChooser.addOption("Four Ball (time)", AutonCommand.State.FOUR_BALL);
+        autonChooser.addOption("Five Ball (path)", AutonCommand.State.FIVE_BALL);
         autonChooser.addOption("Test Path", AutonCommand.State.TEST_PATH);
         autonChooser.addOption("Just Path", AutonCommand.State.JUST_PATH);
         Constants.tab_subsystems.add("Auton State", autonChooser)
