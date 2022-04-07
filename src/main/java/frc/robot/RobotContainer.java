@@ -65,10 +65,10 @@ public class RobotContainer {
                         () -> modifyAxis(-driver.getRawAxis(Xbox.Axis.RIGHT_X)) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         ));
 
-        // systems.getAngler().setDefaultCommand(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, () -> CameraCalc.calculateAngler(camera) ) {
-        //         @Override
-        //         public boolean isFinished() { return false; }
-        // });
+        systems.getAngler().setDefaultCommand(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, () -> CameraCalc.calculateAngler(camera) ) {
+                @Override
+                public boolean isFinished() { return false; }
+        });
 
         systems.getClimber().getExtend().setDefaultCommand(new ClimberExtendCommand(systems, () -> {
             return modifyAxis(buttonController.getRawAxis(Xbox.Axis.TRIGGER_RIGHT))
