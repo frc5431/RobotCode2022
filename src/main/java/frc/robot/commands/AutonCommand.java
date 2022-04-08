@@ -18,7 +18,7 @@ import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
 
 public class AutonCommand extends SequentialCommandGroup {
-    private static final double SHOOT_TIME = 5;
+    private static final double SHOOT_TIME = 4;
     private static final double PIVOT_TIME = 0.45;
 
     public static final String[] PATHS = new String[] {
@@ -94,21 +94,25 @@ public class AutonCommand extends SequentialCommandGroup {
                     new WaitCommand(1.7)
                         .deadlineWith(new DriveCommand(systems, 1.4, -0.2, 0.0)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
-                    new WaitCommand(0.7)
+                    new WaitCommand(0.25)
                         .deadlineWith(new FeederBottomCommand(systems, true)),
-                    new WaitCommand(0.7)
+                    new WaitCommand(0.4)
                         .deadlineWith(new FeederTopCommand(systems, true)),
-                    new WaitCommand(3)
+                    new WaitCommand(2.9)
                             .deadlineWith(new AimAndShootCommand(systems, false)),
                     new WaitCommand(2.0)
                         .deadlineWith(new DriveCommand(systems, 1.5, -0.5, 0.0)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
-                    new WaitCommand(2.2)
+                    new WaitCommand(1.7)
                         .deadlineWith(new FloorIntakeCommand(systems, false)),
                     new WaitCommand(2.0)
                         .deadlineWith(new DriveCommand(systems, -1.5, 0.5, 0.0)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
-                    new WaitCommand(3)
+                    new WaitCommand(0.25)
+                        .deadlineWith(new FeederBottomCommand(systems, true)),
+                    new WaitCommand(0.4)
+                        .deadlineWith(new FeederTopCommand(systems, true)),
+                    new WaitCommand(2.9)
                             .deadlineWith(new AimAndShootCommand(systems, false)),
                     new InstantCommand(() -> systems.getDrivebase().resetGyroAt(-155.6), systems.getDrivebase())
                 );

@@ -54,8 +54,9 @@ public class ShootCommand extends ParallelCommandGroup {
                         new WaitCommand(FEEDER_PUSH_DOWN_DELAY/2)
                             .deadlineWith(new FeederTopCommand(systems, true))
                     )),
-                new WaitCommand(() -> Calc.map(supplier.getAsDouble(), 0, Shooter.MAX_VELOCITY, MIN_SHOOTER_WAIT_TILL_SPEED, MAX_SHOOTER_WAIT_TILL_SPEED)), 
-                new WaitUntilCommand(() -> (systems.getShooter().atVelocity() || !waitForFlywheel)),
+                waitForFlywheel
+                    ? new WaitCommand(0.5).andThen( new WaitUntilCommand(() -> systems.getShooter().atVelocity()) )
+                    : new WaitCommand(() -> Calc.map(supplier.getAsDouble(), 0, Shooter.MAX_VELOCITY, MIN_SHOOTER_WAIT_TILL_SPEED, MAX_SHOOTER_WAIT_TILL_SPEED)), 
                 // new ParallelCommandGroup(
                 //     new SequentialCommandGroup(
                 //         // new WaitCommand(FEEDER_BOTTOM_DELAY),
