@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Systems;
 import frc.robot.commands.subsystems.DriveCommand;
+import frc.robot.commands.subsystems.FeederBottomCommand;
+import frc.robot.commands.subsystems.FeederTopCommand;
 import frc.robot.commands.subsystems.IntakeCommand;
 import frc.robot.commands.subsystems.PivotCommand;
 import frc.robot.subsystems.Drivebase;
@@ -17,7 +19,7 @@ import frc.robot.subsystems.Shooter;
 
 public class AutonCommand extends SequentialCommandGroup {
     private static final double SHOOT_TIME = 5;
-    private static final double PIVOT_TIME = 0.55;
+    private static final double PIVOT_TIME = 0.45;
 
     public static final String[] PATHS = new String[] {
         "1 Start To First Ball",
@@ -82,14 +84,6 @@ public class AutonCommand extends SequentialCommandGroup {
                     new WaitCommand(2.5)
                         .deadlineWith(new ShootPlusCommand(systems, false)
                                 .alongWith(new IntakeCommand(systems, false)))
-                    // new ParallelCommandGroup(
-                    //     new PathCommand(systems, PATHS[2])
-                    //         .deadlineWith(new FloorIntakeCommand(systems, false))
-                    // ),
-                    // new WaitCommand(2)
-                    //     .deadlineWith(new FloorIntakeCommand(systems, false)),
-                    // new PathCommand(systems, PATHS[3]),
-                    // new AimAndShootCommand(systems, false)
                 );
                 break;
             case FOUR_BALL:
@@ -100,6 +94,10 @@ public class AutonCommand extends SequentialCommandGroup {
                     new WaitCommand(1.7)
                         .deadlineWith(new DriveCommand(systems, 1.4, -0.2, 0.0)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
+                    new WaitCommand(0.7)
+                        .deadlineWith(new FeederBottomCommand(systems, true)),
+                    new WaitCommand(0.7)
+                        .deadlineWith(new FeederTopCommand(systems, true)),
                     new WaitCommand(3)
                             .deadlineWith(new AimAndShootCommand(systems, false)),
                     new WaitCommand(2.0)
