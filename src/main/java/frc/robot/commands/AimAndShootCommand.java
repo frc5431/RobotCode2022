@@ -5,7 +5,7 @@ import frc.robot.Systems;
 import frc.robot.commands.subsystems.IntakeCommand;
 
 public class AimAndShootCommand extends ParallelCommandGroup {
-    public static final double AIM_LENGTH = 0.65;
+    public static final double AIM_LENGTH = 0.25;
 
     public AimAndShootCommand(Systems systems) {
         this(systems, true);

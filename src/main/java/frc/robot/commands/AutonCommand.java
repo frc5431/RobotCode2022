@@ -17,7 +17,7 @@ import frc.robot.subsystems.Shooter;
 
 public class AutonCommand extends SequentialCommandGroup {
     private static final double SHOOT_TIME = 5;
-    private static final double PIVOT_TIME = 0.65;
+    private static final double PIVOT_TIME = 0.55;
 
     public static final String[] PATHS = new String[] {
         "1 Start To First Ball",
@@ -103,12 +103,12 @@ public class AutonCommand extends SequentialCommandGroup {
                     new WaitCommand(3)
                             .deadlineWith(new AimAndShootCommand(systems, false)),
                     new WaitCommand(2.0)
-                        .deadlineWith(new DriveCommand(systems, 1.5, -0.9, 0.0)
+                        .deadlineWith(new DriveCommand(systems, 1.5, -0.5, 0.0)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
                     new WaitCommand(2.2)
                         .deadlineWith(new FloorIntakeCommand(systems, false)),
                     new WaitCommand(2.0)
-                        .deadlineWith(new DriveCommand(systems, -1.5, 0.9, 0.0)
+                        .deadlineWith(new DriveCommand(systems, -1.5, 0.5, 0.0)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
                     new WaitCommand(3)
                             .deadlineWith(new AimAndShootCommand(systems, false)),

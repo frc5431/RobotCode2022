@@ -22,7 +22,7 @@ public class Shooter extends SubsystemBase {
     public static final boolean REVERSE = true;
     public static final double RAMPING_FROM_0_TO_FULL = 0.3;
 
-    private static final double DEFAULT_KP = 0.01;
+    private static final double DEFAULT_KP = 0.12;
     private static final double DEFAULT_KI = 0;
     private static final double DEFAULT_KD = 0;
     private static final double DEFAULT_KF = 0.05; // 0.055

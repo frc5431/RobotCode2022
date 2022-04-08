@@ -14,8 +14,8 @@ import frc.team5431.titan.core.misc.Calc;
 
 public class ShootCommand extends ParallelCommandGroup {
     public static final double FEEDER_PUSH_DOWN_DELAY = 0.4;
-    public static final double MIN_SHOOTER_WAIT_TILL_SPEED = 0.7; // with 2 wheel 1.0 // before flywheel change: 0.25
-    public static final double MAX_SHOOTER_WAIT_TILL_SPEED = 1.0; // with 2 wheel 1.8 // before flywheel change: 0.5
+    public static final double MIN_SHOOTER_WAIT_TILL_SPEED = 0.9; // 0.7 // with 2 wheel 1.0 // before flywheel change: 0.25
+    public static final double MAX_SHOOTER_WAIT_TILL_SPEED = 1.3; // 1.0 // with 2 wheel 1.8 // before flywheel change: 0.5
     public static final double FEEDER_BOTTOM_DELAY = 0.75; // 0.175
 
     public ShootCommand(Systems systems, Shooter.Velocity velocity) {
