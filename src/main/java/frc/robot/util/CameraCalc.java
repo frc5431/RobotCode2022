@@ -79,7 +79,7 @@ public class CameraCalc {
         }
 
         return 12000 * (quadratic(distance, 0.130406, -0.275359, 3.04742) /
-                        quadratic(distance, 0.0651734, 0.0764011, 2.52512));
+                        quadratic(distance, 0.0651734, 0.0764011, 2.52512)) * 0.97; // - 700;
         // return MathUtil.clamp(Calc.map(distance, 2.15, 7.45, 11500, 17750), 11300, 19000); // // prev max: 17750
         // return MathUtil.clamp(Calc.map(distance, 2.15, 7.45, 10000, 15050), 9000, 16000);
     }

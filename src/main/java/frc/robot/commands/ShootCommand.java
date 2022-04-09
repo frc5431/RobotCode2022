@@ -65,7 +65,11 @@ public class ShootCommand extends ParallelCommandGroup {
                 //     ),
                 //     new FeederTopWaitShooterCommand(systems, false)
                 // )
-                new FeedEverything(systems, false)
+                new ParallelCommandGroup(
+                    new FeederTopCommand(systems, false),
+                    new WaitCommand(0.2).andThen(new FeederBottomCommand(systems, false))
+                )
+                // new FeedEverything(systems, false)
             )
         );
     }
