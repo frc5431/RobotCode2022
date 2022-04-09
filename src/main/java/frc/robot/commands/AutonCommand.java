@@ -60,6 +60,10 @@ public class AutonCommand extends SequentialCommandGroup {
                     new WaitCommand(1.7)
                         .deadlineWith(new DriveCommand(systems, 0.3, 0.0, false)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
+                    new WaitCommand(0.3)
+                        .deadlineWith(new FeederBottomCommand(systems, true)),
+                    new WaitCommand(0.5)
+                        .deadlineWith(new FeederTopCommand(systems, true)),
                     new WaitCommand(SHOOT_TIME)
                             .deadlineWith(new AimAndShootCommand(systems, false)),
                     new InstantCommand(() -> systems.getDrivebase().resetGyroAt(146), systems.getDrivebase())
