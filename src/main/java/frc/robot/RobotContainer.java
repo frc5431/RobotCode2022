@@ -12,9 +12,11 @@ import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.UsbCameraInfo;
 import edu.wpi.first.cscore.VideoSource;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -23,6 +25,7 @@ import frc.robot.commands.subsystems.*;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
 import frc.robot.util.CameraCalc;
+import frc.robot.util.LEDUtil;
 import frc.team5431.titan.core.joysticks.LogitechExtreme3D;
 import frc.team5431.titan.core.joysticks.Xbox;
 import frc.team5431.titan.core.misc.Calc;
@@ -81,6 +84,12 @@ public class RobotContainer {
         camera.setLED(Constants.DEFAULT_LED_MODE);
         camera.setPipelineIndex(Constants.VISION_PIPELINE_INDEX);
         PhotonCamera.setVersionCheckEnabled(false);
+
+        systems.getLed().setLength(120);
+        systems.getLed().setData(new AddressableLEDBuffer(120));
+        systems.getLed().start();
+
+        LEDUtil.setColor(systems.getLed(), Color.kGreen);
 
         Constants.tab_subsystems.addBoolean("DIO result", () -> systems.getUpperFeederSensor().get())
                 .withPosition(0, 6)
@@ -328,6 +337,8 @@ public class RobotContainer {
         drivebase.stop();
         drivebase.setNeutralModeDrive(NeutralMode.Coast);
         drivebase.setNeutralModeSteer(NeutralMode.Coast);
+        LEDUtil.setColor(systems.getLed(), Color.kBlue);
+        // systems.getLed().stop();
         // camera.setLED(VisionLEDMode.kOff);
     }
 
@@ -335,6 +346,7 @@ public class RobotContainer {
         drivebase.setNeutralModeDrive(NeutralMode.Brake);
         drivebase.setNeutralModeSteer(NeutralMode.Brake);
         camera.setLED(Constants.DEFAULT_LED_MODE);
+        LEDUtil.setColor(systems.getLed(), Color.kOrange);
         
         System.out.println("VideoSource size: " + VideoSource.enumerateSources().length);
         for (VideoSource vs : VideoSource.enumerateSources()) {

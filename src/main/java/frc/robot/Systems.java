@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import org.photonvision.PhotonCamera;
 
+import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import frc.robot.subsystems.*;
@@ -35,6 +36,8 @@ public class Systems {
 
     private PhotonCamera camera;
 
+    private AddressableLED led;
+
     public Systems() {
         feederBottom = new WPI_TalonFX(Constants.ID_FEEDER_BOTTOM, CANBUS_SUBSYSTEM);
         feederTop = new WPI_TalonFX(Constants.ID_FEEDER_TOP, CANBUS_SUBSYSTEM);
@@ -59,6 +62,8 @@ public class Systems {
         angler = new Angler(anglerServo);
 
         camera = new PhotonCamera(Constants.CAMERA_NAME);
+
+        led = new AddressableLED(0);
     }
 
     public Drivebase getDrivebase() {
@@ -95,5 +100,9 @@ public class Systems {
 
     public PhotonCamera getCamera() {
         return camera;
+    }
+
+    public AddressableLED getLed() {
+        return led;
     }
 }
