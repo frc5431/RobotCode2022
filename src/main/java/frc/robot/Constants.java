@@ -36,6 +36,7 @@ public final class Constants {
     public static final int SLOT_ANGLER = 5;
     public static final int SLOT_FEEDER_SENSOR = 1;
     public static final String CAMERA_NAME = "gloworm";
+    public static final int SLOT_LEDS = 0;
 
     /**
      * The left-to-right distance between the drivetrain wheels

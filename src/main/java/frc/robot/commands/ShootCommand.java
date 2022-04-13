@@ -40,6 +40,7 @@ public class ShootCommand extends ParallelCommandGroup {
 
     public ShootCommand(Systems systems, DoubleSupplier supplier, boolean waitForFlywheel) {
         addCommands(
+            new LEDCommand(systems, 0.87),
             new SequentialCommandGroup(
                 // new WaitUntilCommand(() -> !systems.getUpperFeederSensor().get()),
                 new WaitCommand(FEEDER_PUSH_DOWN_DELAY),
