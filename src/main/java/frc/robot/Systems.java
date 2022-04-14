@@ -6,8 +6,8 @@ import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import frc.robot.subsystems.*;
+import frc.team5431.titan.core.leds.Blinkin;
 
 import static frc.robot.Constants.CANBUS_SUBSYSTEM;
 
@@ -36,7 +36,7 @@ public class Systems {
 
     private PhotonCamera camera;
 
-    private LEDs led;
+    private Blinkin led;
 
     public Systems() {
         feederBottom = new WPI_TalonFX(Constants.ID_FEEDER_BOTTOM, CANBUS_SUBSYSTEM);
@@ -63,7 +63,7 @@ public class Systems {
 
         camera = new PhotonCamera(Constants.CAMERA_NAME);
 
-        led = new LEDs(new Spark(Constants.SLOT_LEDS));
+        led = new Blinkin(Constants.SLOT_LEDS);
     }
 
     public Drivebase getDrivebase() {
@@ -102,7 +102,7 @@ public class Systems {
         return camera;
     }
 
-    public LEDs getLed() {
+    public Blinkin getLed() {
         return led;
     }
 }

@@ -5,6 +5,6 @@ import frc.robot.Systems;
 
 public class LEDCommand extends InstantCommand {
     public LEDCommand(Systems systems, double pwmValue) {
-        super(() -> systems.getLed().set(pwmValue), systems.getLed());
+        super(() -> systems.getLed().set(pwmValue));
     }
 }
