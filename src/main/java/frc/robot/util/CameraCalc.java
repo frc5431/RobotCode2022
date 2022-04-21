@@ -5,14 +5,33 @@ import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.subsystems.Angler;
+import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
 import frc.team5431.titan.core.misc.Logger;
 
 public class CameraCalc {
     private static double cachedDistance = 8; // -1
+    
+    private static final ProfiledPIDController turnPID = new ProfiledPIDController(
+            1, 
+            0, 
+            0.01, 
+            new Constraints(
+                    Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
+                    Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            )
+    );
+    private static final double MIN_POWER = 0.1;
+
+    static {
+        turnPID.setGoal(0);
+        turnPID.setTolerance(0.05, 0.2);
+    }
 
     public static double getDistanceMeters(PhotonCamera camera) {
         PhotonPipelineResult result = camera.getLatestResult();
@@ -29,6 +48,41 @@ public class CameraCalc {
         }
 
         return cachedDistance;
+    }
+
+    public static double getRotationToHub(PhotonCamera camera, double drivebaseVelocity) {
+        double distance = getDistanceMeters(camera);
+        PhotonPipelineResult result = camera.getLatestResult();
+
+        if (result.hasTargets()) {
+            Logger.l("Meters to target: " + CameraCalc.getDistanceMeters(camera));
+
+            double yaw = result.getBestTarget().getYaw();
+
+            yaw += Math.cos(distance) * distance * drivebaseVelocity;
+
+            double yawToTargetRadians = Units.degreesToRadians(yaw);
+
+            double calculatedValue = 12*turnPID.calculate(yawToTargetRadians);
+            // double calculatedValue = 4*yawToTargetRadians;
+
+            // Logger.l("Aim calc: %s -> %s", yawToTargetRadians, calculatedValue);
+            // Logger.l("Turn PID State: %s", turnPID.getPositionError());
+
+            if (Math.abs(calculatedValue) <= MIN_POWER) {
+                return 0;
+            }
+
+            return Math.copySign(
+                Math.max(
+                    Math.abs(calculatedValue),
+                    Drivebase.MIN_ANGULAR_VELOCITY
+                ), 
+                calculatedValue
+            );
+        } else {
+            return 0;
+        }
     }
 
     /*

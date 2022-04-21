@@ -52,8 +52,6 @@ public class Systems {
 
         upperFeederSensor = new DigitalInput(Constants.SLOT_FEEDER_SENSOR);
 
-        drivebase = new Drivebase();
-
         feeder = new Feeder(feederBottom,feederTop);
         shooter = new Shooter(shooterLeft, shooterRight);
         intake = new Intake(intakeMotor);
@@ -64,6 +62,8 @@ public class Systems {
         camera = new PhotonCamera(Constants.CAMERA_NAME);
 
         led = new Blinkin(Constants.SLOT_LEDS);
+
+        drivebase = new Drivebase(camera);
     }
 
     public Drivebase getDrivebase() {

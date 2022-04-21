@@ -18,6 +18,7 @@ import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import org.apache.commons.lang3.tuple.Triple;
+import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -34,6 +35,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.CameraCalc;
 import frc.team5431.titan.core.misc.Logger;
 
 public class Drivebase extends SubsystemBase {
@@ -107,10 +109,13 @@ public class Drivebase extends SubsystemBase {
     private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private Triple<Double, Double, Boolean> relativeDriving = null;
 
+    private boolean lockedToHub = false;
+    private PhotonCamera camera;
+
     // private ShuffleboardTab tab;
     public final Field2d field2d;
 
-    public Drivebase() {
+    public Drivebase(PhotonCamera camera) {
         // tab = Shuffleboard.getTab("Drivetrain");
         Mk4ModuleConfiguration moduleConfig = Mk4ModuleConfiguration.getDefaultSteerFalcon500();
         moduleConfig.setDriveCurrentLimit(40.0);
@@ -204,6 +209,8 @@ public class Drivebase extends SubsystemBase {
         chassisSpeedsLayout.addNumber("vX", () -> m_chassisSpeeds.vxMetersPerSecond);
         chassisSpeedsLayout.addNumber("vY", () -> m_chassisSpeeds.vyMetersPerSecond);
         chassisSpeedsLayout.addNumber("oR", () -> m_chassisSpeeds.omegaRadiansPerSecond);
+
+        this.camera = camera;
 
         field2d = new Field2d();
 
@@ -337,6 +344,13 @@ public class Drivebase extends SubsystemBase {
             m_chassisSpeeds.omegaRadiansPerSecond = 0.00001;
         }
 
+        if (lockedToHub) {
+            m_chassisSpeeds.omegaRadiansPerSecond = CameraCalc.getRotationToHub(camera, Math.sqrt(
+                m_chassisSpeeds.vxMetersPerSecond * m_chassisSpeeds.vxMetersPerSecond +
+                m_chassisSpeeds.vyMetersPerSecond * m_chassisSpeeds.vyMetersPerSecond
+            ));
+        }
+
         SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
 
         if (relativeDriving != null) {
@@ -401,6 +415,14 @@ public class Drivebase extends SubsystemBase {
         getSwerveModules().forEach((module) -> {
             ((WPI_TalonFX) module.getSteerMotor()).setNeutralMode(nm);
         });
+    }
+
+    public void setLockedToHub(boolean lockedToHub) {
+        this.lockedToHub = lockedToHub;
+    }
+
+    public boolean isLockedToHub() {
+        return lockedToHub;
     }
 
     public List<SwerveModule> getSwerveModules() {

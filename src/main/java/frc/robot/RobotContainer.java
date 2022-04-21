@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.*;
 import frc.robot.commands.subsystems.*;
 import frc.robot.subsystems.Drivebase;
@@ -81,8 +82,7 @@ public class RobotContainer {
         camera.setPipelineIndex(Constants.VISION_PIPELINE_INDEX);
         PhotonCamera.setVersionCheckEnabled(false);
 
-        // systems.getLed().set(BlinkinPattern.GREEN);
-        Constants.tab_subsystems.addString("LED Pattern", systems.getLed().getPattern()::toString);
+        Constants.tab_subsystems.addString("LED Pattern", () -> systems.getLed().getPattern().toString());
 
         Constants.tab_subsystems.addBoolean("DIO result", () -> systems.getUpperFeederSensor().get())
                 .withPosition(0, 6)
@@ -147,10 +147,15 @@ public class RobotContainer {
                 .whileHeld(
                     () -> drivebase.driveController(new ChassisSpeeds(0, -Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase);
                 
+        // Browse LED patterns
         driver.getButton(Xbox.Button.BACK)
                 .whenPressed(new LEDCommand(systems, LEDCommand.COMMAND.PREV));
         driver.getButton(Xbox.Button.START)
                 .whenPressed(new LEDCommand(systems, LEDCommand.COMMAND.NEXT));
+        
+        // Lock to Hub Mode:tm:
+        driver.getButton(Xbox.Button.A)
+                .whenPressed(new InstantCommand( () -> drivebase.setLockedToHub(!drivebase.isLockedToHub()) ));
         
         // Intake (Manual)
         // new JoystickButton(buttonBoard, 7)
