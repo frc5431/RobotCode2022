@@ -25,7 +25,6 @@ import frc.robot.util.CameraCalc;
 import frc.team5431.titan.core.joysticks.LogitechExtreme3D;
 import frc.team5431.titan.core.joysticks.Xbox;
 import frc.team5431.titan.core.joysticks.utils.CompassPOV;
-import frc.team5431.titan.core.leds.BlinkinPattern;
 import frc.team5431.titan.core.misc.Calc;
 
 /**
@@ -59,7 +58,7 @@ public class RobotContainer {
         // Left stick X axis -> left and right movement
         // Right stick X axis -> rotation
         drivebase.setDefaultCommand(new DefaultDriveCommand(
-                        drivebase,
+                        systems,
                         () -> modifyAxis(-driver.getRawAxis(Xbox.Axis.LEFT_Y)) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
                         () -> modifyAxis(-driver.getRawAxis(Xbox.Axis.LEFT_X)) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
                         () -> modifyAxis(-driver.getRawAxis(Xbox.Axis.RIGHT_X)) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
@@ -83,6 +82,7 @@ public class RobotContainer {
         PhotonCamera.setVersionCheckEnabled(false);
 
         // systems.getLed().set(BlinkinPattern.GREEN);
+        Constants.tab_subsystems.addString("LED Pattern", systems.getLed().getPattern()::toString);
 
         Constants.tab_subsystems.addBoolean("DIO result", () -> systems.getUpperFeederSensor().get())
                 .withPosition(0, 6)
@@ -146,6 +146,11 @@ public class RobotContainer {
         driver.getButton(CompassPOV.WEST)
                 .whileHeld(
                     () -> drivebase.driveController(new ChassisSpeeds(0, -Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase);
+                
+        driver.getButton(Xbox.Button.BACK)
+                .whenPressed(new LEDCommand(systems, LEDCommand.COMMAND.PREV));
+        driver.getButton(Xbox.Button.START)
+                .whenPressed(new LEDCommand(systems, LEDCommand.COMMAND.NEXT));
         
         // Intake (Manual)
         // new JoystickButton(buttonBoard, 7)
@@ -339,7 +344,7 @@ public class RobotContainer {
         drivebase.setNeutralModeDrive(NeutralMode.Brake);
         drivebase.setNeutralModeSteer(NeutralMode.Brake);
         camera.setLED(Constants.DEFAULT_LED_MODE);
-        systems.getLed().set(BlinkinPattern.ORANGE);
+        systems.getLed().set(Constants.LEDPATTERN_DEFAULT);
         
         System.out.println("VideoSource size: " + VideoSource.enumerateSources().length);
         for (VideoSource vs : VideoSource.enumerateSources()) {

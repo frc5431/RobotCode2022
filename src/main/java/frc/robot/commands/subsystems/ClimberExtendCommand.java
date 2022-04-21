@@ -3,8 +3,10 @@ package frc.robot.commands.subsystems;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.Systems;
 import frc.robot.subsystems.Climber;
+import frc.team5431.titan.core.leds.Blinkin;
 import frc.team5431.titan.core.misc.Logger;
 
 /**
@@ -14,6 +16,8 @@ public class ClimberExtendCommand extends CommandBase {
     private final Climber climber;
     private final boolean reverse;
 	private final DoubleSupplier supplier;
+
+    private final Blinkin leds;
 
     public ClimberExtendCommand(Systems systems, boolean reverse) {
         this(systems, () -> Climber.DEFAULT_SPEED_EXTEND, reverse);
@@ -31,6 +35,7 @@ public class ClimberExtendCommand extends CommandBase {
         this.climber = systems.getClimber();
         this.reverse = reverse;
 		this.supplier = supplier;
+        this.leds = systems.getLed();
 
         addRequirements(climber.getExtend());
     }
@@ -44,6 +49,9 @@ public class ClimberExtendCommand extends CommandBase {
 	public void execute() {
         double value = supplier.getAsDouble();
         climber.setExtend(reverse ? -value : value);
+        if (Math.abs(value) > 0.01) {
+            leds.set(Constants.LEDPATTERN_CLIMB);
+        }
 	}
 
     @Override

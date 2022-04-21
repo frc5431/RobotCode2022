@@ -9,6 +9,7 @@ import org.photonvision.common.hardware.VisionLEDMode;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.team5431.titan.core.leds.BlinkinPattern;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -83,6 +84,11 @@ public final class Constants {
     public static final boolean DRIVER_MODE = false;
 
     public static final int VISION_PIPELINE_INDEX = 0;
+
+    public static final BlinkinPattern LEDPATTERN_DEFAULT = BlinkinPattern.YELLOW;
+    public static final BlinkinPattern LEDPATTERN_SHOOT = BlinkinPattern.BLUE;
+    public static final BlinkinPattern LEDPATTERN_SHOOT_BB = BlinkinPattern.GREEN;
+    public static final BlinkinPattern LEDPATTERN_CLIMB = BlinkinPattern.STROBE_RED;
 
     public static final ShuffleboardTab tab_subsystems = Shuffleboard.getTab("Subsystems");
     public static final ShuffleboardTab tab_commands = Shuffleboard.getTab("Commands");

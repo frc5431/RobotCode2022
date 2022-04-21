@@ -5,6 +5,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Constants;
 import frc.robot.Systems;
 import frc.robot.commands.subsystems.FeederBottomCommand;
 import frc.robot.commands.subsystems.FeederTopCommand;
@@ -17,6 +18,8 @@ public class ShootCommand extends ParallelCommandGroup {
     public static final double MIN_SHOOTER_WAIT_TILL_SPEED = 0.9; // 0.7 // with 2 wheel 1.0 // before flywheel change: 0.25
     public static final double MAX_SHOOTER_WAIT_TILL_SPEED = 1.3; // 1.0 // with 2 wheel 1.8 // before flywheel change: 0.5
     public static final double FEEDER_BOTTOM_DELAY = 0.75; // 0.175
+
+    private final Systems systems;
 
     public ShootCommand(Systems systems, Shooter.Velocity velocity) {
         this(systems, velocity, true);
@@ -39,8 +42,9 @@ public class ShootCommand extends ParallelCommandGroup {
     }
 
     public ShootCommand(Systems systems, DoubleSupplier supplier, boolean waitForFlywheel) {
+        this.systems = systems;
         addCommands(
-            new LEDCommand(systems, 0.87),
+            new LEDCommand(systems, Constants.LEDPATTERN_SHOOT),
             new SequentialCommandGroup(
                 // new WaitUntilCommand(() -> !systems.getUpperFeederSensor().get()),
                 new WaitCommand(FEEDER_PUSH_DOWN_DELAY),
@@ -67,11 +71,27 @@ public class ShootCommand extends ParallelCommandGroup {
                 //     new FeederTopWaitShooterCommand(systems, false)
                 // )
                 new ParallelCommandGroup(
+                    // LEDs
+                    new SequentialCommandGroup(
+                        new LEDCommand(systems, Constants.LEDPATTERN_SHOOT_BB),
+                        new WaitCommand(0.1),
+                        new LEDCommand(systems, Constants.LEDPATTERN_SHOOT),
+                        new WaitCommand(0.15),
+                        new LEDCommand(systems, Constants.LEDPATTERN_SHOOT_BB),
+                        new WaitCommand(0.1),
+                        new LEDCommand(systems, Constants.LEDPATTERN_SHOOT)
+                    ),
                     new FeederTopCommand(systems, false),
                     new WaitCommand(0.2).andThen(new FeederBottomCommand(systems, false))
                 )
                 // new FeedEverything(systems, false)
             )
         );
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        super.end(interrupted);
+        systems.getLed().set(Constants.LEDPATTERN_DEFAULT);
     }
 }
