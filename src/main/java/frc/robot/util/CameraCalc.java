@@ -50,7 +50,17 @@ public class CameraCalc {
         return cachedDistance;
     }
 
-    public static double getRotationToHub(PhotonCamera camera, double drivebaseVelocity) {
+    public static double getYaw(PhotonCamera camera) {
+        PhotonPipelineResult result = camera.getLatestResult();
+
+        if (result.hasTargets()) {
+            return result.getBestTarget().getYaw();
+        }
+
+        return 0;
+    }
+
+    public static double getRotationToHub(PhotonCamera camera, double drivebaseVelocity, double angleOffsetFromGoingToHub) {
         double distance = getDistanceMeters(camera);
         PhotonPipelineResult result = camera.getLatestResult();
 
@@ -59,7 +69,19 @@ public class CameraCalc {
 
             double yaw = result.getBestTarget().getYaw();
 
-            yaw += Math.cos(distance) * distance * drivebaseVelocity;
+            double distanceToDesired = Math.sqrt(
+                drivebaseVelocity * drivebaseVelocity
+              + distance * distance
+              - 2 * drivebaseVelocity * distance * Math.cos(angleOffsetFromGoingToHub)
+            );
+
+            double yawOffset = Math.asin(
+                drivebaseVelocity
+              * Math.sin(angleOffsetFromGoingToHub)
+              / distanceToDesired
+            );
+
+            yaw -= yawOffset;
 
             double yawToTargetRadians = Units.degreesToRadians(yaw);
 

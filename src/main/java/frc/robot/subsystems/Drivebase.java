@@ -348,7 +348,8 @@ public class Drivebase extends SubsystemBase {
             m_chassisSpeeds.omegaRadiansPerSecond = CameraCalc.getRotationToHub(camera, Math.sqrt(
                 m_chassisSpeeds.vxMetersPerSecond * m_chassisSpeeds.vxMetersPerSecond +
                 m_chassisSpeeds.vyMetersPerSecond * m_chassisSpeeds.vyMetersPerSecond
-            ));
+            ),
+            CameraCalc.getYaw(camera)); // NOT DONE
         }
 
         SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
