@@ -20,6 +20,7 @@ import com.swervedrivespecialties.swervelib.SwerveModule;
 import org.apache.commons.lang3.tuple.Triple;
 import org.photonvision.PhotonCamera;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -345,11 +346,13 @@ public class Drivebase extends SubsystemBase {
         }
 
         if (lockedToHub) {
-            m_chassisSpeeds.omegaRadiansPerSecond = CameraCalc.getRotationToHub(camera, Math.sqrt(
+            double velocity = Math.sqrt(
                 m_chassisSpeeds.vxMetersPerSecond * m_chassisSpeeds.vxMetersPerSecond +
                 m_chassisSpeeds.vyMetersPerSecond * m_chassisSpeeds.vyMetersPerSecond
-            ),
-            CameraCalc.getYaw(camera)); // NOT DONE
+            );
+            m_chassisSpeeds.omegaRadiansPerSecond = CameraCalc.getRotationToHub(camera, velocity,
+            CameraCalc.getYawRadians(camera)); // NOT DONE
+            Math.atan(m_chassisSpeeds.vyMetersPerSecond/m_chassisSpeeds.vxMetersPerSecond);
         }
 
         SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
