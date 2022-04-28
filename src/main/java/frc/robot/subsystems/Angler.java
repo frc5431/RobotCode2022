@@ -24,9 +24,6 @@ public class Angler extends SubsystemBase {
         Constants.tab_subsystems.addNumber("Angler Position", () -> anglerServo.get())
                 .withPosition(18, 2)
                 .withSize(2, 1);
-        Constants.tab_subsystems.addNumber("Angler Raw", () -> anglerServo.getRaw())
-                .withPosition(18, 1)
-                .withSize(2, 1);
     }
 
     public void set(double value) {
@@ -41,4 +38,3 @@ public class Angler extends SubsystemBase {
         return anglerServo.get();
     }
 }
-//angler wired in pwm 0
