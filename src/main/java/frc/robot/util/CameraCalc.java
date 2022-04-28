@@ -77,7 +77,7 @@ public class CameraCalc {
                 drivebaseVelocity * drivebaseVelocity
               + distance * distance
               - 2 * drivebaseVelocity * distance * Math.cos(angleOffsetFromGoingToHubRadians)
-            );
+            ); // TODO: use this distance when locked to hub for getDistance
 
             double yawOffset = Units.radiansToDegrees(Math.asin(
                 drivebaseVelocity
