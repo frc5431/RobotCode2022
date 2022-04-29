@@ -58,7 +58,9 @@ public class DefaultDriveCommand extends CommandBase {
                 )
         );
 
-        if (Math.abs(x) > 0.1 || Math.abs(y) > 0.1 || Math.abs(rot) > 0.1) {
+        // reset climb lights
+        if (leds.getPattern() == Constants.LEDPATTERN_CLIMB &&
+            (Math.abs(x) > 0.1 || Math.abs(y) > 0.1 || Math.abs(rot) > 0.1)) {
             leds.set(Constants.LEDPATTERN_DEFAULT);
         }
     }

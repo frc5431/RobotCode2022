@@ -82,7 +82,9 @@ public class RobotContainer {
         camera.setPipelineIndex(Constants.VISION_PIPELINE_INDEX);
         PhotonCamera.setVersionCheckEnabled(false);
 
-        Constants.tab_subsystems.addString("LED Pattern", () -> systems.getLed().getPattern().toString());
+        Constants.tab_subsystems.addString("LED Pattern", () -> systems.getLed().getPattern().toString())
+                .withPosition(4, 2)
+                .withSize(2, 1);
 
         Constants.tab_subsystems.addBoolean("DIO result", () -> systems.getUpperFeederSensor().get())
                 .withPosition(0, 6)

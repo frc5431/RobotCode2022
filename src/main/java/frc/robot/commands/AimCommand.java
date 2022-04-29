@@ -14,11 +14,13 @@ import frc.robot.Constants;
 import frc.robot.Systems;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.util.CameraCalc;
+import frc.team5431.titan.core.leds.Blinkin;
 import frc.team5431.titan.core.misc.Logger;
 
 public class AimCommand extends CommandBase {
     private final Drivebase drivebase;
     private final PhotonCamera camera;
+    private final Blinkin leds;
 
     private final ProfiledPIDController turnPID;
     private final Timer timer;
@@ -35,6 +37,7 @@ public class AimCommand extends CommandBase {
     public AimCommand(Systems systems, boolean cancel) {
         this.drivebase = systems.getDrivebase();
         this.camera = systems.getCamera();
+        this.leds = systems.getLed();
         this.turnPID = new ProfiledPIDController(
                 1, 
                 0, 
@@ -73,6 +76,7 @@ public class AimCommand extends CommandBase {
     public void initialize() {
         camera.setDriverMode(false);
         camera.setLED(VisionLEDMode.kOn);
+        leds.set(Constants.LEDPATTERN_AIM);
         timer.reset();
         timer.start();
         turnPID.reset(0);
@@ -119,6 +123,7 @@ public class AimCommand extends CommandBase {
     public void end(boolean interrupted) {
         camera.setDriverMode(Constants.DRIVER_MODE);
         camera.setLED(Constants.DEFAULT_LED_MODE);
+        leds.set(Constants.LEDPATTERN_DEFAULT);
         timer.stop();
         drivebase.stop();
         Logger.l("Aim Command ending - lost? %s", lostTarget);

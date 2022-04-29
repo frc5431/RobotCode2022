@@ -89,6 +89,7 @@ public final class Constants {
     public static final BlinkinPattern LEDPATTERN_SHOOT = BlinkinPattern.BLUE;
     public static final BlinkinPattern LEDPATTERN_SHOOT_BB = BlinkinPattern.GREEN;
     public static final BlinkinPattern LEDPATTERN_CLIMB = BlinkinPattern.STROBE_RED;
+    public static final BlinkinPattern LEDPATTERN_AIM = BlinkinPattern.TWINKLES_RAINBOW_PALETTE;
 
     public static final ShuffleboardTab tab_subsystems = Shuffleboard.getTab("Subsystems");
     public static final ShuffleboardTab tab_commands = Shuffleboard.getTab("Commands");
