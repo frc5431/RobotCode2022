@@ -310,7 +310,7 @@ public class Drivebase extends SubsystemBase {
     }
 
     public static SwerveModuleState getModuleState(SwerveModule module) {
-        return new SwerveModuleState(module.getDriveVelocity(), Rotation2d.fromDegrees(module.getSteerAngle()));
+        return new SwerveModuleState(module.getDriveVelocity(), new Rotation2d(module.getSteerAngle()));
     }
 
     public SwerveModuleState[] getStates() {
@@ -337,6 +337,18 @@ public class Drivebase extends SubsystemBase {
     @Override
     public void periodic() {
         m_odometry.update(getGyroscopeRotation(), getStates());
+        if (camera.getLatestResult().hasTargets()) {
+            double distanceMeters = CameraCalc.getDistanceMeters(camera);
+            double xOffset = CameraCalc.getYawDegrees(camera);
+            double x = 8.23 - (distanceMeters * 
+                Math.cos(Math.toRadians(getGyroscopeRotation().getDegrees() + 180 
+                - xOffset)));
+            double y = 4.165 - (distanceMeters * 
+                Math.sin(Math.toRadians(getGyroscopeRotation().getDegrees() + 180
+                - xOffset)));//plus or minus xoffset???
+        
+            m_odometry.resetPosition(new Pose2d(x, y, getGyroscopeRotation()), getGyroscopeRotation());
+        }
         field2d.setRobotPose(m_odometry.getPoseMeters());
 
         // Hockey-lock by setting rotation to realllly low number
