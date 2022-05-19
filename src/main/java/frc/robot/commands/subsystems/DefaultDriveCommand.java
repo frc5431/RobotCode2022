@@ -43,9 +43,9 @@ public class DefaultDriveCommand extends CommandBase {
         double rot = m_rotationSupplier.getAsDouble();
 
         // Slow down robot if shooting while moving
-        if (m_drivetrainSubsystem.isLockedToHub()) {
-            x /= 2;
-            y /= 2;
+        if (Drivebase.lockedToHub) {
+            x /= 4;
+            y /= 4;
         }
 
         // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement

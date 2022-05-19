@@ -15,6 +15,8 @@ import frc.robot.subsystems.Shooter;
 import frc.team5431.titan.core.misc.Logger;
 
 public class CameraCalc {
+    // Cache distance if target is lost
+    // Also, use for holding calculated distance when locked to hub
     private static double cachedDistance = 8; // -1
     
     private static final ProfiledPIDController turnPID = new ProfiledPIDController(
@@ -34,7 +36,15 @@ public class CameraCalc {
     }
 
     public static double getDistanceMeters(PhotonCamera camera) {
+        return getDistanceMeters(camera, true);
+    }
+
+    public static double getDistanceMeters(PhotonCamera camera, boolean useLockedToHubDistance) {
         PhotonPipelineResult result = camera.getLatestResult();
+
+        if (useLockedToHubDistance && Drivebase.lockedToHub) {
+            return cachedDistance;
+        }
 
         if (result.hasTargets()) {
             double calculated = PhotonUtils.calculateDistanceToTargetMeters(
@@ -65,11 +75,11 @@ public class CameraCalc {
     }
 
     public static double getRotationToHub(PhotonCamera camera, double drivebaseVelocity, double angleOffsetFromGoingToHubRadians) {
-        double distance = getDistanceMeters(camera);
+        double distance = getDistanceMeters(camera, false);
         PhotonPipelineResult result = camera.getLatestResult();
 
         if (result.hasTargets()) {
-            Logger.l("Meters to target: " + CameraCalc.getDistanceMeters(camera));
+            Logger.l("Meters to target: " + distance);
 
             double yaw = result.getBestTarget().getYaw();
 
@@ -77,7 +87,11 @@ public class CameraCalc {
                 drivebaseVelocity * drivebaseVelocity
               + distance * distance
               - 2 * drivebaseVelocity * distance * Math.cos(angleOffsetFromGoingToHubRadians)
-            ); // TODO: use this distance when locked to hub for getDistance
+            );
+
+            if (Drivebase.lockedToHub) {
+                cachedDistance = distanceToDesired;
+            }
 
             double yawOffset = Units.radiansToDegrees(Math.asin(
                 drivebaseVelocity

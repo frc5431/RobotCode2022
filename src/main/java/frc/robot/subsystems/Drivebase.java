@@ -109,7 +109,7 @@ public class Drivebase extends SubsystemBase {
     private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private Triple<Double, Double, Boolean> relativeDriving = null;
 
-    private boolean lockedToHub = false;
+    public static boolean lockedToHub = false;
     private PhotonCamera camera;
 
     // private ShuffleboardTab tab;
@@ -221,6 +221,10 @@ public class Drivebase extends SubsystemBase {
 
         Constants.tab_subsystems.addNumber("Gyro Rotation", () -> this.getGyroscopeRotation().getDegrees())
                 .withPosition(15, 3)
+                .withSize(2, 1);
+        
+        Constants.tab_subsystems.addBoolean("Locked to Hub", () -> Drivebase.lockedToHub)
+                .withPosition(4, 1)
                 .withSize(2, 1);
     }
 
@@ -433,14 +437,6 @@ public class Drivebase extends SubsystemBase {
         getSwerveModules().forEach((module) -> {
             ((WPI_TalonFX) module.getSteerMotor()).setNeutralMode(nm);
         });
-    }
-
-    public void setLockedToHub(boolean lockedToHub) {
-        this.lockedToHub = lockedToHub;
-    }
-
-    public boolean isLockedToHub() {
-        return lockedToHub;
     }
 
     public List<SwerveModule> getSwerveModules() {

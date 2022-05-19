@@ -12,6 +12,7 @@ import frc.robot.Systems;
 import frc.robot.commands.subsystems.FeederBottomCommand;
 import frc.robot.commands.subsystems.FeederTopCommand;
 import frc.robot.commands.subsystems.ShooterCommand;
+import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
 import frc.team5431.titan.core.misc.Calc;
 
@@ -62,7 +63,7 @@ public class ShootAndAimCommand extends ParallelCommandGroup {
                             new WaitCommand(FEEDER_PUSH_DOWN_DELAY/2)
                                 .deadlineWith(new FeederTopCommand(systems, true))
                         )),
-                    new ConditionalCommand(new InstantCommand(), new AimCommand(systems, true), () -> systems.getDrivebase().isLockedToHub())
+                    new ConditionalCommand(new InstantCommand(), new AimCommand(systems, true), () -> Drivebase.lockedToHub)
                 ),
                 waitForFlywheel
                     ? new WaitCommand(0.5).andThen( new WaitUntilCommand(() -> systems.getShooter().atVelocity()) )

@@ -65,10 +65,7 @@ public class RobotContainer {
                         () -> modifyAxis(-driver.getRawAxis(Xbox.Axis.RIGHT_X)) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         ));
 
-        systems.getAngler().setDefaultCommand(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, () -> CameraCalc.calculateAngler(camera) ) {
-                @Override
-                public boolean isFinished() { return false; }
-        });
+        setDefaultAnglerCommand();
 
         systems.getClimber().getExtend().setDefaultCommand(new ClimberExtendCommand(systems, () -> {
             return modifyAxis(buttonController.getRawAxis(Xbox.Axis.TRIGGER_RIGHT))
@@ -157,7 +154,7 @@ public class RobotContainer {
         
         // Lock to Hub Mode:tm:
         driver.getButton(Xbox.Button.A)
-                .whenPressed(new InstantCommand( () -> drivebase.setLockedToHub(!drivebase.isLockedToHub()) ));
+                .whenPressed(new InstantCommand( () -> { Drivebase.lockedToHub = !Drivebase.lockedToHub; } ));
         
         // Intake (Manual)
         // new JoystickButton(buttonBoard, 7)
@@ -201,9 +198,13 @@ public class RobotContainer {
                 .whileHeld(new ShootCommand(systems, Shooter.Velocity.REJECT)
                                 .alongWith(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, 0.287)));
 
-        // Shoot 
+        // Shoot & Aim
         // new JoystickButton(buttonBoard, 6)
         buttonController.getButton(Xbox.Button.B)
+                .whenHeld(new ShootAndAimCommand(systems, () -> CameraCalc.calculateRPM(camera), true));
+        
+        // Shoot only
+        buttonController.getButton(Xbox.Button.Y)
                 .whenHeld(new ShootPlusCommand(systems));
         
         // Feed Both Up
@@ -290,8 +291,8 @@ public class RobotContainer {
         
         // Aim/Vision
         // new JoystickButton(buttonBoard, 11)
-        buttonController.getButton(Xbox.Button.Y)
-                .whenHeld(new AimCommand(systems));
+        // buttonController.getButton(Xbox.Button.Y)
+        //         .whenHeld(new AimCommand(systems));
 
         // Stop All
         // new JoystickButton(buttonBoard, 12)
@@ -357,6 +358,20 @@ public class RobotContainer {
         for (VideoSource vs : VideoSource.enumerateSources()) {
             System.out.println(String.format("Camera ID: %s - Name: %s - Description: %s", vs.getHandle(), vs.getName(), vs.getDescription()));
         }
+    }
+
+    public void unsetDefaultAnglerCommand() {
+        CommandScheduler.getInstance().unregisterSubsystem(systems.getAngler());
+        CommandScheduler.getInstance().registerSubsystem(systems.getAngler());
+    }
+
+    public void setDefaultAnglerCommand() {
+        systems.getAngler().setDefaultCommand(
+                new AnglerCommand(systems, AnglerCommand.COMMAND.SET, () -> CameraCalc.calculateAngler(camera) ) {
+                        @Override
+                        public boolean isFinished() { return false; }
+                }
+        );
     }
 
     public void teleopPeriodic() {

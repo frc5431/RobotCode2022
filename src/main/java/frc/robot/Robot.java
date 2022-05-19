@@ -63,6 +63,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         enabledInit();
+        m_robotContainer.setDefaultAnglerCommand();
 
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -79,6 +80,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         enabledInit();
+        m_robotContainer.setDefaultAnglerCommand();
 
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
@@ -98,6 +100,7 @@ public class Robot extends TimedRobot {
     @Override
     public void testInit() {
         enabledInit();
+        m_robotContainer.unsetDefaultAnglerCommand();
 
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
@@ -105,11 +108,14 @@ public class Robot extends TimedRobot {
 
     /** This function is called periodically during test mode. */
     @Override
-    public void testPeriodic() {}
+    public void testPeriodic() {
+        m_robotContainer.teleopPeriodic();
+    }
 
     @Override
     public void simulationInit() {
         enabledInit();
+        m_robotContainer.setDefaultAnglerCommand();
 
         m_simulation.simulationInit();
     }

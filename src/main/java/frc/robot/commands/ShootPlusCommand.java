@@ -24,7 +24,7 @@ public class ShootPlusCommand extends ParallelCommandGroup {
         this.camera = systems.getCamera();
 
         addCommands(
-            new ShootAndAimCommand(systems, () -> CameraCalc.calculateRPM(camera), waitForFlywheel)
+            new ShootCommand(systems, () -> CameraCalc.calculateRPM(camera), waitForFlywheel)
         );
     }
 }
