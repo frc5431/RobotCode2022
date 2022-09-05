@@ -20,6 +20,7 @@ import com.swervedrivespecialties.swervelib.SwerveModule;
 import org.apache.commons.lang3.tuple.Triple;
 import org.photonvision.PhotonCamera;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -72,8 +73,10 @@ public class Drivebase extends SubsystemBase {
                     Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
     public static final double MIN_ANGULAR_VELOCITY = 0.6;
-    // Seconds to ramp from neutral to full
-    public static final double RAMPING_FROM_0_TO_FULL = 0; // 0.5;
+    // Max input acceleration (ChassisSpeeds meters per second per second) for x/y movement
+    public static final double SLEW_RATE_LIMIT_TRANSLATION = MAX_VELOCITY_METERS_PER_SECOND * 2;
+    // Max input acceleration (ChassisSpeeds radians per second per second) for rotational movement
+    public static final double SLEW_RATE_LIMIT_ROTATION = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2;
 
     public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
                     // Front left
@@ -108,6 +111,10 @@ public class Drivebase extends SubsystemBase {
 
     private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private Triple<Double, Double, Boolean> relativeDriving = null;
+
+    private final SlewRateLimiter filter_vx;
+    private final SlewRateLimiter filter_vy;
+    private final SlewRateLimiter filter_or;
 
     public static boolean lockedToHub = false;
     private PhotonCamera camera;
@@ -198,10 +205,14 @@ public class Drivebase extends SubsystemBase {
                 .withSteerOffset(BACK_RIGHT_MODULE_STEER_OFFSET)
                 .build();
 
-        ((WPI_TalonFX) m_frontLeftModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
-        ((WPI_TalonFX) m_frontRightModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
-        ((WPI_TalonFX) m_backLeftModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
-        ((WPI_TalonFX) m_backRightModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
+        // ((WPI_TalonFX) m_frontLeftModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
+        // ((WPI_TalonFX) m_frontRightModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
+        // ((WPI_TalonFX) m_backLeftModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
+        // ((WPI_TalonFX) m_backRightModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
+
+        filter_vx = new SlewRateLimiter(SLEW_RATE_LIMIT_TRANSLATION);
+        filter_vy = new SlewRateLimiter(SLEW_RATE_LIMIT_TRANSLATION);
+        filter_or = new SlewRateLimiter(SLEW_RATE_LIMIT_ROTATION);
 
         ShuffleboardLayout chassisSpeedsLayout = Constants.tab_subsystems.getLayout("ChassisSpeeds", BuiltInLayouts.kList)
                 .withSize(2, 3)
@@ -282,7 +293,12 @@ public class Drivebase extends SubsystemBase {
     }
 
     public void driveController(ChassisSpeeds chassisSpeeds) {
-        driveRaw(chassisSpeeds);
+        ChassisSpeeds speedsModified = new ChassisSpeeds(
+            filter_vx.calculate(chassisSpeeds.vxMetersPerSecond),
+            filter_vy.calculate(chassisSpeeds.vyMetersPerSecond),
+            filter_or.calculate(chassisSpeeds.omegaRadiansPerSecond)
+        );
+        driveRaw(speedsModified);
     }
 
     public void driveRaw(ChassisSpeeds chassisSpeeds) {

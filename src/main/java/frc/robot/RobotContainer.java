@@ -139,12 +139,12 @@ public class RobotContainer {
         driver.getButton(CompassPOV.SOUTH)
                 .whileHeld(
                     () -> drivebase.driveController(new ChassisSpeeds(-Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0, 0)), drivebase);
-        driver.getButton(CompassPOV.EAST)
-                .whileHeld(
-                    () -> drivebase.driveController(new ChassisSpeeds(0, Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase);
         driver.getButton(CompassPOV.WEST)
                 .whileHeld(
                     () -> drivebase.driveController(new ChassisSpeeds(0, -Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase);
+        driver.getButton(CompassPOV.EAST)
+                .whileHeld(
+                    () -> drivebase.driveController(new ChassisSpeeds(0, Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase);
                 
         // Browse LED patterns
         driver.getButton(Xbox.Button.BACK)
@@ -239,12 +239,12 @@ public class RobotContainer {
         // new JoystickButton(buttonBoard, 13)
         //         .whileHeld(new ClimberExtendCommand(systems, true));
 
-        // Climber Hinge (Manual)
+        // Climber Hinge In (Manual)
         // new JoystickButton(buttonBoard, 14)
         buttonController.getButton(Xbox.Button.BUMPER_L)
                 .whileHeld(new ClimberHingeCommand(systems, false));
 
-        // Climber Hinge Reverse (Manual)
+        // Climber Hinge Out (Manual)
         // new JoystickButton(buttonBoard, 8)
         buttonController.getButton(Xbox.Button.BUMPER_R)
                 .whileHeld(new ClimberHingeCommand(systems, true));
