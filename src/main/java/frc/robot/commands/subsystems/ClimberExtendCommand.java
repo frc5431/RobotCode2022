@@ -19,18 +19,35 @@ public class ClimberExtendCommand extends CommandBase {
 
     private final Blinkin leds;
 
+    /**
+     * @param systems systems of robot
+     * @param reverse false: extend mechanism; true: retract mechanism
+     */
     public ClimberExtendCommand(Systems systems, boolean reverse) {
         this(systems, () -> Climber.DEFAULT_SPEED_EXTEND, reverse);
     }
 
+    /**
+     * @param systems systems of robot
+     * @param speed speed of climber extension mechanism
+     */
     public ClimberExtendCommand(Systems systems, double speed) {
         this(systems, () -> speed, false);
     }
 
+    /**
+     * @param systems systems of robot
+     * @param supplier speed of climber extension mechanism
+     */
     public ClimberExtendCommand(Systems systems, DoubleSupplier supplier) {
         this(systems, supplier, false);
     }
 
+    /**
+     * @param systems systems of robot
+     * @param supplier speed of climber extension mechanism
+     * @param reverse false: extend mechanism; true: retract mechanism
+     */
     public ClimberExtendCommand(Systems systems, DoubleSupplier supplier, boolean reverse) {
         this.climber = systems.getClimber();
         this.reverse = reverse;

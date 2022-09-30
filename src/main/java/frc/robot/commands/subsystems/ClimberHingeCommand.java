@@ -13,14 +13,27 @@ public class ClimberHingeCommand extends CommandBase {
     private final boolean reverse;
 	private final double speed;
 
+    /**
+     * @param systems systems of robot
+     * @param reverse false: pivot in mechanism; true: pivot out mechanism
+     */
     public ClimberHingeCommand(Systems systems, boolean reverse) {
         this(systems, Climber.DEFAULT_SPEED_HINGE, reverse);
     }
 
+    /**
+     * @param systems systems of robot
+     * @param speed speed of climber pivot/hinge mechanism
+     */
     public ClimberHingeCommand(Systems systems, double speed) {
         this(systems, speed, false);
     }
 
+    /**
+     * @param systems systems of robot
+     * @param speed speed of climber pivot/hinge mechanism
+     * @param reverse false: pivot in mechanism; true: pivot out mechanism
+     */
     public ClimberHingeCommand(Systems systems, double speed, boolean reverse) {
         this.climber = systems.getClimber();
         this.reverse = reverse;

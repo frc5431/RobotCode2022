@@ -16,6 +16,10 @@ import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
 import frc.team5431.titan.core.misc.Calc;
 
+/**
+ * When run, this command will combine aiming the robot towards the
+ * hub and shooting cargo from the feeder.
+ */
 public class ShootAndAimCommand extends ParallelCommandGroup {
     public static final double FEEDER_PUSH_DOWN_DELAY = 0.4;
     public static final double MIN_SHOOTER_WAIT_TILL_SPEED = 0.9; // 0.7 // with 2 wheel 1.0 // before flywheel change: 0.25
