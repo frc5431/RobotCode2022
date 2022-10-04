@@ -11,6 +11,7 @@ import java.util.List;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.kauailabs.navx.frc.AHRS;
 import com.swervedrivespecialties.swervelib.Mk4ModuleConfiguration;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleBuilder;
 import com.swervedrivespecialties.swervelib.MotorType;
@@ -28,6 +29,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -40,6 +44,14 @@ import frc.robot.util.CameraCalc;
 import frc.team5431.titan.core.misc.Logger;
 
 public class Drivebase extends SubsystemBase {
+    public static enum GyroType {
+        PIGEON2,
+        NAVX,
+        ANALOG_DEVICES;
+    }
+
+    public final GyroType CURRENT_GYRO_TYPE = GyroType.PIGEON2;
+
     /**
      * The maximum voltage that will be delivered to the drive motors.
      * <p>
@@ -92,16 +104,15 @@ public class Drivebase extends SubsystemBase {
     // By default we use a Pigeon for our gyroscope. But if you use another gyroscope, like a NavX, you can change this.
     // The important thing about how you configure your gyroscope is that rotating the robot counter-clockwise should
     // cause the angle reading to increase until it wraps back over to zero.
-    // Pigeon
-    // private final PigeonIMU m_pigeon = new PigeonIMU(DRIVETRAIN_PIGEON_ID);
-    // NavX
-    // public final AHRS m_navx = new AHRS(I2C.Port.kMXP, (byte) 200); // NavX connected over MXP
-    // Analog Devices Gyro
-    // public final ADXRS450_Gyro m_adxr = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
-    // Pigeon 2.0
-    public final WPI_Pigeon2 m_pigeon2 = new WPI_Pigeon2(Constants.ID_PIGEON2, CANBUS_DRIVETRAIN);
 
-    public final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(m_kinematics, getGyroscopeRotation());
+    // NavX
+    public final AHRS m_navx; // NavX connected over MXP
+    // Analog Devices Gyro
+    public final ADXRS450_Gyro m_adxr;
+    // Pigeon 2.0
+    public final WPI_Pigeon2 m_pigeon2;
+
+    public final SwerveDriveOdometry m_odometry;
 
     // These are our modules. We initialize them in the constructor.
     private final SwerveModule m_frontLeftModule;
@@ -123,6 +134,30 @@ public class Drivebase extends SubsystemBase {
     public final Field2d field2d;
 
     public Drivebase(PhotonCamera camera) {
+        switch (CURRENT_GYRO_TYPE) {
+            case ANALOG_DEVICES:
+                m_adxr = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
+                m_navx = null;
+                m_pigeon2 = null;
+                break;
+            case NAVX:
+                m_adxr = null;
+                m_navx = new AHRS(I2C.Port.kMXP, (byte) 200);
+                m_pigeon2 = null;
+                break;
+            case PIGEON2:
+                m_adxr = null;
+                m_navx = null;
+                m_pigeon2 = new WPI_Pigeon2(Constants.ID_PIGEON2, CANBUS_DRIVETRAIN);
+                break;
+            default:
+                m_adxr = null;
+                m_navx = null;
+                m_pigeon2 = null;
+        }
+
+        m_odometry = new SwerveDriveOdometry(m_kinematics, getGyroscopeRotation());
+
         // tab = Shuffleboard.getTab("Drivetrain");
         Mk4ModuleConfiguration moduleConfig = Mk4ModuleConfiguration.getDefaultSteerFalcon500();
         moduleConfig.setDriveCurrentLimit(40.0);
@@ -233,7 +268,15 @@ public class Drivebase extends SubsystemBase {
         Constants.tab_subsystems.addNumber("Gyro Rotation", () -> this.getGyroscopeRotation().getDegrees())
                 .withPosition(15, 3)
                 .withSize(2, 1);
-        
+
+        Constants.tab_subsystems.addNumber("Gyro Pitch", () -> this.getGyro().getPitch())
+                .withPosition(21, 3)
+                .withSize(2, 1);
+
+        Constants.tab_subsystems.addNumber("Gyro Roll", () -> this.getGyro().getRoll())
+                .withPosition(21, 4)
+                .withSize(2, 1);
+
         Constants.tab_subsystems.addBoolean("Locked to Hub", () -> Drivebase.lockedToHub)
                 .withPosition(4, 1)
                 .withSize(2, 1);
@@ -257,14 +300,17 @@ public class Drivebase extends SubsystemBase {
         // Pigeon
         // m_pigeon.setFusedHeading(0.0);
 
-        // NavX
-        // m_navx.zeroYaw();
-
-        // Analog Devices
-        // m_adxr.reset();
-
-        // Pigeon 2.0
-        m_pigeon2.reset();
+        switch (CURRENT_GYRO_TYPE) {
+            case ANALOG_DEVICES:
+                m_adxr.reset();
+                break;
+            case NAVX:
+                m_navx.zeroYaw();
+                break;
+            case PIGEON2:
+                m_pigeon2.reset();
+                break;
+        }
     }
 
     public void resetGyroAt(double yaw) {
@@ -453,6 +499,10 @@ public class Drivebase extends SubsystemBase {
         getSwerveModules().forEach((module) -> {
             ((WPI_TalonFX) module.getSteerMotor()).setNeutralMode(nm);
         });
+    }
+
+    public WPI_Pigeon2 getGyro() {
+        return m_pigeon2;
     }
 
     public List<SwerveModule> getSwerveModules() {

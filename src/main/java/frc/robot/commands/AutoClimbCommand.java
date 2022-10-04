@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Systems;
 import frc.robot.commands.subsystems.ClimberExtendCommand;
 import frc.robot.commands.subsystems.ClimberHingeCommand;
@@ -33,16 +34,17 @@ public class AutoClimbCommand extends SequentialCommandGroup {
                 )),
             new WaitCommand(0) // Pivot in hooks to contact high rung WITHOUT PUSHING ROBOT OFF
                 .deadlineWith(new ClimberHingeCommand(systems, false)),
-            new WaitCommand(0) // Retract climber, latch onto high rung
+            new WaitCommand(0) // Retract climber, latch onto high rung, stationary hooks off
                 .deadlineWith(new ClimberExtendCommand(systems, true)), // high rung latch
-            new WaitCommand(0)
+            new WaitCommand(0) // Return rung to go under stationary hooks
                 .deadlineWith(new ParallelCommandGroup(
                     new ClimberHingeCommand(systems, false),
                     new ClimberExtendCommand(systems, true)
                 )),
-            new WaitCommand(0)
-                .deadlineWith(new ClimberExtendCommand(systems, false)), // high rung stationary
-            new WaitCommand(0)
+            new WaitCommand(0) // Extend hooks all the way, latch stationary onto high rung
+                .deadlineWith(new ClimberExtendCommand(systems, false)), // high rung stationary !SWINGING!
+            new WaitUntilCommand(() -> true), // systems.getDrivebase().getGyro()), // Wait until robot is swinging towards driver station
+            new WaitCommand(0) // Hooks contact traversal rung
                 .deadlineWith(new ClimberHingeCommand(systems, true)),
             new WaitCommand(0)
                 .deadlineWith(new ClimberExtendCommand(systems, true)), // traversal rung lock

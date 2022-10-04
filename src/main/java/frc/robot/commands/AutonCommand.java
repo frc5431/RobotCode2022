@@ -102,23 +102,23 @@ public class AutonCommand extends SequentialCommandGroup {
                         .deadlineWith(new FeederBottomCommand(systems, true)),
                     new WaitCommand(0.4)
                         .deadlineWith(new FeederTopCommand(systems, true)),
-                    new WaitCommand(2.9)
+                    new WaitCommand(2.85)
                             .deadlineWith(new AimAndShootCommand(systems, false)),
                     new WaitCommand(2.0)
-                        .deadlineWith(new DriveCommand(systems, 1.5, -0.5, 0.0)
+                        .deadlineWith(new DriveCommand(systems, 1.5, -0.6, 0.0)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
-                    new WaitCommand(1.7)
+                    new WaitCommand(1.6)
                         .deadlineWith(new FloorIntakeCommand(systems, false)),
                     new WaitCommand(2.0)
                         .deadlineWith(new DriveCommand(systems, -1.5, 0.5, 0.0)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
+                    new InstantCommand(() -> systems.getDrivebase().resetGyroAt(-155.6), systems.getDrivebase()),
                     new WaitCommand(0.25)
                         .deadlineWith(new FeederBottomCommand(systems, true)),
                     new WaitCommand(0.4)
                         .deadlineWith(new FeederTopCommand(systems, true)),
-                    new WaitCommand(2.9)
-                            .deadlineWith(new AimAndShootCommand(systems, false)),
-                    new InstantCommand(() -> systems.getDrivebase().resetGyroAt(-155.6), systems.getDrivebase())
+                    new WaitCommand(2.85)
+                            .deadlineWith(new AimAndShootCommand(systems, false))
                 );
                 break;
             case FIVE_BALL:
