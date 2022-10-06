@@ -195,9 +195,9 @@ public class RobotContainer {
         
         // Reject
         // new JoystickButton(buttonBoard, 1)
-        buttonController.getButton(Xbox.Button.BACK)
-                .whileHeld(new ShootCommand(systems, Shooter.Velocity.REJECT)
-                                .alongWith(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, 0.287)));
+        // buttonController.getButton(Xbox.Button.BACK)
+        //         .whileHeld(new ShootCommand(systems, Shooter.Velocity.REJECT)
+        //                         .alongWith(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, 0.287)));
 
         // Shoot & Aim
         // new JoystickButton(buttonBoard, 6)
@@ -231,6 +231,10 @@ public class RobotContainer {
         // Shoot from Safe Zone (manual)
         operator.getButton(LogitechExtreme3D.Button.FOUR)
                 .whenHeld(new AngleAndShootCommand(systems, AngleAndShootCommand.Position.SAFEZONE));
+
+        // Auto Climb !EXPERIMENTAL!
+        buttonController.getButton(Xbox.Button.BACK)
+                .whenPressed(new AutoClimbCommand(systems, () -> buttonController.getRawButton(Xbox.Button.BACK)));
 
         // Climber Extend (Manual) (moved to default)
         // new JoystickButton(buttonBoard, 16)
