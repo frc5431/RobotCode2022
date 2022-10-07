@@ -36,24 +36,24 @@ public class AutoClimbCommand extends SequentialCommandGroup {
                     new ClimberHingeCommand(systems, true),
                     new ClimberExtendCommand(systems, 0.8)
                 )),
-            new WaitCommand(0.8) // Fully extends climber
+            new WaitCommand(0.3) // Fully extends climber
                 .deadlineWith(new ClimberExtendCommand(systems, false)),
             new WaitUntilCommand(continueSupplier),
-            new WaitCommand(0.38) // Pivot in hooks to contact high rung WITHOUT PUSHING ROBOT OFF
+            new WaitCommand(0.5) // Pivot in hooks to contact high rung WITHOUT PUSHING ROBOT OFF
                 .deadlineWith(new ClimberHingeCommand(systems, false)),
             new WaitUntilCommand(continueSupplier),
             new WaitCommand(0.65) // Retract climber, latch onto high rung, stationary hooks off
                 .deadlineWith(new ClimberExtendCommand(systems, true)), // high rung latch
             new WaitCommand(2.7) // Return rung to go under stationary hooks
                 .deadlineWith(new ParallelCommandGroup(
-                    new ClimberExtendCommand(systems, -0.4),
+                    new ClimberExtendCommand(systems, -0.9),
                     new ClimberHingeCommand(systems, false)
                 )),
             new WaitCommand(2.8) // Extend hooks all the way, latch stationary onto high rung
                 .deadlineWith(new ClimberExtendCommand(systems, false)), // high rung stationary !SWINGING!
             new WaitUntilCommand(continueSupplier),
-            new WaitUntilCommand(() -> true), // systems.getDrivebase().getGyro()), // Wait until robot is swinging towards driver station
-            new WaitUntilCommand(() -> true), // systems.getDrivebase().getGyro()),
+            new WaitUntilCommand(() -> systems.getDrivebase().getGyro().getRoll() > 0), // Wait until robot is swinging towards driver station
+            new WaitUntilCommand(() -> systems.getDrivebase().getGyro().getRoll() < -15),
             new WaitCommand(1.0) // Hooks contact traversal rung
                 .deadlineWith(new ClimberHingeCommand(systems, true)),
             new WaitCommand(1.5)
