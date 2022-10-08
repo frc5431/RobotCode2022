@@ -98,6 +98,7 @@ public class RobotContainer {
         autonChooser.addOption("Three Ball (path)", AutonCommand.State.THREE_BALL);
         autonChooser.addOption("Four Ball (time)", AutonCommand.State.FOUR_BALL);
         autonChooser.addOption("Five Ball (path)", AutonCommand.State.FIVE_BALL);
+        autonChooser.addOption("NO BALL", AutonCommand.State.NO_BALL);
         autonChooser.addOption("Test Path", AutonCommand.State.TEST_PATH);
         autonChooser.addOption("Just Path", AutonCommand.State.JUST_PATH);
         Constants.tab_subsystems.add("Auton State", autonChooser)

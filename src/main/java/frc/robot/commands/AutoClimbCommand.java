@@ -28,7 +28,10 @@ public class AutoClimbCommand extends SequentialCommandGroup {
             new WaitUntilCommand(continueSupplier),
             // Drive here, maybe make above part manual or have "continue" feature?
             new WaitCommand(2.5) // Retract climber, pulls robot up past stationary hooks
-                .deadlineWith(new ClimberExtendCommand(systems, true)), // mid rung latch
+                .deadlineWith(new ParallelCommandGroup(
+                    new ClimberExtendCommand(systems, true),
+                    new ClimberHingeCommand(systems, 0.4)
+                )), // mid rung latch
             new WaitCommand(0.5) // Sets stationary hooks on rungs, extends past stationary hooks
                 .deadlineWith(new ClimberExtendCommand(systems, false)), // mid rung stationary
             new WaitCommand(1.1) // Positions hooks near high rung

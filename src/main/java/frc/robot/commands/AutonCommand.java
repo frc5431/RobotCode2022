@@ -29,11 +29,14 @@ public class AutonCommand extends SequentialCommandGroup {
     };
 
     public static enum State {
-        ONE_BALL, TWO_BALL, THREE_BALL, FOUR_BALL, FIVE_BALL, SIX_BALL, TEST_PATH, JUST_PATH
+        NO_BALL, ONE_BALL, TWO_BALL, THREE_BALL, FOUR_BALL, FIVE_BALL, SIX_BALL, TEST_PATH, JUST_PATH
     }
 
     public AutonCommand(Systems systems, State state) {
         switch (state) {
+            case NO_BALL:
+                addCommands();
+                break;
             case ONE_BALL:
                 addCommands(
                     new WaitCommand(SHOOT_TIME)
@@ -149,16 +152,16 @@ public class AutonCommand extends SequentialCommandGroup {
                 );
                 break;
             case JUST_PATH:
-            addCommands(
-                commandResetAuton(systems, PATHS[0]),
-                new PathCommand(systems, PATHS[0]),
-                // commandResetAuton(systems, PATHS[1]),
-                new PathCommand(systems, PATHS[1])
-                // commandResetAuton(systems, PATHS[2]),
-                // new PathCommand(systems, PATHS[2]),
-                // commandResetAuton(systems, PATHS[3]),
-                // new PathCommand(systems, PATHS[3])
-            );
+                addCommands(
+                    commandResetAuton(systems, PATHS[0]),
+                    new PathCommand(systems, PATHS[0]),
+                    // commandResetAuton(systems, PATHS[1]),
+                    new PathCommand(systems, PATHS[1])
+                    // commandResetAuton(systems, PATHS[2]),
+                    // new PathCommand(systems, PATHS[2]),
+                    // commandResetAuton(systems, PATHS[3]),
+                    // new PathCommand(systems, PATHS[3])
+                );
                 break;
             case TEST_PATH:
                 addCommands(
