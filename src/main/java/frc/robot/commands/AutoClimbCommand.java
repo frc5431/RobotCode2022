@@ -9,11 +9,7 @@ import frc.robot.Systems;
 import frc.robot.commands.subsystems.ClimberExtendCommand;
 import frc.robot.commands.subsystems.ClimberHingeCommand;
 
-// TODO: add timings
-// gyro check
-// visual cues with LEDs to indicate stage of auto climb
-// pause? after each rung waiting for operator permission to continue to next rung
-// ^ maybe press climb button again?
+// TODO: visual cues with LEDs to indicate stage of auto climb
 // maybe button with lid
 // use match time to stop auto climb if in unstable position
 /**
