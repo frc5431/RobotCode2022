@@ -58,8 +58,8 @@ public final class Constants {
 
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 2;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 1;
-    public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 9;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(81.562); // 85.430
+    public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 32;
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(80.244); // 85.430
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 8;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 7;
@@ -73,8 +73,8 @@ public final class Constants {
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 6;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 5;
-    public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 11;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(29.443); // 30.234
+    public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 9;
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(27.598); // 30.234
 
     public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(38.9);
     public static final double TARGET_HEIGHT_METERS = Units.feetToMeters(8) + Units.inchesToMeters(8);

@@ -70,7 +70,7 @@ public class ShootAndAimCommand extends ParallelCommandGroup {
                     new ConditionalCommand(new InstantCommand(), new AimCommand(systems, true), () -> Drivebase.lockedToHub)
                 ),
                 waitForFlywheel
-                    ? new WaitCommand(0.5).andThen( new WaitUntilCommand(() -> systems.getShooter().atVelocity()) )
+                    ? new WaitCommand(0.85).andThen( new WaitUntilCommand(() -> systems.getShooter().atVelocity()) )
                     : new WaitCommand(() -> Calc.map(supplier.getAsDouble(), 0, Shooter.MAX_VELOCITY, MIN_SHOOTER_WAIT_TILL_SPEED, MAX_SHOOTER_WAIT_TILL_SPEED)), 
                 // new ParallelCommandGroup(
                 //     new SequentialCommandGroup(
