@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.commands.*;
 import frc.robot.commands.subsystems.*;
 import frc.robot.subsystems.Drivebase;
@@ -224,6 +225,11 @@ public class RobotContainer {
         // Angler towards 0 (raise angler)
         operator.getButton(LogitechExtreme3D.Button.SIX)
                 .whenPressed(new AnglerCommand(systems, false));
+
+        operator.getButton(LogitechExtreme3D.Button.NINE)
+                .toggleWhenPressed(new StartEndCommand(
+                    this::unsetDefaultAnglerCommand,
+                    this::setDefaultAnglerCommand));
 
         // Shoot from Hub (manual)
         operator.getButton(LogitechExtreme3D.Button.THREE)
