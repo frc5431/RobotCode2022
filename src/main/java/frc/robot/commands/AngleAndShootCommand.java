@@ -36,7 +36,7 @@ public class AngleAndShootCommand extends ParallelCommandGroup {
     public AngleAndShootCommand(Systems systems, Position pos, boolean waitForFlywheel) {
         addCommands(
             new AnglerCommand(systems, AnglerCommand.COMMAND.SET, pos.getAnglerPos()),
-            new ShootCommand(systems, pos.getRpm(), waitForFlywheel)
+            new TimedFeedAndShootCommand(systems, pos.getRpm(), waitForFlywheel)
         );
     }
 }

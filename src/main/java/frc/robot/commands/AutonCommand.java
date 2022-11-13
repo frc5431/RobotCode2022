@@ -40,7 +40,7 @@ public class AutonCommand extends SequentialCommandGroup {
             case ONE_BALL:
                 addCommands(
                     new WaitCommand(SHOOT_TIME)
-                        .deadlineWith(new ShootCommand(systems, Shooter.Velocity.NORMAL, false)),
+                        .deadlineWith(new TimedFeedAndShootCommand(systems, Shooter.Velocity.NORMAL, false)),
                     new WaitCommand(PIVOT_TIME)
                         .deadlineWith(new PivotCommand(systems, true))
                 );
@@ -82,14 +82,14 @@ public class AutonCommand extends SequentialCommandGroup {
                             .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(3)
-                        .deadlineWith(new ShootPlusCommand(systems, false)
+                        .deadlineWith(new ShootWithCalcRPMCommand(systems, false)
                                 .alongWith(new IntakeCommand(systems, false))),
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[1])
                             .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(2.5)
-                        .deadlineWith(new ShootPlusCommand(systems, false)
+                        .deadlineWith(new ShootWithCalcRPMCommand(systems, false)
                                 .alongWith(new IntakeCommand(systems, false)))
                 );
                 break;

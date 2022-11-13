@@ -204,11 +204,11 @@ public class RobotContainer {
         // Shoot & Aim
         // new JoystickButton(buttonBoard, 6)
         buttonController.getButton(Xbox.Button.B)
-                .whenHeld(new ShootAndAimCommand(systems, () -> CameraCalc.calculateRPM(camera), true));
+                .whenHeld(new TimedFeedAimAndShootCommand(systems, () -> CameraCalc.calculateRPM(camera), true));
         
         // Shoot only
         buttonController.getButton(Xbox.Button.Y)
-                .whenHeld(new ShootPlusCommand(systems));
+                .whenHeld(new ShootWithCalcRPMCommand(systems));
         
         // Feed Both Up
         operator.getButton(CompassPOV.NORTH)

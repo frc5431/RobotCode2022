@@ -16,7 +16,7 @@ public class AimAndShootCommand extends ParallelCommandGroup {
             new WaitCommand(AIM_LENGTH)
                 .deadlineWith(new AimCommand(systems, true)),
             new WaitCommand(AIM_LENGTH)
-                .andThen(new ShootPlusCommand(systems, waitForFlywheel)),
+                .andThen(new ShootWithCalcRPMCommand(systems, waitForFlywheel)),
             new IntakeCommand(systems, false)
         );
     }

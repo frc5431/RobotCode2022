@@ -2,6 +2,8 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -10,10 +12,15 @@ import frc.robot.Systems;
 import frc.robot.commands.subsystems.FeederBottomCommand;
 import frc.robot.commands.subsystems.FeederTopCommand;
 import frc.robot.commands.subsystems.ShooterCommand;
+import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
 import frc.team5431.titan.core.misc.Calc;
 
-public class ShootCommand extends ParallelCommandGroup {
+/**
+ * When run, this command will combine aiming the robot towards the
+ * hub and shooting cargo from the feeder.
+ */
+public class TimedFeedAimAndShootCommand extends ParallelCommandGroup {
     public static final double FEEDER_PUSH_DOWN_DELAY = 0.4;
     public static final double MIN_SHOOTER_WAIT_TILL_SPEED = 0.9; // 0.7 // with 2 wheel 1.0 // before flywheel change: 0.25
     public static final double MAX_SHOOTER_WAIT_TILL_SPEED = 1.3; // 1.0 // with 2 wheel 1.8 // before flywheel change: 0.5
@@ -21,27 +28,27 @@ public class ShootCommand extends ParallelCommandGroup {
 
     private final Systems systems;
 
-    public ShootCommand(Systems systems, Shooter.Velocity velocity) {
+    public TimedFeedAimAndShootCommand(Systems systems, Shooter.Velocity velocity) {
         this(systems, velocity, true);
     }
 
-    public ShootCommand(Systems systems, Shooter.Velocity velocity, boolean waitForFlywheel) {
+    public TimedFeedAimAndShootCommand(Systems systems, Shooter.Velocity velocity, boolean waitForFlywheel) {
         this(systems, velocity.getVelocity(), waitForFlywheel);
     }
 
-    public ShootCommand(Systems systems, double velocity) {
+    public TimedFeedAimAndShootCommand(Systems systems, double velocity) {
         this(systems, velocity, true);
     }
 
-    public ShootCommand(Systems systems, double velocity, boolean waitForFlywheel) {
+    public TimedFeedAimAndShootCommand(Systems systems, double velocity, boolean waitForFlywheel) {
         this(systems, () -> velocity, waitForFlywheel);
     }
 
-    public ShootCommand(Systems systems, DoubleSupplier supplier) {
+    public TimedFeedAimAndShootCommand(Systems systems, DoubleSupplier supplier) {
         this(systems, supplier, true);
     }
 
-    public ShootCommand(Systems systems, DoubleSupplier supplier, boolean waitForFlywheel) {
+    public TimedFeedAimAndShootCommand(Systems systems, DoubleSupplier supplier, boolean waitForFlywheel) {
         this.systems = systems;
         addCommands(
             new LEDCommand(systems, Constants.LEDPATTERN_SHOOT),
@@ -52,15 +59,18 @@ public class ShootCommand extends ParallelCommandGroup {
             ),
             new SequentialCommandGroup(
                 // new WaitUntilCommand(() -> !systems.getUpperFeederSensor().get())
-                new WaitCommand(FEEDER_PUSH_DOWN_DELAY)
-                    .deadlineWith(new SequentialCommandGroup(
-                        new WaitCommand(FEEDER_PUSH_DOWN_DELAY/2)
-                            .deadlineWith(new FeederBottomCommand(systems, true)),
-                        new WaitCommand(FEEDER_PUSH_DOWN_DELAY/2)
-                            .deadlineWith(new FeederTopCommand(systems, true))
-                    )),
+                new ParallelCommandGroup(
+                    new WaitCommand(FEEDER_PUSH_DOWN_DELAY)
+                        .deadlineWith(new SequentialCommandGroup(
+                            new WaitCommand(FEEDER_PUSH_DOWN_DELAY/2)
+                                .deadlineWith(new FeederBottomCommand(systems, true)),
+                            new WaitCommand(FEEDER_PUSH_DOWN_DELAY/2)
+                                .deadlineWith(new FeederTopCommand(systems, true))
+                        )),
+                    new ConditionalCommand(new InstantCommand(), new AimCommand(systems, true), () -> Drivebase.lockedToHub)
+                ),
                 waitForFlywheel
-                    ? new WaitCommand(0.5).andThen( new WaitUntilCommand(() -> systems.getShooter().atVelocity()) )
+                    ? new WaitCommand(0.85).andThen( new WaitUntilCommand(() -> systems.getShooter().atVelocity()) )
                     : new WaitCommand(() -> Calc.map(supplier.getAsDouble(), 0, Shooter.MAX_VELOCITY, MIN_SHOOTER_WAIT_TILL_SPEED, MAX_SHOOTER_WAIT_TILL_SPEED)), 
                 // new ParallelCommandGroup(
                 //     new SequentialCommandGroup(
