@@ -12,8 +12,6 @@ import frc.team5431.titan.core.misc.Logger;
  */
 public class ShooterCommand extends CommandBase {
 
-	public static boolean KILL = true;
-
     private final Shooter shooter;
     private final DoubleSupplier velocitySupplier;
 
@@ -39,7 +37,6 @@ public class ShooterCommand extends CommandBase {
 
     @Override
     public void initialize() {
-		KILL = true;
     }
 
     @Override
@@ -55,13 +52,7 @@ public class ShooterCommand extends CommandBase {
 	
 	@Override
 	public boolean isFinished() {
-		if(KILL) {
-			KILL = true;
-			return false;
-		}
-		else {
-			return true;
-		}
+		return false;
 	}
 
     public static DoubleSupplier getSupplierToTab() {

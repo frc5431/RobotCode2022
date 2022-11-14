@@ -1,13 +1,13 @@
 
  package frc.robot.subsystems;
 
-import java.util.List;
-
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -31,23 +31,7 @@ public class Pivot extends SubsystemBase {
     private static final double PIVOT_kD = 0;
     private static final double PIVOT_kF = 1;
 
-    public static enum POSITION {
-        UP(PIVOT_UP_LIMIT), DOWN(PIVOT_DOWN_LIMIT), ZERO(0);
-
-        private final double value;
-
-        private POSITION(double value) {
-            this.value = value;
-        }
-
-        public double getValue() {
-            return value;
-        }
-    }
-
     private WPI_TalonFX pivotMotor;
-
-    public POSITION position = POSITION.UP;
 
     public Pivot(WPI_TalonFX pivotMotor) {
         this.pivotMotor = pivotMotor;
@@ -92,8 +76,12 @@ public class Pivot extends SubsystemBase {
     public void set(double speed) {
         pivotMotor.set(speed);
     }
-    
-    public List<WPI_TalonFX> getMotors() {
-        return List.of(pivotMotor);
+
+    public Command runPivotCommand(boolean reverse) {
+        return runPivotCommand(reverse ? -DEFAULT_SPEED : DEFAULT_SPEED);
+    }
+
+    public Command runPivotCommand(double speed) {
+        return new StartEndCommand(() -> this.set(speed), () -> this.set(0), this);
     }
 }

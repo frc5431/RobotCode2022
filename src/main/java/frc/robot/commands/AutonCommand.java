@@ -4,16 +4,13 @@ import com.pathplanner.lib.*;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Systems;
 import frc.robot.commands.subsystems.DriveCommand;
-import frc.robot.commands.subsystems.FeederBottomCommand;
-import frc.robot.commands.subsystems.FeederTopCommand;
-import frc.robot.commands.subsystems.IntakeCommand;
-import frc.robot.commands.subsystems.PivotCommand;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
 
@@ -33,6 +30,8 @@ public class AutonCommand extends SequentialCommandGroup {
     }
 
     public AutonCommand(Systems systems, State state) {
+        Command pivotDown = systems.getPivot().runPivotCommand(true).withTimeout(PIVOT_TIME);
+
         switch (state) {
             case NO_BALL:
                 addCommands();
@@ -41,32 +40,29 @@ public class AutonCommand extends SequentialCommandGroup {
                 addCommands(
                     new WaitCommand(SHOOT_TIME)
                         .deadlineWith(new TimedFeedAndShootCommand(systems, Shooter.Velocity.NORMAL, false)),
-                    new WaitCommand(PIVOT_TIME)
-                        .deadlineWith(new PivotCommand(systems, true))
+                    pivotDown
                 );
                 break;
             case TWO_BALL:
                 addCommands(
                     // commandResetAuton(systems, PATHS[0]),
-                    // new WaitCommand(PIVOT_TIME)
-                    //     .deadlineWith(new PivotCommand(systems, true)),
+                    // pivotDown,
                     // new ParallelCommandGroup(
                     //     new PathCommand(systems, PATHS[0])
                     //         .deadlineWith(new FloorIntakeCommand(systems, false))
                     // ),
                     // new WaitCommand(3)
                     //     .deadlineWith(new ShootPlusCommand(systems)
-                    //             .alongWith(new IntakeCommand(systems, false)))
+                    //             .alongWith(systems.getIntake().runIntakeCommand(false)))
                     new InstantCommand(() -> systems.getDrivebase().resetGyroAt(0), systems.getDrivebase()), // 146
-                    new WaitCommand(PIVOT_TIME)
-                        .deadlineWith(new PivotCommand(systems, true)),
+                    pivotDown,
                     new WaitCommand(1.7)
                         .deadlineWith(new DriveCommand(systems, 0.3, 0.0, false)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
                     new WaitCommand(0.3)
-                        .deadlineWith(new FeederBottomCommand(systems, true)),
+                        .deadlineWith(systems.getFeeder().getBottom().runFeederCommand(true)),
                     new WaitCommand(0.5)
-                        .deadlineWith(new FeederTopCommand(systems, true)),
+                        .deadlineWith(systems.getFeeder().getTop().runFeederCommand(true)),
                     new WaitCommand(SHOOT_TIME)
                             .deadlineWith(new AimAndShootCommand(systems, false)),
                     new InstantCommand(() -> systems.getDrivebase().resetGyroAt(146), systems.getDrivebase())
@@ -75,36 +71,34 @@ public class AutonCommand extends SequentialCommandGroup {
             case THREE_BALL:
                 addCommands(
                     commandResetAuton(systems, PATHS[0]),
-                    new WaitCommand(PIVOT_TIME)
-                        .deadlineWith(new PivotCommand(systems, true)),
+                    pivotDown,
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[0])
                             .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(3)
                         .deadlineWith(new ShootWithCalcRPMCommand(systems, false)
-                                .alongWith(new IntakeCommand(systems, false))),
+                                .alongWith(systems.getIntake().runIntakeCommand(false))),
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[1])
                             .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(2.5)
                         .deadlineWith(new ShootWithCalcRPMCommand(systems, false)
-                                .alongWith(new IntakeCommand(systems, false)))
+                                .alongWith(systems.getIntake().runIntakeCommand(false)))
                 );
                 break;
             case FOUR_BALL:
                 addCommands(
                     new InstantCommand(() -> systems.getDrivebase().resetGyroAt(0), systems.getDrivebase()), // 146
-                    new WaitCommand(PIVOT_TIME)
-                        .deadlineWith(new PivotCommand(systems, true)),
+                    pivotDown,
                     new WaitCommand(1.7)
                         .deadlineWith(new DriveCommand(systems, 1.4, -0.2, 0.0)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
                     new WaitCommand(0.25)
-                        .deadlineWith(new FeederBottomCommand(systems, true)),
+                        .deadlineWith(systems.getFeeder().getBottom().runFeederCommand(true)),
                     new WaitCommand(0.4)
-                        .deadlineWith(new FeederTopCommand(systems, true)),
+                        .deadlineWith(systems.getFeeder().getTop().runFeederCommand(true)),
                     new WaitCommand(2.85)
                             .deadlineWith(new AimAndShootCommand(systems, false)),
                     new WaitCommand(2.0)
@@ -117,9 +111,9 @@ public class AutonCommand extends SequentialCommandGroup {
                                 .alongWith(new FloorIntakeCommand(systems, false))),
                     new InstantCommand(() -> systems.getDrivebase().resetGyroAt(-155.6), systems.getDrivebase()),
                     new WaitCommand(0.25)
-                        .deadlineWith(new FeederBottomCommand(systems, true)),
+                        .deadlineWith(systems.getFeeder().getBottom().runFeederCommand(true)),
                     new WaitCommand(0.4)
-                        .deadlineWith(new FeederTopCommand(systems, true)),
+                        .deadlineWith(systems.getFeeder().getTop().runFeederCommand(true)),
                     new WaitCommand(2.85)
                             .deadlineWith(new AimAndShootCommand(systems, false))
                 );
@@ -127,8 +121,7 @@ public class AutonCommand extends SequentialCommandGroup {
             case FIVE_BALL:
                 addCommands(
                     commandResetAuton(systems, PATHS[0]),
-                    new WaitCommand(PIVOT_TIME)
-                        .deadlineWith(new PivotCommand(systems, true)),
+                    pivotDown,
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[0])
                             .deadlineWith(new FloorIntakeCommand(systems, false))

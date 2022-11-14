@@ -4,6 +4,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Feeder extends SubsystemBase {
@@ -43,27 +45,42 @@ public class Feeder extends SubsystemBase {
         return feederTop;
     }
 
+    public Command feedEverythingCommand(boolean reverse) {
+        return getBottom().runFeederCommand(reverse).alongWith(
+               getTop().runFeederCommand(reverse));
+    }
+
     public class FeederBase extends SubsystemBase {
         protected WPI_TalonFX motor;
+        private final double DEFAULT_SPEED;
 
-        public FeederBase(WPI_TalonFX motor) {
+        public FeederBase(WPI_TalonFX motor, double defaultSpeed) {
             this.motor = motor;
+            this.DEFAULT_SPEED = defaultSpeed;
         }
 
         public void set(double speed) {
             motor.set(ControlMode.PercentOutput, speed);
         }
+
+        public Command runFeederCommand(boolean reverse) {
+            return runFeederCommand(reverse ? -DEFAULT_SPEED : DEFAULT_SPEED);
+        }
+
+        public Command runFeederCommand(double speed) {
+            return new StartEndCommand(() -> this.set(speed), () -> this.set(0), this);
+        }
     }
 
     public class Bottom extends FeederBase {
         public Bottom(WPI_TalonFX motor) {
-            super(motor);
+            super(motor, DEFAULT_SPEED_BOTTOM);
         }
     }
 
     public class Top extends FeederBase {
         public Top(WPI_TalonFX motor) {
-            super(motor);
+            super(motor, DEFAULT_SPEED_TOP);
         }
     }
 }

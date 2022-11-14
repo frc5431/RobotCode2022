@@ -162,25 +162,25 @@ public class RobotContainer {
         // Intake (Manual)
         // new JoystickButton(buttonBoard, 7)
         buttonController.getButton(CompassPOV.EAST)
-                .whileHeld(new IntakeCommand(systems, false));
+                .whileHeld(systems.getIntake().runIntakeCommand(false));
         
         // Intake Reverse (Manual)
         // new JoystickButton(buttonBoard, 3)
         buttonController.getButton(Xbox.Button.X)
                 .whileHeld(
-                        new IntakeCommand(systems, true)
-                            .alongWith(new FeedEverything(systems, true))
+                        systems.getIntake().runIntakeCommand(true)
+                            .alongWith(systems.getFeeder().feedEverythingCommand(true))
                 );
         
         // Pivot Up
         // new JoystickButton(buttonBoard, 5)
         buttonController.getButton(CompassPOV.NORTH)
-                .whileHeld(new PivotCommand(systems, false));
+                .whileHeld(systems.getPivot().runPivotCommand(false));
         
         // Pivot Down
         // new JoystickButton(buttonBoard, 2)
         buttonController.getButton(CompassPOV.SOUTH)
-                .whileHeld(new PivotCommand(systems, true));
+                .whileHeld(systems.getPivot().runPivotCommand(true));
 
         // Trigger/slider Shoot
         operator.getButton(LogitechExtreme3D.Button.TRIGGER)
@@ -212,11 +212,11 @@ public class RobotContainer {
         
         // Feed Both Up
         operator.getButton(CompassPOV.NORTH)
-                .whileHeld(new FeedEverything(systems, false));
+                .whileHeld(systems.getFeeder().feedEverythingCommand(false));
         
         // Feed Both Down
         operator.getButton(CompassPOV.SOUTH)
-                .whileHeld(new FeedEverything(systems, true));
+                .whileHeld(systems.getFeeder().feedEverythingCommand(true));
         
         // Angler towards 90 (lower angler)
         operator.getButton(LogitechExtreme3D.Button.FIVE)

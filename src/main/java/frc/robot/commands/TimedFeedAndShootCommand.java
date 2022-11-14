@@ -7,8 +7,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Systems;
-import frc.robot.commands.subsystems.FeederBottomCommand;
-import frc.robot.commands.subsystems.FeederTopCommand;
 import frc.robot.commands.subsystems.ShooterCommand;
 import frc.robot.subsystems.Shooter;
 import frc.team5431.titan.core.misc.Calc;
@@ -52,13 +50,9 @@ public class TimedFeedAndShootCommand extends ParallelCommandGroup {
             ),
             new SequentialCommandGroup(
                 // new WaitUntilCommand(() -> !systems.getUpperFeederSensor().get())
-                new WaitCommand(FEEDER_PUSH_DOWN_DELAY)
-                    .deadlineWith(new SequentialCommandGroup(
-                        new WaitCommand(FEEDER_PUSH_DOWN_DELAY/2)
-                            .deadlineWith(new FeederBottomCommand(systems, true)),
-                        new WaitCommand(FEEDER_PUSH_DOWN_DELAY/2)
-                            .deadlineWith(new FeederTopCommand(systems, true))
-                    )),
+                systems.getFeeder().getBottom().runFeederCommand(true).withTimeout(FEEDER_PUSH_DOWN_DELAY/2).andThen(
+                    systems.getFeeder().getTop().runFeederCommand(true).withTimeout(FEEDER_PUSH_DOWN_DELAY/2)
+                ).withTimeout(FEEDER_PUSH_DOWN_DELAY),
                 waitForFlywheel
                     ? new WaitCommand(0.5).andThen( new WaitUntilCommand(() -> systems.getShooter().atVelocity()) )
                     : new WaitCommand(() -> Calc.map(supplier.getAsDouble(), 0, Shooter.MAX_VELOCITY, MIN_SHOOTER_WAIT_TILL_SPEED, MAX_SHOOTER_WAIT_TILL_SPEED)), 
@@ -81,8 +75,8 @@ public class TimedFeedAndShootCommand extends ParallelCommandGroup {
                         new WaitCommand(0.1),
                         new LEDCommand(systems, Constants.LEDPATTERN_SHOOT)
                     ),
-                    new FeederTopCommand(systems, false),
-                    new WaitCommand(0.2).andThen(new FeederBottomCommand(systems, false))
+                    systems.getFeeder().getTop().runFeederCommand(false),
+                    new WaitCommand(0.2).andThen(systems.getFeeder().getBottom().runFeederCommand(false))
                 )
                 // new FeedEverything(systems, false)
             )
