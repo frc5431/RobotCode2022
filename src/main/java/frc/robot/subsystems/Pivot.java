@@ -21,7 +21,7 @@ import static java.lang.Math.min;
  * @author Ryan Hirasaki
  */
 public class Pivot extends SubsystemBase {
-    public static final double PIVOT_DOWN_LIMIT = -42000; // -45k // -49k
+    public static final double PIVOT_DOWN_LIMIT = -45000; //-42k // -45k // -49k
     public static final double PIVOT_UP_LIMIT = 0;
     public static final boolean REVERSE = false;
     public static final NeutralMode NEUTRALMODE = NeutralMode.Brake;
