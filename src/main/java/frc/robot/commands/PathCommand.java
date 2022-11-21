@@ -26,8 +26,8 @@ public class PathCommand extends SequentialCommandGroup {
                     trajectory, 
                     () -> drivebase.m_odometry.getPoseMeters(), 
                     drivebase.m_kinematics, 
-                    new PIDController(0.7, 0, 0),  // TODO: Characterize swerve to fix PID constants
-                    new PIDController(0.7, 0, 0), 
+                    new PIDController(5.0, 0, 0),  // TODO: Characterize swerve to fix PID constants
+                    new PIDController(5.0, 0, 0), 
                     new PIDController(1.5, 0, 0),
                     (states) -> drivebase.driveRaw(multiply(drivebase.m_kinematics.toChassisSpeeds(states), DRIVEBASE_SPEED_MULT)), 
                     drivebase),

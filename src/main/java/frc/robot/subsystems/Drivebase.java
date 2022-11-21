@@ -28,6 +28,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.I2C;
@@ -156,8 +157,6 @@ public class Drivebase extends SubsystemBase {
                 m_pigeon2 = null;
         }
 
-        m_odometry = new SwerveDriveOdometry(m_kinematics, getGyroscopeRotation());
-
         // tab = Shuffleboard.getTab("Drivetrain");
         Mk4ModuleConfiguration moduleConfig = Mk4ModuleConfiguration.getDefaultSteerFalcon500();
         moduleConfig.setDriveCurrentLimit(40.0);
@@ -240,6 +239,8 @@ public class Drivebase extends SubsystemBase {
                 .withSteerOffset(BACK_RIGHT_MODULE_STEER_OFFSET)
                 .build();
 
+        m_odometry = new SwerveDriveOdometry(m_kinematics, getGyroscopeRotation(), getPositions());
+
         // ((WPI_TalonFX) m_frontLeftModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
         // ((WPI_TalonFX) m_frontRightModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
         // ((WPI_TalonFX) m_backLeftModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
@@ -287,7 +288,7 @@ public class Drivebase extends SubsystemBase {
     // }
 
     public void resetOdometry(Pose2d pose) {
-        m_odometry.resetPosition(pose, getGyroscopeRotation());
+        m_odometry.resetPosition(getGyroscopeRotation(), getPositions(), pose);
     }
 
     /**
@@ -375,34 +376,27 @@ public class Drivebase extends SubsystemBase {
         relativeDriving = Triple.of(drive, turn, curve);
     }
 
-    public static SwerveModuleState getModuleState(SwerveModule module) {
-        return new SwerveModuleState(module.getDriveVelocity(), new Rotation2d(module.getSteerAngle()));
-    }
-
     public SwerveModuleState[] getStates() {
         return new SwerveModuleState[] {
-            getModuleState(m_frontLeftModule),
-            getModuleState(m_frontRightModule),
-            getModuleState(m_backLeftModule),
-            getModuleState(m_backRightModule)
+            m_frontLeftModule.getState(),
+            m_frontRightModule.getState(),
+            m_backLeftModule.getState(),
+            m_backRightModule.getState()
         };
     }
 
-    public SwerveModuleState[] getStatesOdometry() {
-        ChassisSpeeds s = m_kinematics.toChassisSpeeds(new SwerveModuleState[] {
-            getModuleState(m_frontLeftModule),
-            getModuleState(m_frontRightModule),
-            getModuleState(m_backLeftModule),
-            getModuleState(m_backRightModule)
-        });
-        s.vxMetersPerSecond *= 0.5; // Tweak for PathPlanner
-        s.vyMetersPerSecond *= 0.5; // Tweak for PathPlanner
-        return m_kinematics.toSwerveModuleStates(s);
+    public SwerveModulePosition[] getPositions() {
+        return new SwerveModulePosition[] {
+            m_frontLeftModule.getPosition(),
+            m_frontRightModule.getPosition(),
+            m_backLeftModule.getPosition(),
+            m_backRightModule.getPosition()
+        };
     }
 
     @Override
     public void periodic() {
-        m_odometry.update(getGyroscopeRotation(), getStates());
+        m_odometry.update(getGyroscopeRotation(), getPositions());
         if (camera.getLatestResult().hasTargets()) {
             double distanceMeters = CameraCalc.getDistanceMeters(camera);
             double xOffset = CameraCalc.getYawDegrees(camera);
@@ -413,7 +407,7 @@ public class Drivebase extends SubsystemBase {
                 Math.sin(Math.toRadians(getGyroscopeRotation().getDegrees() + 180
                 - xOffset)));//plus or minus xoffset???
         
-            m_odometry.resetPosition(new Pose2d(x, y, getGyroscopeRotation()), getGyroscopeRotation());
+            m_odometry.resetPosition(getGyroscopeRotation(), getPositions(), new Pose2d(x, y, getGyroscopeRotation()));
         }
         field2d.setRobotPose(m_odometry.getPoseMeters());
 

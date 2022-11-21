@@ -208,7 +208,7 @@ public class RobotContainer {
         
         // Shoot only
         buttonController.getButton(Xbox.Button.Y)
-                .whenHeld(new ShootWithCalcRPMCommand(systems));
+                .whenHeld(ShootCommands.shootCalcRPMCommand(systems));
         
         // Feed Both Up
         operator.getButton(CompassPOV.NORTH)
@@ -233,11 +233,11 @@ public class RobotContainer {
 
         // Shoot from Hub (manual)
         operator.getButton(LogitechExtreme3D.Button.THREE)
-                .whenHeld(new AngleAndShootCommand(systems, AngleAndShootCommand.Position.HUB));
+                .whenHeld(ShootCommands.angleAndShootCommand(systems, ShootCommands.ShootPresets.HUB));
 
         // Shoot from Safe Zone (manual)
         operator.getButton(LogitechExtreme3D.Button.FOUR)
-                .whenHeld(new AngleAndShootCommand(systems, AngleAndShootCommand.Position.SAFEZONE));
+                .whenHeld(ShootCommands.angleAndShootCommand(systems, ShootCommands.ShootPresets.SAFEZONE));
 
         // Auto Climb !EXPERIMENTAL!
         buttonController.getButton(Xbox.Button.BACK)

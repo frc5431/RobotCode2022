@@ -14,6 +14,8 @@ import frc.robot.commands.subsystems.DriveCommand;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
 
+import static frc.robot.commands.ShootCommands.*;
+
 public class AutonCommand extends SequentialCommandGroup {
     private static final double SHOOT_TIME = 4;
     private static final double PIVOT_TIME = 0.45;
@@ -64,7 +66,7 @@ public class AutonCommand extends SequentialCommandGroup {
                     new WaitCommand(0.5)
                         .deadlineWith(systems.getFeeder().getTop().runFeederCommand(true)),
                     new WaitCommand(SHOOT_TIME)
-                            .deadlineWith(new AimAndShootCommand(systems, false)),
+                            .deadlineWith(aimAndShootCommand(systems, false)),
                     new InstantCommand(() -> systems.getDrivebase().resetGyroAt(146), systems.getDrivebase())
                 );
                 break;
@@ -77,14 +79,14 @@ public class AutonCommand extends SequentialCommandGroup {
                             .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(3)
-                        .deadlineWith(new ShootWithCalcRPMCommand(systems, false)
+                        .deadlineWith(shootCalcRPMCommand(systems, false)
                                 .alongWith(systems.getIntake().runIntakeCommand(false))),
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[1])
                             .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(2.5)
-                        .deadlineWith(new ShootWithCalcRPMCommand(systems, false)
+                        .deadlineWith(shootCalcRPMCommand(systems, false)
                                 .alongWith(systems.getIntake().runIntakeCommand(false)))
                 );
                 break;
@@ -100,7 +102,7 @@ public class AutonCommand extends SequentialCommandGroup {
                     new WaitCommand(0.4)
                         .deadlineWith(systems.getFeeder().getTop().runFeederCommand(true)),
                     new WaitCommand(2.85)
-                            .deadlineWith(new AimAndShootCommand(systems, false)),
+                            .deadlineWith(aimAndShootCommand(systems, false)),
                     new WaitCommand(2.0)
                         .deadlineWith(new DriveCommand(systems, 1.5, -0.6, 0.0)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
@@ -115,7 +117,7 @@ public class AutonCommand extends SequentialCommandGroup {
                     new WaitCommand(0.4)
                         .deadlineWith(systems.getFeeder().getTop().runFeederCommand(true)),
                     new WaitCommand(2.85)
-                            .deadlineWith(new AimAndShootCommand(systems, false))
+                            .deadlineWith(aimAndShootCommand(systems, false))
                 );
                 break;
             case FIVE_BALL:
@@ -127,13 +129,13 @@ public class AutonCommand extends SequentialCommandGroup {
                             .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(3)
-                        .deadlineWith(new AimAndShootCommand(systems, false)),
+                        .deadlineWith(aimAndShootCommand(systems, false)),
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[1])
                             .deadlineWith(new FloorIntakeCommand(systems, false))
                     ),
                     new WaitCommand(2.5)
-                        .deadlineWith(new AimAndShootCommand(systems, false)),
+                        .deadlineWith(aimAndShootCommand(systems, false)),
                     new ParallelCommandGroup(
                         new PathCommand(systems, PATHS[2])
                             .deadlineWith(new FloorIntakeCommand(systems, false))
@@ -141,7 +143,7 @@ public class AutonCommand extends SequentialCommandGroup {
                     new WaitCommand(2)
                         .deadlineWith(new FloorIntakeCommand(systems, false)),
                     new PathCommand(systems, PATHS[3]),
-                    new AimAndShootCommand(systems, false)
+                    aimAndShootCommand(systems, false)
                 );
                 break;
             case JUST_PATH:
