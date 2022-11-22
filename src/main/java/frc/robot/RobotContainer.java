@@ -135,6 +135,8 @@ public class RobotContainer {
                 // No requirements because we don't need to interrupt anything
                 .whenPressed(drivebase::zeroGyroscope);
         
+        
+        
         // D-Pad cardinal directions
         driver.getButton(CompassPOV.NORTH)
                 .whileHeld(
@@ -204,7 +206,7 @@ public class RobotContainer {
         // Shoot & Aim
         // new JoystickButton(buttonBoard, 6)
         buttonController.getButton(Xbox.Button.B)
-                .whenHeld(new TimedFeedAimAndShootCommand(systems, () -> CameraCalc.calculateRPM(camera), true));
+                .whenHeld(ShootCommands.timedFeedShootWithAimCommand(systems, () -> CameraCalc.calculateRPM(camera), true, true));
         
         // Shoot only
         buttonController.getButton(Xbox.Button.Y)

@@ -41,7 +41,7 @@ public class AutonCommand extends SequentialCommandGroup {
             case ONE_BALL:
                 addCommands(
                     new WaitCommand(SHOOT_TIME)
-                        .deadlineWith(new TimedFeedAndShootCommand(systems, Shooter.Velocity.NORMAL, false)),
+                        .deadlineWith(timedFeedShootWithAimCommand(systems, Shooter.VELOCITY_NORMAL, false, false)),
                     pivotDown
                 );
                 break;

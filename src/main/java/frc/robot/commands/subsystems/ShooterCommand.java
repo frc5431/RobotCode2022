@@ -17,10 +17,6 @@ public class ShooterCommand extends CommandBase {
 
     public static DoubleSupplier supplierToTab = () -> 0;
 
-    public ShooterCommand(Systems systems, Shooter.Velocity velocity) {
-        this(systems, velocity.getVelocity());
-    }
-
     public ShooterCommand(Systems systems, double velocity) {
         this(systems, () -> velocity);
     }
@@ -47,7 +43,7 @@ public class ShooterCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
 		Logger.l("Shooter Command Done");
-		shooter.set(Shooter.Velocity.OFF);
+		shooter.set(0);
 	}
 	
 	@Override

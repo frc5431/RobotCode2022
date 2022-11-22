@@ -27,20 +27,6 @@ public class Shooter extends SubsystemBase {
     private static final double DEFAULT_KD = 0;
     private static final double DEFAULT_KF = 0.05; // 0.055
 
-    public static enum Velocity {
-        OFF(0), REJECT(VELOCITY_REJECT), NORMAL(VELOCITY_NORMAL);
-
-        private double velocity;
-
-        Velocity(double velocity) {
-            this.velocity = velocity;
-        }
-
-        public double getVelocity() {
-            return velocity;
-        }
-    }
-
     private WPI_TalonFX shooter, _shooterFollow;
 
     public Shooter(WPI_TalonFX left, WPI_TalonFX right) {
@@ -85,10 +71,6 @@ public class Shooter extends SubsystemBase {
         Constants.tab_subsystems.addBoolean("Shooter At Velocity", this::atVelocity)
                 .withPosition(0, 5)
                 .withSize(2, 1);
-    }
-
-    public void set(Shooter.Velocity velocity) {
-        set(velocity.getVelocity());
     }
 
     public void set(double velocity) {

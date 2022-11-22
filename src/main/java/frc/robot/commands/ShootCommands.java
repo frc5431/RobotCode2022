@@ -1,11 +1,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Constants;
 import frc.robot.Systems;
 import frc.robot.commands.subsystems.AnglerCommand;
+import frc.robot.commands.subsystems.ShooterCommand;
+import frc.robot.subsystems.Drivebase;
+import frc.robot.subsystems.Shooter;
 import frc.robot.util.CameraCalc;
+import frc.team5431.titan.core.misc.Calc;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
+
+import java.util.function.DoubleSupplier;
 
 public class ShootCommands {
 
@@ -49,7 +59,7 @@ public class ShootCommands {
     public static Command angleAndShootCommand(Systems systems, ShootPresets preset, boolean waitForFlywheel) {
         return parallel(
             new AnglerCommand(systems, AnglerCommand.COMMAND.SET, preset.getAnglerPos()),
-            new TimedFeedAndShootCommand(systems, preset.getRpm(), waitForFlywheel)
+            timedFeedShootWithAimCommand(systems, preset.getRpm(), false, waitForFlywheel)
         );
     }
 
@@ -58,6 +68,49 @@ public class ShootCommands {
     }
 
     public static Command shootCalcRPMCommand(Systems systems, boolean waitForFlywheel) {
-        return new TimedFeedAndShootCommand(systems, () -> CameraCalc.calculateRPM(systems.getCamera()), waitForFlywheel);
+        return timedFeedShootWithAimCommand(systems, () -> CameraCalc.calculateRPM(systems.getCamera()), false, waitForFlywheel);
+    }
+
+    private static final double FEEDER_PUSH_DOWN_DELAY = 0.4;
+    private static final double MIN_SHOOTER_WAIT_TILL_SPEED = 0.9; // 0.7 // with 2 wheel 1.0 // before flywheel change: 0.25
+    private static final double MAX_SHOOTER_WAIT_TILL_SPEED = 1.3; // 1.0 // with 2 wheel 1.8 // before flywheel change: 0.5
+
+    public static Command timedFeedShootWithAimCommand(Systems systems, double velocity, boolean shouldAim, boolean waitForFlywheel) {
+        return timedFeedShootWithAimCommand(systems, () -> velocity, shouldAim, waitForFlywheel);
+    }
+
+    public static Command timedFeedShootWithAimCommand(Systems systems, DoubleSupplier supplier, boolean shouldAim, boolean waitForFlywheel) {
+        return parallel(
+            new LEDCommand(systems, Constants.LEDPATTERN_SHOOT),
+            sequence(
+                new WaitCommand(FEEDER_PUSH_DOWN_DELAY),
+                new ShooterCommand(systems, supplier)
+            ),
+            sequence(
+                parallel(
+                    systems.getFeeder().getBottom().runFeederCommand(true).withTimeout(FEEDER_PUSH_DOWN_DELAY/2).andThen(
+                        systems.getFeeder().getTop().runFeederCommand(true).withTimeout(FEEDER_PUSH_DOWN_DELAY/2)
+                    ).withTimeout(FEEDER_PUSH_DOWN_DELAY),
+                    new ConditionalCommand(new AimCommand(systems, true).asProxy(), new InstantCommand(), () -> (shouldAim && !Drivebase.lockedToHub))
+                ),
+                waitForFlywheel
+                    ? new WaitCommand(0.85).andThen( new WaitUntilCommand(() -> systems.getShooter().atVelocity()) )
+                    : new WaitCommand(() -> Calc.map(supplier.getAsDouble(), 0, Shooter.MAX_VELOCITY, MIN_SHOOTER_WAIT_TILL_SPEED, MAX_SHOOTER_WAIT_TILL_SPEED)), 
+                parallel(
+                    // LEDs
+                    sequence(
+                        new LEDCommand(systems, Constants.LEDPATTERN_SHOOT_BB),
+                        new WaitCommand(0.1),
+                        new LEDCommand(systems, Constants.LEDPATTERN_SHOOT),
+                        new WaitCommand(0.15),
+                        new LEDCommand(systems, Constants.LEDPATTERN_SHOOT_BB),
+                        new WaitCommand(0.1),
+                        new LEDCommand(systems, Constants.LEDPATTERN_SHOOT)
+                    ),
+                    systems.getFeeder().getTop().runFeederCommand(false),
+                    new WaitCommand(0.2).andThen(systems.getFeeder().getBottom().runFeederCommand(false))
+                )
+            )
+        ).finallyDo((interrupted) -> systems.getLed().set(Constants.LEDPATTERN_DEFAULT));
     }
 }
