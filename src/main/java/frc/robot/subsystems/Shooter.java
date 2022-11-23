@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
@@ -7,6 +9,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -79,6 +83,14 @@ public class Shooter extends SubsystemBase {
 
     public boolean atVelocity() {
         return shooter.getClosedLoopError() < VELOCITY_BUFFER;
+    }
+
+    public Command runShooterCommand(double velocity) {
+        return runShooterCommand(() -> velocity);
+    }
+
+    public Command runShooterCommand(DoubleSupplier velocitySupplier) {
+        return Commands.runEnd(() -> this.set(velocitySupplier.getAsDouble()), () -> this.set(0), this);
     }
 }
 //Remember that 1 shooter will go forward and 1 in reverse

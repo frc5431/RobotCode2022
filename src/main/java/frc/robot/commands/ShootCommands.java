@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Systems;
 import frc.robot.commands.subsystems.AnglerCommand;
-import frc.robot.commands.subsystems.ShooterCommand;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
 import frc.robot.util.CameraCalc;
@@ -81,7 +80,7 @@ public class ShootCommands {
             new LEDCommand(systems, Constants.LEDPATTERN_SHOOT),
             sequence(
                 new WaitCommand(FEEDER_PUSH_DOWN_DELAY),
-                new ShooterCommand(systems, supplier)
+                systems.getShooter().runShooterCommand(supplier)
             ),
             sequence(
                 parallel(

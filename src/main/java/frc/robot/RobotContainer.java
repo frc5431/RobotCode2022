@@ -166,7 +166,7 @@ public class RobotContainer {
 
         // Trigger/slider Shoot
         manualJoystick.getButton(LogitechExtreme3D.Button.TRIGGER)
-                .whileTrue(new ShooterCommand(systems, 
+                .whileTrue(systems.getShooter().runShooterCommand(
                         () -> Calc.map(
                                 manualJoystick.getRawAxis(LogitechExtreme3D.Axis.SLIDER), 
                                         1.0, -1.0, 

@@ -40,8 +40,8 @@ public class AutonCommand extends SequentialCommandGroup {
                 break;
             case ONE_BALL:
                 addCommands(
-                    new WaitCommand(SHOOT_TIME)
-                        .deadlineWith(timedFeedShootWithAimCommand(systems, Shooter.VELOCITY_NORMAL, false, false)),
+                    timedFeedShootWithAimCommand(systems, Shooter.VELOCITY_NORMAL, false, false)
+                        .withTimeout(SHOOT_TIME),
                     pivotDown
                 );
                 break;
@@ -56,18 +56,18 @@ public class AutonCommand extends SequentialCommandGroup {
                     // new WaitCommand(3)
                     //     .deadlineWith(new ShootPlusCommand(systems)
                     //             .alongWith(systems.getIntake().runIntakeCommand(false)))
-                    new InstantCommand(() -> systems.getDrivebase().resetGyroAt(0), systems.getDrivebase()), // 146
+                    systems.getDrivebase().resetYawCommand(0), // 146
                     pivotDown,
-                    new WaitCommand(1.7)
-                        .deadlineWith(new DriveCommand(systems, 0.3, 0.0, false)
-                                .alongWith(new FloorIntakeCommand(systems, false))),
-                    new WaitCommand(0.3)
-                        .deadlineWith(systems.getFeeder().getBottom().runFeederCommand(true)),
-                    new WaitCommand(0.5)
-                        .deadlineWith(systems.getFeeder().getTop().runFeederCommand(true)),
-                    new WaitCommand(SHOOT_TIME)
-                            .deadlineWith(aimAndShootCommand(systems, false)),
-                    new InstantCommand(() -> systems.getDrivebase().resetGyroAt(146), systems.getDrivebase())
+                    new DriveCommand(systems, 0.3, 0.0, false)
+                        .alongWith(new FloorIntakeCommand(systems, false))
+                        .withTimeout(1.7),
+                    systems.getFeeder().getBottom().runFeederCommand(true)
+                        .withTimeout(0.3),
+                    systems.getFeeder().getTop().runFeederCommand(true)
+                        .withTimeout(0.5),
+                    aimAndShootCommand(systems, false)
+                        .withTimeout(SHOOT_TIME),
+                    systems.getDrivebase().resetYawCommand(146)
                 );
                 break;
             case THREE_BALL:
@@ -92,7 +92,7 @@ public class AutonCommand extends SequentialCommandGroup {
                 break;
             case FOUR_BALL:
                 addCommands(
-                    new InstantCommand(() -> systems.getDrivebase().resetGyroAt(0), systems.getDrivebase()), // 146
+                    systems.getDrivebase().resetYawCommand(0), // 146
                     pivotDown,
                     new WaitCommand(1.7)
                         .deadlineWith(new DriveCommand(systems, 1.4, -0.2, 0.0)
@@ -111,7 +111,7 @@ public class AutonCommand extends SequentialCommandGroup {
                     new WaitCommand(2.0)
                         .deadlineWith(new DriveCommand(systems, -1.5, 0.5, 0.0)
                                 .alongWith(new FloorIntakeCommand(systems, false))),
-                    new InstantCommand(() -> systems.getDrivebase().resetGyroAt(-155.6), systems.getDrivebase()),
+                    systems.getDrivebase().resetYawCommand(-155.6),
                     new WaitCommand(0.25)
                         .deadlineWith(systems.getFeeder().getBottom().runFeederCommand(true)),
                     new WaitCommand(0.4)

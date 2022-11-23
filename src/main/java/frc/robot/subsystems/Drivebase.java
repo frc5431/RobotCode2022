@@ -39,10 +39,13 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.CameraCalc;
 import frc.team5431.titan.core.misc.Logger;
+
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 public class Drivebase extends SubsystemBase {
     public static enum GyroType {
@@ -481,6 +484,10 @@ public class Drivebase extends SubsystemBase {
         m_frontRightModule.set(frVoltage, states[1].angle.getRadians());
         m_backLeftModule.set(blVoltage, states[2].angle.getRadians());
         m_backRightModule.set(brVoltage, states[3].angle.getRadians());
+    }
+
+    public Command resetYawCommand(double yaw) {
+        return runOnce(() -> this.resetGyroAt(yaw), this);
     }
 
     public void setNeutralModeDrive(NeutralMode nm) {
