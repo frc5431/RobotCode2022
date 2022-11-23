@@ -6,8 +6,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Systems;
-import frc.robot.commands.subsystems.ClimberExtendCommand;
-import frc.robot.commands.subsystems.ClimberHingeCommand;
 
 // TODO: visual cues with LEDs to indicate stage of auto climb
 // maybe button with lid
@@ -20,45 +18,45 @@ public class AutoClimbCommand extends SequentialCommandGroup {
     public AutoClimbCommand(Systems systems, BooleanSupplier continueSupplier) {
         addCommands(
             new WaitCommand(1.5) // Extend climber 
-                .deadlineWith(new ClimberExtendCommand(systems, false)),
+                .deadlineWith(systems.getClimber().getExtend().runClimberCommand(false)),
             new WaitUntilCommand(continueSupplier),
             // Drive here, maybe make above part manual or have "continue" feature?
             new WaitCommand(2.5) // Retract climber, pulls robot up past stationary hooks
                 .deadlineWith(new ParallelCommandGroup(
-                    new ClimberExtendCommand(systems, true),
-                    new ClimberHingeCommand(systems, 0.4)
+                    systems.getClimber().getExtend().runClimberCommand(true),
+                    systems.getClimber().getHinge().runClimberCommand(-0.4)
                 )), // mid rung latch
             new WaitCommand(0.5) // Sets stationary hooks on rungs, extends past stationary hooks
-                .deadlineWith(new ClimberExtendCommand(systems, false)), // mid rung stationary
+                .deadlineWith(systems.getClimber().getExtend().runClimberCommand(false)), // mid rung stationary
             new WaitCommand(1.1) // Positions hooks near high rung
                 .deadlineWith(new ParallelCommandGroup(
-                    new ClimberHingeCommand(systems, true),
-                    new ClimberExtendCommand(systems, 0.8)
+                    systems.getClimber().getHinge().runClimberCommand(false),
+                    systems.getClimber().getExtend().runClimberCommand(0.8)
                 )),
             new WaitCommand(0.3) // Fully extends climber
-                .deadlineWith(new ClimberExtendCommand(systems, false)),
+                .deadlineWith(systems.getClimber().getExtend().runClimberCommand(false)),
             new WaitUntilCommand(continueSupplier),
             new WaitCommand(0.5) // Pivot in hooks to contact high rung WITHOUT PUSHING ROBOT OFF
-                .deadlineWith(new ClimberHingeCommand(systems, false)),
+                .deadlineWith(systems.getClimber().getHinge().runClimberCommand(true)),
             new WaitUntilCommand(continueSupplier),
             new WaitCommand(0.65) // Retract climber, latch onto high rung, stationary hooks off
-                .deadlineWith(new ClimberExtendCommand(systems, true)), // high rung latch
+                .deadlineWith(systems.getClimber().getExtend().runClimberCommand(true)), // high rung latch
             new WaitCommand(2.7) // Return rung to go under stationary hooks
                 .deadlineWith(new ParallelCommandGroup(
-                    new ClimberExtendCommand(systems, -0.9),
-                    new ClimberHingeCommand(systems, false)
+                    systems.getClimber().getExtend().runClimberCommand(-0.9),
+                    systems.getClimber().getHinge().runClimberCommand(true)
                 )),
             new WaitCommand(2.8) // Extend hooks all the way, latch stationary onto high rung
-                .deadlineWith(new ClimberExtendCommand(systems, false)), // high rung stationary !SWINGING!
+                .deadlineWith(systems.getClimber().getExtend().runClimberCommand(false)), // high rung stationary !SWINGING!
             new WaitUntilCommand(continueSupplier),
             new WaitUntilCommand(() -> systems.getDrivebase().getGyro().getRoll() > 0), // Wait until robot is swinging towards driver station
             new WaitUntilCommand(() -> systems.getDrivebase().getGyro().getRoll() < -15),
             new WaitCommand(1.0) // Hooks contact traversal rung
-                .deadlineWith(new ClimberHingeCommand(systems, true)),
+                .deadlineWith(systems.getClimber().getHinge().runClimberCommand(false)),
             new WaitCommand(1.5)
-                .deadlineWith(new ClimberExtendCommand(systems, true)), // traversal rung lock
+                .deadlineWith(systems.getClimber().getExtend().runClimberCommand(true)), // traversal rung lock
             new WaitCommand(2.0)
-                .deadlineWith(new ClimberHingeCommand(systems, false))
+                .deadlineWith(systems.getClimber().getHinge().runClimberCommand(true))
         );
     }
 }

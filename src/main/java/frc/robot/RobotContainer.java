@@ -69,7 +69,7 @@ public class RobotContainer {
         setDefaultAnglerCommand();
         // unsetDefaultAnglerCommand();
 
-        systems.getClimber().getExtend().setDefaultCommand(new ClimberExtendCommand(systems, () -> {
+        systems.getClimber().getExtend().setDefaultCommand(systems.getClimber().getExtend().runClimberCommand(() -> {
             return modifyAxis(operator.getRightTriggerAxis())
                   - modifyAxis(operator.getLeftTriggerAxis());
         }));
@@ -220,17 +220,17 @@ public class RobotContainer {
 
         // Climber Extend (Manual) (moved to default)
         // new JoystickButton(buttonBoard, 16)
-        //         .whileHeld(new ClimberExtendCommand(systems, false));
+        //         .whileHeld(systems.getClimber().getExtend().runClimberCommand(false));
 
         // Climber Extend Reverse (Manual) (moved to default)
         // new JoystickButton(buttonBoard, 13)
-        //         .whileHeld(new ClimberExtendCommand(systems, true));
+        //         .whileHeld(systems.getClimber().getExtend().runClimberCommand(true));
 
         // Climber Hinge In (Manual)
-        operator.leftBumper().whileTrue(new ClimberHingeCommand(systems, false));
+        operator.leftBumper().whileTrue(systems.getClimber().getHinge().runClimberCommand(true));
 
         // Climber Hinge Out (Manual)
-        operator.rightBumper().whileTrue(new ClimberHingeCommand(systems, true));
+        operator.rightBumper().whileTrue(systems.getClimber().getHinge().runClimberCommand(false));
 
         // Pivot Calibration
         manualJoystick.getButton(LogitechExtreme3D.Button.TEN)

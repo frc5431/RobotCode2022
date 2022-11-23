@@ -52,16 +52,16 @@ public class Systems {
 
         upperFeederSensor = new DigitalInput(Constants.SLOT_FEEDER_SENSOR);
 
+        led = new Blinkin(Constants.SLOT_LEDS);
+
         feeder = new Feeder(feederBottom,feederTop);
         shooter = new Shooter(shooterLeft, shooterRight);
         intake = new Intake(intakeMotor);
         pivot = new Pivot(pivotMotor);
-        climber = new Climber(climberExtend, climberHinge);
+        climber = new Climber(climberExtend, climberHinge, led);
         angler = new Angler(anglerServo);
 
         camera = new PhotonCamera(Constants.CAMERA_NAME);
-
-        led = new Blinkin(Constants.SLOT_LEDS);
 
         drivebase = new Drivebase(camera);
     }
