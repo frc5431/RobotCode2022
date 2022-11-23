@@ -1,9 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Systems;
 import frc.robot.commands.subsystems.AnglerCommand;
@@ -91,10 +88,10 @@ public class ShootCommands {
                     systems.getFeeder().getBottom().runFeederCommand(true).withTimeout(FEEDER_PUSH_DOWN_DELAY/2).andThen(
                         systems.getFeeder().getTop().runFeederCommand(true).withTimeout(FEEDER_PUSH_DOWN_DELAY/2)
                     ).withTimeout(FEEDER_PUSH_DOWN_DELAY),
-                    new ConditionalCommand(new AimCommand(systems, true).asProxy(), new InstantCommand(), () -> (shouldAim && !Drivebase.lockedToHub))
+                    either(new AimCommand(systems, true).asProxy(), none(), () -> (shouldAim && !Drivebase.lockedToHub))
                 ),
                 waitForFlywheel
-                    ? new WaitCommand(0.85).andThen( new WaitUntilCommand(() -> systems.getShooter().atVelocity()) )
+                    ? new WaitCommand(0.85).andThen( waitUntil(() -> systems.getShooter().atVelocity()) )
                     : new WaitCommand(() -> Calc.map(supplier.getAsDouble(), 0, Shooter.MAX_VELOCITY, MIN_SHOOTER_WAIT_TILL_SPEED, MAX_SHOOTER_WAIT_TILL_SPEED)), 
                 parallel(
                     // LEDs

@@ -66,7 +66,7 @@ public class AnglerCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        Logger.l("Intake Command Done");
+        Logger.l("Angler Command Done");
     }
 
     @Override

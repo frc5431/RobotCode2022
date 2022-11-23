@@ -17,17 +17,17 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
 import frc.robot.commands.subsystems.*;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
 import frc.robot.util.CameraCalc;
 import frc.team5431.titan.core.joysticks.LogitechExtreme3D;
-import frc.team5431.titan.core.joysticks.Xbox;
 import frc.team5431.titan.core.joysticks.utils.CompassPOV;
 import frc.team5431.titan.core.misc.Calc;
+
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -43,10 +43,10 @@ public class RobotContainer {
 
 //     private final PowerDistribution pdh = new PowerDistribution();
 
-    private final Xbox driver = new Xbox(0);
+    private final CommandXboxController driver = new CommandXboxController(0);
   //private final Joystick vjoy = new vjoy(4);
-    private final Xbox buttonController = new Xbox(1);
-    private final LogitechExtreme3D operator = new LogitechExtreme3D(2);
+    private final CommandXboxController operator = new CommandXboxController(1);
+    private final LogitechExtreme3D manualJoystick = new LogitechExtreme3D(2);
 
     private final SendableChooser<AutonCommand.State> autonChooser;
 
@@ -61,17 +61,17 @@ public class RobotContainer {
         // Right stick X axis -> rotation
         drivebase.setDefaultCommand(new DefaultDriveCommand(
                         systems,
-                        () -> modifyAxis(-driver.getRawAxis(Xbox.Axis.LEFT_Y)) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> modifyAxis(-driver.getRawAxis(Xbox.Axis.LEFT_X)) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> modifyAxis(-driver.getRawAxis(Xbox.Axis.RIGHT_X)) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+                        () -> modifyAxis(-driver.getLeftY()) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
+                        () -> modifyAxis(-driver.getLeftX()) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
+                        () -> modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         ));
 
         setDefaultAnglerCommand();
         // unsetDefaultAnglerCommand();
 
         systems.getClimber().getExtend().setDefaultCommand(new ClimberExtendCommand(systems, () -> {
-            return modifyAxis(buttonController.getRawAxis(Xbox.Axis.TRIGGER_RIGHT))
-                  - modifyAxis(buttonController.getRawAxis(Xbox.Axis.TRIGGER_LEFT));
+            return modifyAxis(operator.getRightTriggerAxis())
+                  - modifyAxis(operator.getLeftTriggerAxis());
         }));
 
         // Configure the button bindings
@@ -131,119 +131,92 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         // Y button zeros the gyroscope
-        driver.getButton(Xbox.Button.Y)
-                // No requirements because we don't need to interrupt anything
-                .whenPressed(drivebase::zeroGyroscope);
-        
-        
+        driver.y().onTrue(runOnce(drivebase::zeroGyroscope));
         
         // D-Pad cardinal directions
-        driver.getButton(CompassPOV.NORTH)
-                .whileHeld(
-                    () -> drivebase.driveController(new ChassisSpeeds(Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0, 0)), drivebase);
-        driver.getButton(CompassPOV.SOUTH)
-                .whileHeld(
-                    () -> drivebase.driveController(new ChassisSpeeds(-Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0, 0)), drivebase);
-        driver.getButton(CompassPOV.WEST)
-                .whileHeld(
-                    () -> drivebase.driveController(new ChassisSpeeds(0, -Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase);
-        driver.getButton(CompassPOV.EAST)
-                .whileHeld(
-                    () -> drivebase.driveController(new ChassisSpeeds(0, Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase);
-                
+        driver.povUp().whileTrue(run(
+                () -> drivebase.driveController(new ChassisSpeeds(Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0, 0)), drivebase));
+        driver.povDown().whileTrue(run(
+                () -> drivebase.driveController(new ChassisSpeeds(-Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0, 0)), drivebase));
+        driver.povLeft().whileTrue(run(
+                    () -> drivebase.driveController(new ChassisSpeeds(0, -Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase));
+        driver.povRight().whileTrue(run(
+                    () -> drivebase.driveController(new ChassisSpeeds(0, Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase));
+        
         // Browse LED patterns
-        driver.getButton(Xbox.Button.BACK)
-                .whenPressed(new LEDCommand(systems, LEDCommand.COMMAND.PREV));
-        driver.getButton(Xbox.Button.START)
-                .whenPressed(new LEDCommand(systems, LEDCommand.COMMAND.NEXT));
+        driver.back().onTrue(new LEDCommand(systems, LEDCommand.COMMAND.PREV));
+        driver.start().onTrue(new LEDCommand(systems, LEDCommand.COMMAND.NEXT));
         
         // Lock to Hub Mode:tm:
-        driver.getButton(Xbox.Button.A)
-                .whenPressed(new InstantCommand( () -> { Drivebase.lockedToHub = !Drivebase.lockedToHub; } ));
+        driver.a().onTrue(runOnce( () -> { Drivebase.lockedToHub = !Drivebase.lockedToHub; } ));
         
         // Intake (Manual)
-        // new JoystickButton(buttonBoard, 7)
-        buttonController.getButton(CompassPOV.EAST)
-                .whileHeld(systems.getIntake().runIntakeCommand(false));
+        operator.povRight().whileTrue(systems.getIntake().runIntakeCommand(false));
         
         // Intake Reverse (Manual)
-        // new JoystickButton(buttonBoard, 3)
-        buttonController.getButton(Xbox.Button.X)
-                .whileHeld(
-                        systems.getIntake().runIntakeCommand(true)
-                            .alongWith(systems.getFeeder().feedEverythingCommand(true))
-                );
+        operator.x().whileTrue(
+                systems.getIntake().runIntakeCommand(true)
+                    .alongWith(systems.getFeeder().feedEverythingCommand(true)));
         
         // Pivot Up
-        // new JoystickButton(buttonBoard, 5)
-        buttonController.getButton(CompassPOV.NORTH)
-                .whileHeld(systems.getPivot().runPivotCommand(false));
+        operator.povUp().whileTrue(systems.getPivot().runPivotCommand(false));
         
         // Pivot Down
-        // new JoystickButton(buttonBoard, 2)
-        buttonController.getButton(CompassPOV.SOUTH)
-                .whileHeld(systems.getPivot().runPivotCommand(true));
+        operator.povDown().whileTrue(systems.getPivot().runPivotCommand(true));
 
         // Trigger/slider Shoot
-        operator.getButton(LogitechExtreme3D.Button.TRIGGER)
-                .whileHeld(new ShooterCommand(systems, 
+        manualJoystick.getButton(LogitechExtreme3D.Button.TRIGGER)
+                .whileTrue(new ShooterCommand(systems, 
                         () -> Calc.map(
-                                operator.getRawAxis(LogitechExtreme3D.Axis.SLIDER), 
+                                manualJoystick.getRawAxis(LogitechExtreme3D.Axis.SLIDER), 
                                         1.0, -1.0, 
                                         0, Shooter.MAX_VELOCITY)));
         
         // Floor Intake
-        // new JoystickButton(buttonBoard, 4)
-        buttonController.getButton(Xbox.Button.A)
-                .toggleWhenPressed(new FloorIntakeCommand(systems));
+        operator.a().toggleOnTrue(new FloorIntakeCommand(systems));
         
         // Reject
-        // new JoystickButton(buttonBoard, 1)
-        // buttonController.getButton(Xbox.Button.BACK)
-        //         .whileHeld(new ShootCommand(systems, Shooter.Velocity.REJECT)
-        //                         .alongWith(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, 0.287)));
+        // operator.back().whileTrue(
+        //         new ShootCommand(systems, Shooter.VELOCITY_REJECT)
+        //             .alongWith(new AnglerCommand(systems, AnglerCommand.COMMAND.SET, 0.287)));
 
         // Shoot & Aim
-        // new JoystickButton(buttonBoard, 6)
-        buttonController.getButton(Xbox.Button.B)
-                .whenHeld(ShootCommands.timedFeedShootWithAimCommand(systems, () -> CameraCalc.calculateRPM(camera), true, true));
+        operator.b().whileTrue(ShootCommands.timedFeedShootWithAimCommand(systems, () -> CameraCalc.calculateRPM(camera), true, true));
         
         // Shoot only
-        buttonController.getButton(Xbox.Button.Y)
-                .whenHeld(ShootCommands.shootCalcRPMCommand(systems));
+        operator.y().whileTrue(ShootCommands.shootCalcRPMCommand(systems));
         
         // Feed Both Up
-        operator.getButton(CompassPOV.NORTH)
-                .whileHeld(systems.getFeeder().feedEverythingCommand(false));
+        manualJoystick.getButton(CompassPOV.NORTH)
+                .whileTrue(systems.getFeeder().feedEverythingCommand(false));
         
         // Feed Both Down
-        operator.getButton(CompassPOV.SOUTH)
-                .whileHeld(systems.getFeeder().feedEverythingCommand(true));
+        manualJoystick.getButton(CompassPOV.SOUTH)
+                .whileTrue(systems.getFeeder().feedEverythingCommand(true));
         
         // Angler towards 90 (lower angler)
-        operator.getButton(LogitechExtreme3D.Button.FIVE)
-                .whenPressed(new AnglerCommand(systems, true));
+        manualJoystick.getButton(LogitechExtreme3D.Button.FIVE)
+                .onTrue(new AnglerCommand(systems, true));
 
         // Angler towards 0 (raise angler)
-        operator.getButton(LogitechExtreme3D.Button.SIX)
-                .whenPressed(new AnglerCommand(systems, false));
+        manualJoystick.getButton(LogitechExtreme3D.Button.SIX)
+                .onTrue(new AnglerCommand(systems, false));
 
-        operator.getButton(LogitechExtreme3D.Button.NINE)
-                .toggleWhenPressed(new StartEndCommand(
+        manualJoystick.getButton(LogitechExtreme3D.Button.NINE)
+                .toggleOnTrue(startEnd(
                     this::unsetDefaultAnglerCommand,
                     this::setDefaultAnglerCommand));
 
         // Shoot from Hub (manual)
-        operator.getButton(LogitechExtreme3D.Button.THREE)
-                .whenHeld(ShootCommands.angleAndShootCommand(systems, ShootCommands.ShootPresets.HUB));
+        manualJoystick.getButton(LogitechExtreme3D.Button.THREE)
+                .whileTrue(ShootCommands.angleAndShootCommand(systems, ShootCommands.ShootPresets.HUB));
 
         // Shoot from Safe Zone (manual)
-        operator.getButton(LogitechExtreme3D.Button.FOUR)
-                .whenHeld(ShootCommands.angleAndShootCommand(systems, ShootCommands.ShootPresets.SAFEZONE));
+        manualJoystick.getButton(LogitechExtreme3D.Button.FOUR)
+                .whileTrue(ShootCommands.angleAndShootCommand(systems, ShootCommands.ShootPresets.SAFEZONE));
 
-        // Auto Climb !EXPERIMENTAL!
-        buttonController.getButton(Xbox.Button.BACK)
-                .whenPressed(new AutoClimbCommand(systems, () -> buttonController.getRawButton(Xbox.Button.BACK)));
+        // Auto Climb
+        operator.back().onTrue(new AutoClimbCommand(systems, operator.back()::getAsBoolean));
 
         // Climber Extend (Manual) (moved to default)
         // new JoystickButton(buttonBoard, 16)
@@ -254,54 +227,50 @@ public class RobotContainer {
         //         .whileHeld(new ClimberExtendCommand(systems, true));
 
         // Climber Hinge In (Manual)
-        // new JoystickButton(buttonBoard, 14)
-        buttonController.getButton(Xbox.Button.BUMPER_L)
-                .whileHeld(new ClimberHingeCommand(systems, false));
+        operator.leftBumper().whileTrue(new ClimberHingeCommand(systems, false));
 
         // Climber Hinge Out (Manual)
-        // new JoystickButton(buttonBoard, 8)
-        buttonController.getButton(Xbox.Button.BUMPER_R)
-                .whileHeld(new ClimberHingeCommand(systems, true));
+        operator.rightBumper().whileTrue(new ClimberHingeCommand(systems, true));
 
         // Pivot Calibration
-        operator.getButton(LogitechExtreme3D.Button.TEN)
-                .whenPressed(() -> systems.getPivot().calibrateMode(true), systems.getPivot())
-                .whenReleased(() -> {
+        manualJoystick.getButton(LogitechExtreme3D.Button.TEN)
+                .onTrue(runOnce(() -> systems.getPivot().calibrateMode(true), systems.getPivot()))
+                .onFalse(runOnce(() -> {
                     systems.getPivot().calibrateMode(false);
                     systems.getPivot().reset();
-                }, systems.getPivot());
+                }, systems.getPivot()));
 
         // Climber Extend Calibration
-        operator.getButton(LogitechExtreme3D.Button.SEVEN)
-                .whenPressed(() -> systems.getClimber().getExtend().calibrateMode(true), systems.getClimber().getExtend())
-                .whenReleased(() -> {
+        manualJoystick.getButton(LogitechExtreme3D.Button.SEVEN)
+                .onTrue(runOnce(() -> systems.getClimber().getExtend().calibrateMode(true), systems.getClimber().getExtend()))
+                .onFalse(runOnce(() -> {
                     systems.getClimber().getExtend().calibrateMode(false);
                     systems.getClimber().getExtend().reset();
-                }, systems.getClimber().getExtend());
+                }, systems.getClimber().getExtend()));
 
         // Climber Hinge Calibration
-        operator.getButton(LogitechExtreme3D.Button.EIGHT)
-                .whenPressed(() -> systems.getClimber().getHinge().calibrateMode(true), systems.getClimber().getHinge())
-                .whenReleased(() -> {
+        manualJoystick.getButton(LogitechExtreme3D.Button.EIGHT)
+                .onTrue(runOnce(() -> systems.getClimber().getHinge().calibrateMode(true), systems.getClimber().getHinge()))
+                .onFalse(runOnce(() -> {
                     systems.getClimber().getHinge().calibrateMode(false);
                     systems.getClimber().getHinge().reset();
-                }, systems.getClimber().getHinge());
+                }, systems.getClimber().getHinge()));
         
         // Calibrate All
-        buttonController.getButton(Xbox.Button.START)
-                .whenPressed(() -> {
+        operator.start()
+                .onTrue(runOnce(() -> {
                     systems.getPivot().calibrateMode(true);
                     systems.getClimber().getExtend().calibrateMode(true);
                     systems.getClimber().getHinge().calibrateMode(true);
-                }, systems.getPivot(), systems.getClimber().getExtend(), systems.getClimber().getHinge())
-                .whenReleased(() -> {
+                }, systems.getPivot(), systems.getClimber().getExtend(), systems.getClimber().getHinge()))
+                .onFalse(runOnce(() -> {
                     systems.getPivot().calibrateMode(false);
                     systems.getPivot().reset();
                     systems.getClimber().getExtend().calibrateMode(false);
                     systems.getClimber().getExtend().reset();
                     systems.getClimber().getHinge().calibrateMode(false);
                     systems.getClimber().getHinge().reset();
-                }, systems.getPivot(), systems.getClimber().getExtend(), systems.getClimber().getHinge());
+                }, systems.getPivot(), systems.getClimber().getExtend(), systems.getClimber().getHinge()));
         
         // Aim/Vision
         // new JoystickButton(buttonBoard, 11)
@@ -375,8 +344,13 @@ public class RobotContainer {
     }
 
     public void unsetDefaultAnglerCommand() {
+        Command def = systems.getAngler().getDefaultCommand();
+        if (def == null) return;
+
         CommandScheduler.getInstance().unregisterSubsystem(systems.getAngler());
         CommandScheduler.getInstance().registerSubsystem(systems.getAngler());
+
+        def.cancel();
     }
 
     public void setDefaultAnglerCommand() {
