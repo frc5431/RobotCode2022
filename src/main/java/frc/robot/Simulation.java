@@ -13,6 +13,8 @@ import frc.team5431.titan.swerve.*;
 
 public class Simulation {
     private final List<SwerveModuleSim> modules;
+
+    @SuppressWarnings("unused")
     private final QuadSwerveSim qSwerveSim;
 
     public Simulation(RobotContainer rc) {
