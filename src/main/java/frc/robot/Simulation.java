@@ -9,7 +9,7 @@ import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.team5431.titan.swerve.*;
+import frc.team5431.titan.swerve.sim.*;
 
 public class Simulation {
     private final List<SwerveModuleSim> modules;
