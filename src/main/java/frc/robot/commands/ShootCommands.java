@@ -77,7 +77,7 @@ public class ShootCommands {
 
     public static Command timedFeedShootWithAimCommand(Systems systems, DoubleSupplier supplier, boolean shouldAim, boolean waitForFlywheel) {
         return parallel(
-            new LEDCommand(systems, Constants.LEDPATTERN_SHOOT),
+            systems.getLed().ledCommand(Constants.LEDPATTERN_SHOOT),
             sequence(
                 new WaitCommand(FEEDER_PUSH_DOWN_DELAY),
                 systems.getShooter().runShooterCommand(supplier)
@@ -95,13 +95,13 @@ public class ShootCommands {
                 parallel(
                     // LEDs
                     sequence(
-                        new LEDCommand(systems, Constants.LEDPATTERN_SHOOT_BB),
+                        systems.getLed().ledCommand(Constants.LEDPATTERN_SHOOT_BB),
                         new WaitCommand(0.1),
-                        new LEDCommand(systems, Constants.LEDPATTERN_SHOOT),
+                        systems.getLed().ledCommand(Constants.LEDPATTERN_SHOOT),
                         new WaitCommand(0.15),
-                        new LEDCommand(systems, Constants.LEDPATTERN_SHOOT_BB),
+                        systems.getLed().ledCommand(Constants.LEDPATTERN_SHOOT_BB),
                         new WaitCommand(0.1),
-                        new LEDCommand(systems, Constants.LEDPATTERN_SHOOT)
+                        systems.getLed().ledCommand(Constants.LEDPATTERN_SHOOT)
                     ),
                     systems.getFeeder().getTop().runFeederCommand(false),
                     new WaitCommand(0.2).andThen(systems.getFeeder().getBottom().runFeederCommand(false))

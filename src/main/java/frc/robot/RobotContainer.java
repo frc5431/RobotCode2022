@@ -24,6 +24,7 @@ import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
 import frc.robot.util.CameraCalc;
 import frc.team5431.titan.core.joysticks.CommandLogitechExtreme3D;
+import frc.team5431.titan.core.leds.Blinkin;
 import frc.team5431.titan.core.misc.Calc;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
@@ -143,8 +144,8 @@ public class RobotContainer {
                 () -> drivebase.driveController(new ChassisSpeeds(0, Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase));
         
         // Browse LED patterns
-        driver.back().onTrue(new LEDCommand(systems, LEDCommand.COMMAND.PREV));
-        driver.start().onTrue(new LEDCommand(systems, LEDCommand.COMMAND.NEXT));
+        driver.back().onTrue(systems.getLed().ledCommand(Blinkin.COMMAND.PREV));
+        driver.start().onTrue(systems.getLed().ledCommand(Blinkin.COMMAND.NEXT));
         
         // Lock to Hub Mode:tm:
         driver.a().onTrue(runOnce( () -> { Drivebase.lockedToHub = !Drivebase.lockedToHub; } ));
