@@ -225,45 +225,21 @@ public class RobotContainer {
         operator.rightBumper().whileTrue(systems.getClimber().getHinge().runClimberCommand(false));
 
         // Pivot Calibration
-        manualJoystick.ten()
-                .onTrue(runOnce(() -> systems.getPivot().calibrateMode(true), systems.getPivot()))
-                .onFalse(runOnce(() -> {
-                    systems.getPivot().calibrateMode(false);
-                    systems.getPivot().reset();
-                }, systems.getPivot()));
+        manualJoystick.ten().whileTrue(systems.getPivot().calibrateCommand());
 
         // Climber Extend Calibration
-        manualJoystick.seven()
-                .onTrue(runOnce(() -> systems.getClimber().getExtend().calibrateMode(true), systems.getClimber().getExtend()))
-                .onFalse(runOnce(() -> {
-                    systems.getClimber().getExtend().calibrateMode(false);
-                    systems.getClimber().getExtend().reset();
-                }, systems.getClimber().getExtend()));
+        manualJoystick.seven().whileTrue(systems.getClimber().getExtend().calibrateCommand());
 
         // Climber Hinge Calibration
-        manualJoystick.eight()
-                .onTrue(runOnce(() -> systems.getClimber().getHinge().calibrateMode(true), systems.getClimber().getHinge()))
-                .onFalse(runOnce(() -> {
-                    systems.getClimber().getHinge().calibrateMode(false);
-                    systems.getClimber().getHinge().reset();
-                }, systems.getClimber().getHinge()));
-        
+        manualJoystick.eight().whileTrue(systems.getClimber().getHinge().calibrateCommand());
+
         // Calibrate All
-        operator.start()
-                .onTrue(runOnce(() -> {
-                    systems.getPivot().calibrateMode(true);
-                    systems.getClimber().getExtend().calibrateMode(true);
-                    systems.getClimber().getHinge().calibrateMode(true);
-                }, systems.getPivot(), systems.getClimber().getExtend(), systems.getClimber().getHinge()))
-                .onFalse(runOnce(() -> {
-                    systems.getPivot().calibrateMode(false);
-                    systems.getPivot().reset();
-                    systems.getClimber().getExtend().calibrateMode(false);
-                    systems.getClimber().getExtend().reset();
-                    systems.getClimber().getHinge().calibrateMode(false);
-                    systems.getClimber().getHinge().reset();
-                }, systems.getPivot(), systems.getClimber().getExtend(), systems.getClimber().getHinge()));
-        
+        operator.start().whileTrue(parallel(
+            systems.getPivot().calibrateCommand(),
+            systems.getClimber().getExtend().calibrateCommand(),
+            systems.getClimber().getHinge().calibrateCommand()
+        ));
+
         // Aim/Vision
         // buttonController.getButton(Xbox.Button.Y)
         //         .whenHeld(new AimCommand(systems));

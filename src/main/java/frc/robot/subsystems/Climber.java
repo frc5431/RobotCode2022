@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.base.Calibratable;
 import frc.team5431.titan.core.leds.Blinkin;
 
 import static java.lang.Math.max;
@@ -69,7 +70,7 @@ public class Climber extends SubsystemBase {
         return climberHinge;
     }
 
-    public class ClimberBase extends SubsystemBase {
+    public class ClimberBase extends SubsystemBase implements Calibratable {
         protected WPI_TalonFX motor;
         private final double DEFAULT_SPEED;
 
@@ -82,12 +83,12 @@ public class Climber extends SubsystemBase {
             motor.set(speed);
         }
 
-        public void calibrateMode(boolean value) {
+        public void setCalibrateMode(boolean value) {
             motor.configForwardSoftLimitEnable(!value);
             motor.configReverseSoftLimitEnable(!value);
         }
     
-        public void reset() {
+        public void resetEncoder() {
             motor.setSelectedSensorPosition(0);
         }
 

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.base.Calibratable;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -20,7 +21,7 @@ import static java.lang.Math.min;
  * @author Daniel Brubaker
  * @author Ryan Hirasaki
  */
-public class Pivot extends SubsystemBase {
+public class Pivot extends SubsystemBase implements Calibratable {
     public static final double PIVOT_DOWN_LIMIT = -45000; //-42k // -45k // -49k
     public static final double PIVOT_UP_LIMIT = 0;
     public static final boolean REVERSE = false;
@@ -64,12 +65,12 @@ public class Pivot extends SubsystemBase {
                 .withSize(2, 1);
     }
 
-    public void calibrateMode(boolean value) {
+    public void setCalibrateMode(boolean value) {
         this.pivotMotor.configForwardSoftLimitEnable(!value);
         this.pivotMotor.configReverseSoftLimitEnable(!value);
     }
 
-    public void reset() {
+    public void resetEncoder() {
         this.pivotMotor.setSelectedSensorPosition(0);
     }
 
