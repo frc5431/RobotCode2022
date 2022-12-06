@@ -3,6 +3,7 @@
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
@@ -34,10 +35,12 @@ public class Pivot extends SubsystemBase implements Calibratable {
 
     private WPI_TalonFX pivotMotor;
 
-    public Pivot(WPI_TalonFX pivotMotor) {
-        this.pivotMotor = pivotMotor;
-        this.pivotMotor.configFactoryDefault();
+    public Pivot(WPI_TalonFX pivotMotorL, WPI_TalonFX pivotMotorR) {
+        this.pivotMotor = pivotMotorL;
+        pivotMotorR.follow(this.pivotMotor);
         this.pivotMotor.setInverted(REVERSE);
+        pivotMotorR.setInverted(TalonFXInvertType.OpposeMaster);
+        // pivotMotorR.setInverted(!REVERSE);
         this.pivotMotor.setNeutralMode(NEUTRALMODE);
         
         // reset encoder
@@ -52,8 +55,8 @@ public class Pivot extends SubsystemBase implements Calibratable {
 
         // flywheel.setSensorPhase(true);
 
-        this.pivotMotor.configPeakOutputForward(DEFAULT_SPEED);
-        this.pivotMotor.configPeakOutputReverse(-DEFAULT_SPEED);
+        // this.pivotMotor.configPeakOutputForward(DEFAULT_SPEED);
+        // this.pivotMotor.configPeakOutputReverse(-DEFAULT_SPEED);
 
         this.pivotMotor.config_kP(0, PIVOT_kP);
         this.pivotMotor.config_kI(0, PIVOT_kI);

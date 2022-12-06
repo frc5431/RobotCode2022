@@ -25,8 +25,10 @@ public final class Constants {
     public static final int ID_FEEDER_TOP = 16;
     public static final int ID_SHOOTER_LEFT = 19;
     public static final int ID_SHOOTER_RIGHT = 20;
-    public static final int ID_INTAKE = 17;
-    public static final int ID_PIVOT = 18;
+    public static final int ID_INTAKE_LEFT = 22;
+    public static final int ID_INTAKE_RIGHT = 23;
+    public static final int ID_PIVOT_LEFT = 18;
+    public static final int ID_PIVOT_RIGHT = 17;
     public static final int ID_CLIMBER_EXTEND = 14;
     public static final int ID_CLIMBER_HINGE = 13;
     public static final int ID_PIGEON2 = 21;

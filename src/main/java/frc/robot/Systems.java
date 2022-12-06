@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import org.photonvision.PhotonCamera;
 
@@ -16,8 +17,10 @@ public class Systems {
     private WPI_TalonFX feederTop;
     private WPI_TalonFX shooterLeft;
     private WPI_TalonFX shooterRight;
-    private WPI_TalonFX intakeMotor;
-    private WPI_TalonFX pivotMotor;
+    private WPI_VictorSPX intakeMotorLeft;
+    private WPI_VictorSPX intakeMotorRight;
+    private WPI_TalonFX pivotMotorLeft;
+    private WPI_TalonFX pivotMotorRight;
     private WPI_TalonFX climberExtend;
     private WPI_TalonFX climberHinge;
 
@@ -43,8 +46,10 @@ public class Systems {
         feederTop = new WPI_TalonFX(Constants.ID_FEEDER_TOP, CANBUS_SUBSYSTEM);
         shooterLeft = new WPI_TalonFX(Constants.ID_SHOOTER_LEFT, CANBUS_SUBSYSTEM);
         shooterRight = new WPI_TalonFX(Constants.ID_SHOOTER_RIGHT, CANBUS_SUBSYSTEM);
-        intakeMotor = new WPI_TalonFX(Constants.ID_INTAKE, CANBUS_SUBSYSTEM);
-        pivotMotor = new WPI_TalonFX(Constants.ID_PIVOT, CANBUS_SUBSYSTEM);
+        intakeMotorLeft = new WPI_VictorSPX(Constants.ID_INTAKE_LEFT);
+        intakeMotorRight = new WPI_VictorSPX(Constants.ID_INTAKE_RIGHT);
+        pivotMotorLeft = new WPI_TalonFX(Constants.ID_PIVOT_LEFT, CANBUS_SUBSYSTEM);
+        pivotMotorRight = new WPI_TalonFX(Constants.ID_PIVOT_RIGHT, CANBUS_SUBSYSTEM);
         climberExtend = new WPI_TalonFX(Constants.ID_CLIMBER_EXTEND, CANBUS_SUBSYSTEM);
         climberHinge = new WPI_TalonFX(Constants.ID_CLIMBER_HINGE, CANBUS_SUBSYSTEM);
 
@@ -56,8 +61,8 @@ public class Systems {
 
         feeder = new Feeder(feederBottom,feederTop);
         shooter = new Shooter(shooterLeft, shooterRight);
-        intake = new Intake(intakeMotor);
-        pivot = new Pivot(pivotMotor);
+        intake = new Intake(intakeMotorLeft, intakeMotorRight);
+        pivot = new Pivot(pivotMotorLeft, pivotMotorRight);
         climber = new Climber(climberExtend, climberHinge, led);
         angler = new Angler(anglerServo);
 
