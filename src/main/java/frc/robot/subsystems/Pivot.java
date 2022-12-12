@@ -18,9 +18,6 @@ import static java.lang.Math.min;
 
 /**
  * @author Colin Wong
- * @author Rishmita Rao
- * @author Daniel Brubaker
- * @author Ryan Hirasaki
  */
 public class Pivot extends SubsystemBase implements Calibratable {
     public static final double PIVOT_DOWN_LIMIT = -45000; //-42k // -45k // -49k
