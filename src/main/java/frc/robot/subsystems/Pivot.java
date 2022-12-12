@@ -36,12 +36,15 @@ public class Pivot extends SubsystemBase implements Calibratable {
     private WPI_TalonFX pivotMotor;
 
     public Pivot(WPI_TalonFX pivotMotorL, WPI_TalonFX pivotMotorR) {
+        pivotMotorL.configFactoryDefault();
+        pivotMotorR.configFactoryDefault();
         this.pivotMotor = pivotMotorL;
         pivotMotorR.follow(this.pivotMotor);
         this.pivotMotor.setInverted(REVERSE);
         pivotMotorR.setInverted(TalonFXInvertType.OpposeMaster);
         // pivotMotorR.setInverted(!REVERSE);
         this.pivotMotor.setNeutralMode(NEUTRALMODE);
+        pivotMotorR.setNeutralMode(NEUTRALMODE);
         
         // reset encoder
         this.pivotMotor.setSelectedSensorPosition(0);
