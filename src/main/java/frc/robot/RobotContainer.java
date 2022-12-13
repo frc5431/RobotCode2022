@@ -59,11 +59,18 @@ public class RobotContainer {
         // Left stick Y axis -> forward and backwards movement
         // Left stick X axis -> left and right movement
         // Right stick X axis -> rotation
+        // drivebase.setDefaultCommand(new DefaultDriveCommand(
+        //     systems,
+        //     () -> modifyAxis(-driver.getLeftY()) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
+        //     () -> modifyAxis(-driver.getLeftX()) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
+        //     () -> modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+        // ));
+        manualJoystick.setDeadzone(0.1);
         drivebase.setDefaultCommand(new DefaultDriveCommand(
-                        systems,
-                        () -> modifyAxis(-driver.getLeftY()) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> modifyAxis(-driver.getLeftX()) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
-                        () -> modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            systems,
+            () -> modifyAxis(-manualJoystick.getY()) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> modifyAxis(-manualJoystick.getX()) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> modifyAxis(-manualJoystick.getTwist()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         ));
 
         setDefaultAnglerCommand();
