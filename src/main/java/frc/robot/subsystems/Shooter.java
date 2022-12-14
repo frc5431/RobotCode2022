@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
@@ -51,9 +50,6 @@ public class Shooter extends SubsystemBase {
         shooter.configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
         _shooterFollow.configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
 
-        shooter.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-        _shooterFollow.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-
         shooter.config_kP(0, DEFAULT_KP);
         _shooterFollow.config_kP(0, DEFAULT_KP);
         shooter.config_kI(0, DEFAULT_KI);
@@ -64,6 +60,7 @@ public class Shooter extends SubsystemBase {
         _shooterFollow.config_kF(0, DEFAULT_KF);
 
         shooter.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 50);
+        _shooterFollow.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 50);
 
         shooter.set(ControlMode.Velocity, 0);
         Constants.tab_subsystems.addNumber("Shooter Target", shooter::getClosedLoopTarget)

@@ -1,9 +1,9 @@
 
  package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
@@ -25,44 +25,41 @@ public class Pivot extends SubsystemBase implements Calibratable {
     public static final boolean REVERSE = false;
     public static final NeutralMode NEUTRALMODE = NeutralMode.Brake;
     public static final double DEFAULT_SPEED = 0.5;
-    private static final double PIVOT_kP = 0;
-    private static final double PIVOT_kI = 0;
-    private static final double PIVOT_kD = 0;
-    private static final double PIVOT_kF = 1;
 
-    private WPI_TalonFX pivotMotor;
+    private WPI_TalonFX pivotMotor, _pivotFollow;
 
     public Pivot(WPI_TalonFX pivotMotorL, WPI_TalonFX pivotMotorR) {
-        pivotMotorL.configFactoryDefault();
-        pivotMotorR.configFactoryDefault();
-        this.pivotMotor = pivotMotorL;
-        pivotMotorR.follow(this.pivotMotor);
-        this.pivotMotor.setInverted(REVERSE);
-        pivotMotorR.setInverted(TalonFXInvertType.OpposeMaster);
-        // pivotMotorR.setInverted(!REVERSE);
-        this.pivotMotor.setNeutralMode(NEUTRALMODE);
-        pivotMotorR.setNeutralMode(NEUTRALMODE);
-        
-        // reset encoder
-        this.pivotMotor.setSelectedSensorPosition(0);
-        this.pivotMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 10);
-        this.pivotMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
-        
-        this.pivotMotor.configForwardSoftLimitEnable(true);
-        this.pivotMotor.configForwardSoftLimitThreshold(max(PIVOT_UP_LIMIT, PIVOT_DOWN_LIMIT));
-        this.pivotMotor.configReverseSoftLimitEnable(true);
-        this.pivotMotor.configReverseSoftLimitThreshold(min(PIVOT_UP_LIMIT, PIVOT_DOWN_LIMIT));
+        pivotMotor = pivotMotorL;
+        _pivotFollow = pivotMotorR;
 
-        // flywheel.setSensorPhase(true);
+        _pivotFollow.follow(pivotMotor);
+
+        pivotMotor.setInverted(REVERSE);
+		_pivotFollow.setInverted(InvertType.OpposeMaster); // Inverted via "!"
+
+        pivotMotor.setNeutralMode(NEUTRALMODE);
+        _pivotFollow.setNeutralMode(NEUTRALMODE);
+
+        // reset encoder
+        pivotMotor.setSelectedSensorPosition(0);
+        pivotMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 10);
+        pivotMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+
+        pivotMotor.configForwardSoftLimitEnable(true);
+        pivotMotor.configForwardSoftLimitThreshold(max(PIVOT_UP_LIMIT, PIVOT_DOWN_LIMIT));
+        pivotMotor.configReverseSoftLimitEnable(true);
+        pivotMotor.configReverseSoftLimitThreshold(min(PIVOT_UP_LIMIT, PIVOT_DOWN_LIMIT));
+
 
         // this.pivotMotor.configPeakOutputForward(DEFAULT_SPEED);
         // this.pivotMotor.configPeakOutputReverse(-DEFAULT_SPEED);
 
-        this.pivotMotor.config_kP(0, PIVOT_kP);
-        this.pivotMotor.config_kI(0, PIVOT_kI);
-        this.pivotMotor.config_kD(0, PIVOT_kD);
-        this.pivotMotor.config_kF(0, PIVOT_kF);
+        // this.pivotMotor.config_kP(0, PIVOT_kP);
+        // this.pivotMotor.config_kI(0, PIVOT_kI);
+        // this.pivotMotor.config_kD(0, PIVOT_kD);
+        // this.pivotMotor.config_kF(0, PIVOT_kF);
 
+        pivotMotor.set(0);
         Constants.tab_subsystems.addNumber("Pivot Position", this.pivotMotor::getSelectedSensorPosition)
                 .withPosition(18, 3)
                 .withSize(2, 1);

@@ -92,7 +92,7 @@ public class Drivebase extends SubsystemBase {
     // Max input acceleration (ChassisSpeeds meters per second per second) for x/y movement
     public static final double SLEW_RATE_LIMIT_TRANSLATION = MAX_VELOCITY_METERS_PER_SECOND * 2;
     // Max input acceleration (ChassisSpeeds radians per second per second) for rotational movement
-    public static final double SLEW_RATE_LIMIT_ROTATION = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 2;
+    public static final double SLEW_RATE_LIMIT_ROTATION = MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 10;
 
     public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
                     // Front left
