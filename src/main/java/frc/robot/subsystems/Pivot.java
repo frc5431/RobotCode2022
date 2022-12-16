@@ -32,6 +32,9 @@ public class Pivot extends SubsystemBase implements Calibratable {
         pivotMotor = pivotMotorL;
         _pivotFollow = pivotMotorR;
 
+        pivotMotor.configFactoryDefault();
+        _pivotFollow.configFactoryDefault();
+
         _pivotFollow.follow(pivotMotor);
 
         pivotMotor.setInverted(REVERSE);
