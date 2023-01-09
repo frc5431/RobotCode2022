@@ -20,11 +20,11 @@ import static java.lang.Math.min;
  * @author Colin Wong
  */
 public class Pivot extends SubsystemBase implements Calibratable {
-    public static final double PIVOT_DOWN_LIMIT = -45000; //-42k // -45k // -49k
+    public static final double PIVOT_DOWN_LIMIT = 1782074; //-42k // -45k // -49k
     public static final double PIVOT_UP_LIMIT = 0;
     public static final boolean REVERSE = false;
     public static final NeutralMode NEUTRALMODE = NeutralMode.Brake;
-    public static final double DEFAULT_SPEED = 0.5;
+    public static final double DEFAULT_SPEED = 0.2;
 
     private WPI_TalonFX pivotMotor, _pivotFollow;
 
@@ -39,6 +39,7 @@ public class Pivot extends SubsystemBase implements Calibratable {
 
         pivotMotor.setInverted(REVERSE);
 		_pivotFollow.setInverted(InvertType.OpposeMaster); // Inverted via "!"
+        // _pivotFollow.setInverted(!REVERSE);
 
         pivotMotor.setNeutralMode(NEUTRALMODE);
         _pivotFollow.setNeutralMode(NEUTRALMODE);
@@ -47,10 +48,13 @@ public class Pivot extends SubsystemBase implements Calibratable {
         pivotMotor.setSelectedSensorPosition(0);
         pivotMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 10);
         pivotMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+        _pivotFollow.setSelectedSensorPosition(0);
+        _pivotFollow.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 10);
+        _pivotFollow.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
 
-        pivotMotor.configForwardSoftLimitEnable(true);
+        pivotMotor.configForwardSoftLimitEnable(!true);
         pivotMotor.configForwardSoftLimitThreshold(max(PIVOT_UP_LIMIT, PIVOT_DOWN_LIMIT));
-        pivotMotor.configReverseSoftLimitEnable(true);
+        pivotMotor.configReverseSoftLimitEnable(!true);
         pivotMotor.configReverseSoftLimitThreshold(min(PIVOT_UP_LIMIT, PIVOT_DOWN_LIMIT));
 
 
@@ -63,6 +67,7 @@ public class Pivot extends SubsystemBase implements Calibratable {
         // this.pivotMotor.config_kF(0, PIVOT_kF);
 
         pivotMotor.set(0);
+        // _pivotFollow.set(0);
         Constants.tab_subsystems.addNumber("Pivot Position", this.pivotMotor::getSelectedSensorPosition)
                 .withPosition(18, 3)
                 .withSize(2, 1);
@@ -79,6 +84,7 @@ public class Pivot extends SubsystemBase implements Calibratable {
 
     public void set(double speed) {
         pivotMotor.set(speed);
+        // _pivotFollow.set(speed);
     }
 
     public Command runPivotCommand(boolean reverse) {
