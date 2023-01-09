@@ -487,7 +487,7 @@ public class Drivebase extends SubsystemBase {
     }
 
     public Command resetYawCommand(double yaw) {
-        return runOnce(() -> this.resetGyroAt(yaw), this);
+        return runOnce(() -> this.resetGyroAt(yaw));
     }
 
     public void setNeutralModeDrive(NeutralMode nm) {
