@@ -1,9 +1,7 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -13,25 +11,23 @@ public class Intake extends SubsystemBase {
 
     public static final double DEFAULT_SPEED = 1.0;
     public static final boolean REVERSE = false;
-    public static final NeutralMode NEUTRALMODE = NeutralMode.Coast;
+    public static final IdleMode IDLEMODE = IdleMode.kCoast;
     public static final double RAMPING_FROM_0_TO_FULL = 0.0; // 0.5
 
-    private WPI_VictorSPX intakeMotor;
-    private WPI_VictorSPX intakeMotor_follow;
+    private CANSparkMax intakeMotor, intakeMotor_follow;
 
-    public Intake(WPI_VictorSPX leftMotor, WPI_VictorSPX rightMotor) {
+    public Intake(CANSparkMax leftMotor, CANSparkMax rightMotor) {
         intakeMotor = leftMotor;
         intakeMotor_follow = rightMotor;
-        intakeMotor_follow.follow(intakeMotor);
+        intakeMotor_follow.follow(intakeMotor, true);
         intakeMotor.setInverted(REVERSE);
-        intakeMotor_follow.setInverted(InvertType.OpposeMaster);
-        intakeMotor.setNeutralMode(NEUTRALMODE);
-        intakeMotor.configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
-        // intakeMotor.setOpenLoopRampRate(RAMPING_FROM_0_TO_FULL);
+        intakeMotor.setIdleMode(IDLEMODE);
+        intakeMotor_follow.setIdleMode(IDLEMODE);
+        intakeMotor.setOpenLoopRampRate(RAMPING_FROM_0_TO_FULL);
     }
 
     public void set(double speed) {
-        intakeMotor.set(ControlMode.PercentOutput, speed);
+        intakeMotor.set(speed);
     }
 
     public Command runIntakeCommand(boolean reverse) {
