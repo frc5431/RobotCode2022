@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Intake extends SubsystemBase {
 
     public static final double DEFAULT_SPEED = 1.0;
-    public static final boolean REVERSE = false;
+    public static final boolean REVERSE = true;
     public static final IdleMode IDLEMODE = IdleMode.kCoast;
     public static final double RAMPING_FROM_0_TO_FULL = 0.0; // 0.5
 
@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase {
         intakeMotor.setInverted(REVERSE);
         intakeMotor.setIdleMode(IDLEMODE);
         intakeMotor_follow.setIdleMode(IDLEMODE);
-        intakeMotor.setOpenLoopRampRate(RAMPING_FROM_0_TO_FULL);
+        // intakeMotor.setOpenLoopRampRate(RAMPING_FROM_0_TO_FULL);
     }
 
     public void set(double speed) {
