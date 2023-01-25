@@ -3,8 +3,8 @@ package frc.robot;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
-import com.swervedrivespecialties.swervelib.ModuleConfiguration;
+import com.swervedrivespecialties.swervelib.MechanicalConfiguration;
+import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -43,7 +43,7 @@ public class Simulation {
 
     public static SwerveModuleSim createSim(SwerveModule module, String namePrefix) {
         // ModuleConfiguration modConfig = module.getModuleConfiguration();
-        ModuleConfiguration modConfig = Mk4SwerveModuleHelper.GearRatio.L2.getConfiguration();
+        MechanicalConfiguration modConfig = SdsModuleConfigurations.MK4_L2;
         return new SwerveModuleSim(DCMotor.getFalcon500(1),
                                    DCMotor.getFalcon500(1),
                                    modConfig.getWheelDiameter() / 2,
