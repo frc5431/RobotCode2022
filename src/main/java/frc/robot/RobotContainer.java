@@ -11,6 +11,8 @@ import org.photonvision.PhotonCamera;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.UsbCameraInfo;
 import edu.wpi.first.cscore.VideoSource;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -139,7 +141,12 @@ public class RobotContainer {
     private void configureButtonBindings() {
         // Y button zeros the gyroscope
         driver.y().onTrue(runOnce(drivebase::zeroGyroscope));
-        
+
+        driver.b().onTrue(runOnce(() -> {
+            drivebase.resetOdometry(new Pose2d(2.3, 4.3912, Rotation2d.fromDegrees(180)));
+            drivebase.resetGyroAt(180);
+        }));
+
         // D-Pad cardinal directions
         driver.povUp().whileTrue(run(
                 () -> drivebase.driveController(new ChassisSpeeds(Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0, 0)), drivebase));

@@ -60,6 +60,7 @@ public class Vision extends SubsystemBase {
 
         Pose3d visionMeasurement = camPose.transformBy(Constants.CAMERA_TO_ROBOT);
         drivebase.addVisionMeasurement(visionMeasurement.toPose2d(), timestamp);
+        // System.out.println("Vision.detect()");
       }
     }
   }

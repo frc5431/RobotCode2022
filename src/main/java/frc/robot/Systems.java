@@ -39,6 +39,7 @@ public class Systems {
     private Angler angler;
 
     private PhotonCamera camera;
+    private Vision vision;
 
     private Blinkin led;
 
@@ -70,6 +71,7 @@ public class Systems {
         camera = new PhotonCamera(Constants.CAMERA_NAME);
 
         drivebase = new Drivebase(camera);
+        vision = new Vision(drivebase);
     }
 
     public Drivebase getDrivebase() {
@@ -106,6 +108,10 @@ public class Systems {
 
     public PhotonCamera getCamera() {
         return camera;
+    }
+
+    public Vision getVision() {
+        return vision;
     }
 
     public Blinkin getLed() {

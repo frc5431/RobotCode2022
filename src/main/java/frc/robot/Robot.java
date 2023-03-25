@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.ArrayList;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoException;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.net.PortForwarder;
@@ -39,21 +40,24 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         PortForwarder.add(5800, "photonvision.local", 5800);
         PortForwarder.add(5800, "gloworm.local", 5800);
+        DriverStation.silenceJoystickConnectionWarning(true);
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
 
-        try {
-            CameraServer.startAutomaticCapture();
-        } catch (VideoException e) {
-            Logger.l("Unable to start automatic capture for CameraServer!");
+        if (UsbCamera.enumerateUsbCameras().length > 0) {
+            try {
+                CameraServer.startAutomaticCapture();
+            } catch (VideoException e) {
+                Logger.l("Unable to start automatic capture for CameraServer!");
+            }
         }
 
         m_simulation = new Simulation(m_robotContainer);
 
         for (var period : periodics) {
             addPeriodic(period.getFirst(), period.getSecond());
-          }
+        }
     }
 
     /**
@@ -145,7 +149,7 @@ public class Robot extends TimedRobot {
 
     public void enabledInit() {
         if (isReal())
-            DriverStation.silenceJoystickConnectionWarning(false);
+            DriverStation.silenceJoystickConnectionWarning(true);
 
         m_robotContainer.enabledInit();
     }
