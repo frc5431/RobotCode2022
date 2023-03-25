@@ -354,7 +354,12 @@ public class Drivebase extends SubsystemBase {
         m_chassisSpeeds = chassisSpeeds;
         relativeDriving = null;
     }
-
+    /**
+     * Is a wrapper for SwerveDrivePoseEstimator::addVisionMeasurement
+     * @param visionRobotPoseMeters Suggested Robot Pose
+     * @param timestampSeconds When measurement taken
+     * 
+     */
     public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
         m_odometry.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
     }

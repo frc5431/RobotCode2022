@@ -15,6 +15,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -54,14 +55,25 @@ public class Vision extends SubsystemBase {
       Optional<Pose3d> tagPose = LAYOUT == null ? Optional.empty() : LAYOUT.getTagPose(id);
 
       if (target.getPoseAmbiguity() <= .2 && id >= 0 && tagPose.isPresent()) {
-        Pose3d targetPose = tagPose.get();
-        Transform3d camToTarget = target.getBestCameraToTarget();
-        Pose3d camPose = targetPose.transformBy(camToTarget.inverse());
+        // Pose3d targetPose = tagPose.get();
+        // Transform3d camToTarget = target.getBestCameraToTarget();
+        // Pose3d camPose = targetPose.transformBy(camToTarget.inverse());
 
-        Pose3d visionMeasurement = camPose.transformBy(Constants.CAMERA_TO_ROBOT);
-        drivebase.addVisionMeasurement(visionMeasurement.toPose2d(), timestamp);
+        // Pose3d visionMeasurement = camPose.transformBy(Constants.CAMERA_TO_ROBOT);
+        // drivebase.addVisionMeasurement(visionMeasurement.toPose2d(), timestamp);
         // System.out.println("Vision.detect()");
+
+
+        var camToTargetTrans = res.getBestTarget().getBestCameraToTarget();
+        
+        var camPose = tagPose.get().transformBy(camToTargetTrans.inverse());
+
+        drivebase.addVisionMeasurement(camPose.transformBy(Constants.CAMERA_TO_ROBOT).toPose2d(), timestamp);
       }
     }
+  }
+
+  public Transform3d fromPose(Pose3d pose) {
+    return new Transform3d(pose.getTranslation(), pose.getRotation());
   }
 }
