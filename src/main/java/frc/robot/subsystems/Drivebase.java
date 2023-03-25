@@ -28,7 +28,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -419,7 +418,9 @@ public class Drivebase extends SubsystemBase {
         field2d.setRobotPose(m_odometry.getEstimatedPosition());
 
         // Hockey-lock by setting rotation to realllly low number
-        if (m_chassisSpeeds.vxMetersPerSecond < 0.01 && m_chassisSpeeds.vyMetersPerSecond < 0.01 && m_chassisSpeeds.omegaRadiansPerSecond == 0) {
+        if (Math.abs(m_chassisSpeeds.vxMetersPerSecond) < 0.1) m_chassisSpeeds.vxMetersPerSecond = 0;
+        if (Math.abs(m_chassisSpeeds.vyMetersPerSecond) < 0.1) m_chassisSpeeds.vyMetersPerSecond = 0;
+        if (m_chassisSpeeds.vxMetersPerSecond == 0 && m_chassisSpeeds.vyMetersPerSecond == 0 && m_chassisSpeeds.omegaRadiansPerSecond == 0) {
             m_chassisSpeeds.omegaRadiansPerSecond = 0.00001;
         }
 

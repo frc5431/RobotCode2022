@@ -146,9 +146,9 @@ public class RobotContainer {
         driver.povDown().whileTrue(run(
                 () -> drivebase.driveController(new ChassisSpeeds(-Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0, 0)), drivebase));
         driver.povLeft().whileTrue(run(
-                () -> drivebase.driveController(new ChassisSpeeds(0, -Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase));
-        driver.povRight().whileTrue(run(
                 () -> drivebase.driveController(new ChassisSpeeds(0, Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase));
+        driver.povRight().whileTrue(run(
+                () -> drivebase.driveController(new ChassisSpeeds(0, -Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase));
         
         // Browse LED patterns
         driver.back().onTrue(systems.getLed().ledCommand(Blinkin.COMMAND.PREV));
