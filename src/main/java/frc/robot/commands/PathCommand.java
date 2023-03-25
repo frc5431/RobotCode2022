@@ -24,7 +24,7 @@ public class PathCommand extends SequentialCommandGroup {
         addCommands(
             new PPSwerveControllerCommand(
                     trajectory, 
-                    () -> drivebase.m_odometry.getPoseMeters(), 
+                    () -> drivebase.m_odometry.getEstimatedPosition(), 
                     drivebase.m_kinematics, 
                     new PIDController(5.0, 0, 0),  // TODO: Characterize swerve to fix PID constants
                     new PIDController(5.0, 0, 0), 

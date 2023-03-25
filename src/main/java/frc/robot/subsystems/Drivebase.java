@@ -21,6 +21,7 @@ import com.swervedrivespecialties.swervelib.SwerveModule;
 import org.apache.commons.lang3.tuple.Triple;
 import org.photonvision.PhotonCamera;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -115,7 +116,7 @@ public class Drivebase extends SubsystemBase {
     // Pigeon 2.0
     public final WPI_Pigeon2 m_pigeon2;
 
-    public final SwerveDriveOdometry m_odometry;
+    public final SwerveDrivePoseEstimator m_odometry;
 
     // These are our modules. We initialize them in the constructor.
     private final SwerveModule m_frontLeftModule;
@@ -241,7 +242,7 @@ public class Drivebase extends SubsystemBase {
                 .withSteerOffset(BACK_RIGHT_MODULE_STEER_OFFSET)
                 .build();
 
-        m_odometry = new SwerveDriveOdometry(m_kinematics, getGyroscopeRotation(), getPositions());
+        m_odometry = new SwerveDrivePoseEstimator(m_kinematics, getGyroscopeRotation(), getPositions(), new Pose2d());
 
         // ((WPI_TalonFX) m_frontLeftModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
         // ((WPI_TalonFX) m_frontRightModule.getDriveMotor()).configOpenloopRamp(RAMPING_FROM_0_TO_FULL);
@@ -355,6 +356,10 @@ public class Drivebase extends SubsystemBase {
         relativeDriving = null;
     }
 
+    public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
+        m_odometry.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
+    }
+
     public void driveRawTranslate(double x, double y) {
         m_chassisSpeeds.vxMetersPerSecond = x;
         m_chassisSpeeds.vyMetersPerSecond = y;
@@ -411,10 +416,10 @@ public class Drivebase extends SubsystemBase {
         
             m_odometry.resetPosition(getGyroscopeRotation(), getPositions(), new Pose2d(x, y, getGyroscopeRotation()));
         }
-        field2d.setRobotPose(m_odometry.getPoseMeters());
+        field2d.setRobotPose(m_odometry.getEstimatedPosition());
 
         // Hockey-lock by setting rotation to realllly low number
-        if (m_chassisSpeeds.omegaRadiansPerSecond == 0) {
+        if (m_chassisSpeeds.vxMetersPerSecond < 0.01 && m_chassisSpeeds.vyMetersPerSecond < 0.01 && m_chassisSpeeds.omegaRadiansPerSecond == 0) {
             m_chassisSpeeds.omegaRadiansPerSecond = 0.00001;
         }
 

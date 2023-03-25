@@ -4,8 +4,12 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.VideoException;
+import edu.wpi.first.math.Pair;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,12 +28,17 @@ public class Robot extends TimedRobot {
     private RobotContainer m_robotContainer;
     private Simulation m_simulation;
 
+    public static final ArrayList<Pair<Runnable, Double>> periodics = new ArrayList<>();
+
+
     /**
      * This function is run when the robot is first started up and should be used for any
      * initialization code.
      */
     @Override
     public void robotInit() {
+        PortForwarder.add(5800, "photonvision.local", 5800);
+        PortForwarder.add(5800, "gloworm.local", 5800);
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
@@ -41,6 +50,10 @@ public class Robot extends TimedRobot {
         }
 
         m_simulation = new Simulation(m_robotContainer);
+
+        for (var period : periodics) {
+            addPeriodic(period.getFirst(), period.getSecond());
+          }
     }
 
     /**

@@ -6,6 +6,9 @@ package frc.robot;
 
 import org.photonvision.common.hardware.VisionLEDMode;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -61,26 +64,34 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 2;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 1;
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 32;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(80.244); // 85.430
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(79.717); // 85.430
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 8;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 7;
     public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 12;
-    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(139.482); // 140.449
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(143.877); // 0
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 4;
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 3;
     public static final int BACK_LEFT_MODULE_STEER_ENCODER = 10;
-    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(50.098); // 49.307
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(51.152); // 49.307
 
     public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 6;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 5;
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 9;
-    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(27.598); // 30.234
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(24.697); // 30.234
 
     public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(38.9);
     public static final double TARGET_HEIGHT_METERS = Units.feetToMeters(8) + Units.inchesToMeters(8);
     public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(27.3); // 29
+    public static final Transform3d ROBOT_TO_CAMERA = new Transform3d(
+        new Translation3d(
+            Units.inchesToMeters(0),
+            Units.inchesToMeters(0),
+            Units.inchesToMeters(34.5)),
+        new Rotation3d(0,0,180)
+    );
+    public static final Transform3d CAMERA_TO_ROBOT = ROBOT_TO_CAMERA.inverse();
 
     public static final VisionLEDMode DEFAULT_LED_MODE = VisionLEDMode.kOn;
     public static final boolean DRIVER_MODE = false;
