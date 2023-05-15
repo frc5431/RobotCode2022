@@ -71,7 +71,7 @@ public class Systems {
         camera = new PhotonCamera(Constants.CAMERA_NAME);
 
         drivebase = new Drivebase(camera);
-        vision = new Vision(drivebase);
+        // vision = new Vision(drivebase);
     }
 
     public Drivebase getDrivebase() {

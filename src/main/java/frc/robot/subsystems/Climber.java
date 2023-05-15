@@ -30,7 +30,7 @@ public class Climber extends SubsystemBase {
     public static final double EXTEND_DOWN_LIMIT = 0;
     public static final double EXTEND_UP_LIMIT = 391000; // 405k // 420000 // 384000
     public static final double HINGE_CLOSED_LIMIT = 0;
-    public static final double HINGE_OPEN_LIMIT = -275000; // TODO: test if inversion needed?
+    public static final double HINGE_OPEN_LIMIT = 275000; // TODO: test if inversion needed?
 
     private ClimberBase climberExtend, climberHinge;
 
