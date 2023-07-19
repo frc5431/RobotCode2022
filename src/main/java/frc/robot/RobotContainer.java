@@ -26,7 +26,7 @@ import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
 import frc.robot.util.CameraCalc;
 import frc.team5431.titan.core.joysticks.CommandLogitechExtreme3D;
-import frc.team5431.titan.core.leds.Blinkin;
+import frc.team5431.titan.core.joysticks.CommandSkyFlyController;
 import frc.team5431.titan.core.misc.Calc;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
@@ -45,8 +45,8 @@ public class RobotContainer {
 
 //     private final PowerDistribution pdh = new PowerDistribution();
 
-    private final CommandXboxController driver = new CommandXboxController(0);
-  //private final Joystick vjoy = new vjoy(4);
+    private final CommandSkyFlyController driver = new CommandSkyFlyController(0);
+//private final Joystick vjoy = new vjoy(4);
     private final CommandXboxController operator = new CommandXboxController(1);
     private final CommandLogitechExtreme3D manualJoystick = new CommandLogitechExtreme3D(2);
 
@@ -140,11 +140,12 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         // Y button zeros the gyroscope
-        driver.y().onTrue(runOnce(drivebase::zeroGyroscope));
+        // driver.y().onTrue(runOnce(drivebase::zeroGyroscope));
 
-        driver.b().onTrue(runOnce(() -> {
+        driver.backLeft().onTrue(runOnce(() -> {
             drivebase.resetOdometry(new Pose2d(2.3, 4.3912, Rotation2d.fromDegrees(180)));
             drivebase.resetGyroAt(180);
+            System.out.println("Testing");
         }));
 
         // D-Pad cardinal directions
@@ -158,11 +159,11 @@ public class RobotContainer {
                 () -> drivebase.driveController(new ChassisSpeeds(0, -Drivebase.MAX_VELOCITY_METERS_PER_SECOND, 0)), drivebase));
         
         // Browse LED patterns
-        driver.back().onTrue(systems.getLed().ledCommand(Blinkin.COMMAND.PREV));
-        driver.start().onTrue(systems.getLed().ledCommand(Blinkin.COMMAND.NEXT));
+        // driver.back().onTrue(systems.getLed().ledCommand(Blinkin.COMMAND.PREV));
+        // driver.start().onTrue(systems.getLed().ledCommand(Blinkin.COMMAND.NEXT));
         
         // Lock to Hub Mode:tm:
-        driver.a().onTrue(runOnce( () -> { Drivebase.lockedToHub = !Drivebase.lockedToHub; } ));
+        // driver.a().onTrue(runOnce( () -> { Drivebase.lockedToHub = !Drivebase.lockedToHub; } ));
         
         // Intake (Manual)
         operator.povRight().whileTrue(systems.getIntake().runIntakeCommand(false));
