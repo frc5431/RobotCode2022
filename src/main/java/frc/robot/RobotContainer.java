@@ -11,9 +11,11 @@ import org.photonvision.PhotonCamera;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.UsbCameraInfo;
 import edu.wpi.first.cscore.VideoSource;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -25,8 +27,8 @@ import frc.robot.commands.subsystems.*;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shooter;
 import frc.robot.util.CameraCalc;
+import frc.robot.util.CommandSkyFlyController;
 import frc.team5431.titan.core.joysticks.CommandLogitechExtreme3D;
-import frc.team5431.titan.core.joysticks.CommandSkyFlyController;
 import frc.team5431.titan.core.misc.Calc;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
@@ -61,11 +63,20 @@ public class RobotContainer {
         // Left stick Y axis -> forward and backwards movement
         // Left stick X axis -> left and right movement
         // Right stick X axis -> rotation
+        // drivebase.setDefaultCommand(new DefaultDriveCommand(
+        //     systems,
+        //     () -> modifyAxis(-driver.getLeftY()) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
+        //     () -> modifyAxis(-driver.getLeftX()) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
+        //     () -> modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+        //     () -> false
+        // ));
         drivebase.setDefaultCommand(new DefaultDriveCommand(
             systems,
             () -> modifyAxis(-driver.getLeftY()) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
             () -> modifyAxis(-driver.getLeftX()) * Drivebase.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> modifyAxis(-driver.getRightX()) * Drivebase.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> Units.radiansToDegrees(Math.atan2(modifyAxis(driver.getRightX()), modifyAxis(-driver.getRightY()))),
+            () -> true,
+            () -> Pair.of(modifyAxis(-driver.getRightX()), modifyAxis(-driver.getRightY()))
         ));
 //         manualJoystick.setDeadzone(0.1);
 //         drivebase.setDefaultCommand(new DefaultDriveCommand(
@@ -294,9 +305,9 @@ public class RobotContainer {
 
     private static double modifyAxis(double value) {
         // Deadband
-        value = deadband(value, 0.15);
+        // value = deadband(value, 0.00);
 
-        value = value * value * value;
+        // value = value * value * value;
 
         // Square the axis
         // value = Math.copySign(value * value, value);
