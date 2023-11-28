@@ -1,7 +1,8 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX; 
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -9,25 +10,27 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
 
-    public static final double DEFAULT_SPEED = 1.0;
+    public static final double DEFAULT_SPEED = 0.7; //0.5
     public static final boolean REVERSE = true;
-    public static final IdleMode IDLEMODE = IdleMode.kCoast;
-    public static final double RAMPING_FROM_0_TO_FULL = 0.0; // 0.5
+    public static final NeutralMode IDLEMODE = NeutralMode.Coast;
+    public static final double RAMPING_FROM_0_TO_FULL = 0.0;  // 0.5
 
-    private CANSparkMax intakeMotor, intakeMotor_follow;
+    private WPI_TalonSRX intakeMotor, intakeMotor_follow;  
 
-    public Intake(CANSparkMax leftMotor, CANSparkMax rightMotor) {
-        intakeMotor = leftMotor;
-        intakeMotor_follow = rightMotor;
-        intakeMotor_follow.follow(intakeMotor, true);
+    public Intake(WPI_TalonSRX leftPivot, WPI_TalonSRX rightPivot) {  
+        intakeMotor = leftPivot;
+        intakeMotor_follow = rightPivot;
+        intakeMotor_follow.follow(intakeMotor);
         intakeMotor.setInverted(REVERSE);
-        intakeMotor.setIdleMode(IDLEMODE);
-        intakeMotor_follow.setIdleMode(IDLEMODE);
-        // intakeMotor.setOpenLoopRampRate(RAMPING_FROM_0_TO_FULL);
+        intakeMotor.configPeakCurrentLimit(10);
+        intakeMotor.configPeakCurrentLimit(10);
+        intakeMotor.setNeutralMode(IDLEMODE);
+        intakeMotor_follow.setNeutralMode(IDLEMODE);
+        intakeMotor.configOpenloopRamp(RAMPING_FROM_0_TO_FULL);  
     }
 
     public void set(double speed) {
-        intakeMotor.set(speed);
+        intakeMotor.set(ControlMode.PercentOutput, speed);
     }
 
     public Command runIntakeCommand(boolean reverse) {

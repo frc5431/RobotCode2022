@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -18,8 +19,8 @@ public class Systems {
     private WPI_TalonFX feederTop;
     private WPI_TalonFX shooterLeft;
     private WPI_TalonFX shooterRight;
-    private CANSparkMax intakeMotorLeft;
-    private CANSparkMax intakeMotorRight;
+    private WPI_TalonSRX intakeMotorLeft;
+    private WPI_TalonSRX intakeMotorRight;
     private WPI_TalonFX pivotMotorLeft;
     private WPI_TalonFX pivotMotorRight;
     private WPI_TalonFX climberExtend;
@@ -48,8 +49,10 @@ public class Systems {
         feederTop = new WPI_TalonFX(Constants.ID_FEEDER_TOP, CANBUS_SUBSYSTEM);
         shooterLeft = new WPI_TalonFX(Constants.ID_SHOOTER_LEFT, CANBUS_SUBSYSTEM);
         shooterRight = new WPI_TalonFX(Constants.ID_SHOOTER_RIGHT, CANBUS_SUBSYSTEM);
-        intakeMotorLeft = new CANSparkMax(Constants.ID_INTAKE_LEFT, MotorType.kBrushless);
-        intakeMotorRight = new CANSparkMax(Constants.ID_INTAKE_RIGHT, MotorType.kBrushless);
+       
+        intakeMotorLeft = new WPI_TalonSRX(Constants.ID_INTAKE_LEFT);
+        intakeMotorRight = new WPI_TalonSRX(Constants.ID_INTAKE_RIGHT);
+       
         pivotMotorLeft = new WPI_TalonFX(Constants.ID_PIVOT_LEFT, CANBUS_SUBSYSTEM);
         pivotMotorRight = new WPI_TalonFX(Constants.ID_PIVOT_RIGHT, CANBUS_SUBSYSTEM);
         climberExtend = new WPI_TalonFX(Constants.ID_CLIMBER_EXTEND, CANBUS_SUBSYSTEM);

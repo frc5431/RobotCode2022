@@ -41,8 +41,8 @@ public class Pivot extends SubsystemBase implements Calibratable {
 		_pivotFollow.setInverted(InvertType.OpposeMaster); // Inverted via "!"
         // _pivotFollow.setInverted(!REVERSE);
 
-        pivotMotor.setNeutralMode(NEUTRALMODE);
-        _pivotFollow.setNeutralMode(NEUTRALMODE);
+        pivotMotor.setNeutralMode(NeutralMode.Brake);
+        _pivotFollow.setNeutralMode(NeutralMode.Brake);
 
         // reset encoder
         pivotMotor.setSelectedSensorPosition(0);
